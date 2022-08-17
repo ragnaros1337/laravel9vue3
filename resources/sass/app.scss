@@ -1,8 +1,51 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+
 
 // Variables
 @import 'variables';
+@import 'fonts';
+@import 'header';
+@import 'footer';
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+// Main
+$header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+@mixin my-scrollbar{
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 0 4px 4px 0;
+        background-color: darken($scrollbar-color, 50);
+    }
+    &::-webkit-scrollbar-track{
+        background-color: $scrollbar-color;
+        border-radius: 0 4px 4px 0;
+    }
+}
+a{
+    color: initial;
+    text-decoration: none;
+    &:hover{
+        color: initial;
+    }
+}
+
+body{
+    .wrapper{
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        .header, .footer{
+            flex-shrink: 0;
+        }
+        .body-content{
+            flex-grow: 1;
+        }
+    }
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
