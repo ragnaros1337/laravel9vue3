@@ -1,4 +1,78 @@
 .footer.container-fluid{
     padding: 0;
-
+    .footer-content{
+        display: flex;
+        width: 100%;
+        max-width: 1440px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        .footer-subscribe, .footer-links, .footer-media, .footer-payments{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+        .footer-subscribe{
+            justify-content: space-between;
+            .footer-subscribe-text{
+                text-transform: uppercase;
+            }
+        }
+        .footer-links{
+            ul{
+                padding-left: 0;
+            }
+            .footer-links-header{
+                font-weight: 700;
+            }
+            .footer-links-contacts{
+                .footer-links-contacts-top{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+                .footer-links-contacts-body{
+                    .footer-links-items{
+                        display: flex;
+                        flex-direction: row;
+                    }
+                }
+            }
+        }
+        .footer-media{
+            .footer-media-row{
+                width: 100%;
+            }
+            .footer-media-socials{
+                .footer-media-socials-items{
+                    padding-left: 0;
+                    margin-bottom: 0;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+            }
+        }
+        .footer-payments{
+            .footer-payments-row{
+                width: 100%;
+                .footer-payments-left, .footer-payments-right{
+                    display: flex;
+                    flex-direction: row;
+                    ul{
+                        padding: 0;
+                        margin-bottom: 0;
+                    }
+                }
+                .footer-payments-right{
+                    display: flex;
+                    justify-content: space-between;
+                    .footer-payments-right-banks, .footer-payments-right-chats{
+                        flex-direction: row;
+                    }
+                }
+            }
+        }
+    }
 }

@@ -19,9 +19,7 @@
 <body>
 <div class="wrapper" id="app">
     <header class="header container-fluid" style="flex-shrink: 0">
-        <!-- Navbar -->
         <nav class="kugoo-navbar">
-            <!-- Container wrapper -->
             <div class="kugoo-navbar-container">
                 <section class="kugoo-navbar-top row">
                     <div class="kugoo-navbar-top-left col-6">
@@ -64,12 +62,10 @@
                     <a href="" class="kugoo-navbar-bottom-link">Акции</a>
                 </section>
 
-                <!-- Toggle button -->
                 <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fas fa-bars"></i>
                 </button>
 
-                <!-- Collapsible wrapper -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
@@ -82,16 +78,13 @@
 
                 </div>
             </div>
-            <!-- Container wrapper -->
         </nav>
         <!-- Navbar -->
     </header>
     <div class="body-content">
         @yield('content')
     </div>
-<!-- Footer -->
     <footer class="footer container-fluid">
-        <!-- Grid container -->
         <div class="footer-content">
             <section class="footer-subscribe">
                 <div class="footer-subscribe-text">Оставьте свою почту и станьте первым,<br>
@@ -201,45 +194,62 @@
             </section>
 
             <section class="footer-media">
-                <div class="footer-media-brand"></div>
-                <div class="footer-media-store">
-                    <button type="button" class="footer-media-google-play"></button>
-                    <button type="button" class="footer-media-app-store"></button>
+                <div class="footer-media-row row">
+                    <div class="footer-media-left col-6">
+                        <div class="footer-media-brand"></div>
+                        <div class="footer-media-store">
+                            <button type="button" class="footer-media-google-play"></button>
+                            <button type="button" class="footer-media-app-store"></button>
+                        </div>
+                    </div>
+                    <div class="footer-media-right col-6">
+                        <div class="footer-media-socials">
+                            <ul class="footer-media-socials-items">
+                                <li class="footer-media-socials-item">
+                                    <a class="footer-media-socials-item-link footer-media-socials-item-link-vkontakte" href="" role="button">Вконтакте</a>
+                                </li>
+                                <li class="footer-media-socials-item">
+                                    <a class="footer-media-socials-item-link footer-media-socials-item-link-instagram" href="" role="button">Instagramm</a>
+                                </li>
+                                <li class="footer-media-socials-item">
+                                    <a class="footer-media-socials-item-link footer-media-socials-item-link-youtube" href="" role="button">Youtube</a>
+                                </li>
+                                <li class="footer-media-socials-item">
+                                    <a class="footer-media-socials-item-link footer-media-socials-item-link-telegram" href="" role="button">Telegram</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="footer-media-socials">
-                    <a href="" role="button"></a>
-                </div>
-                <!-- Facebook -->
-                <a class="btn btn-primary btn-floating m-1" role="button"><i class="fab fa-facebook-f"></i></a>
-
-                <!-- Twitter -->
-                <a class="btn btn-primary btn-floating m-1" style="background-color: #55acee" href="#!" role="button"><i class="fab fa-twitter"></i></a>
-
-                <!-- Google -->
-                <a class="btn btn-primary btn-floating m-1" style="background-color: #dd4b39" href="#!" role="button"><i class="fab fa-google"></i></a>
-
-                <!-- Instagram -->
-                <a class="btn btn-primary btn-floating m-1" style="background-color: #ac2bac" href="#!" role="button"><i class="fab fa-instagram"></i></a>
-
-                <!-- Linkedin -->
-                <a class="btn btn-primary btn-floating m-1" style="background-color: #0082ca" href="#!" role="button"><i class="fab fa-linkedin-in"></i></a>
-                <!-- Github -->
-                <a class="btn btn-primary btn-floating m-1" style="background-color: #333333" href="#!" role="button"><i class="fab fa-github"></i></a>
             </section>
-            <!-- Section: Social media -->
 
+            <section class="footer-payments">
+                <div class="footer-payments-row row">
+                    <div class="footer-payments-left col-6">
+                        <a class="footer-payments-left-link" href="">Реквизиты</a>
+                        <a class="footer-payments-left-link" href="">Политика конфиденциальности</a>
+                    </div>
+                    <div class="footer-payments-right col-6">
+                        <ul class="footer-payments-right-banks">
+                            <li class="footer-payments-right-bank footer-payments-right-bank-googlepay">gpay</li>
+                            <li class="footer-payments-right-bank footer-payments-right-bank-ipay">ipay</li>
+                            <li class="footer-payments-right-bank footer-payments-right-bank-visa">visa</li>
+                            <li class="footer-payments-right-bank footer-payments-right-bank-mastercard">mcard</li>
+                            <li class="footer-payments-right-bank footer-payments-right-bank-mir">?</li>
+                            <li class="footer-payments-right-bank footer-payments-right-bank-webmoney">?</li>
+                            <li class="footer-payments-right-bank footer-payments-right-bank-qiwi">qiwi</li>
+                        </ul>
+                        <ul class="footer-payments-right-chats">
+                            Online чат:
+                            <li class="footer-payments-right-chat footer-payments-right-chat-viber">Viber</li>
+                            <li class="footer-payments-right-chat footer-payments-right-chat-whatsup">Whatsup</li>
+                            <li class="footer-payments-right-chat footer-payments-right-chat-telegtram">Telegram</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
         </div>
-        <!-- Grid container -->
-
-        <!-- Copyright -->
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
-            © 2020 Copyright:
-            <a class="text-dark" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-        </div>
-        <!-- Copyright -->
-
     </footer>
-    <!-- Footer -->
 </div>
 @vite('resources/js/app.js')
 </body>
