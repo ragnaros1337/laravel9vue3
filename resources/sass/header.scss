@@ -1,3 +1,16 @@
+$base_violet: #6F73EE;
+$click_violet: #8185F9;
+$base_blue: #F4F7FB;
+$text_color: #5D6C7B;
+$header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+%violet_click{
+	background: $base_violet;
+    color: white;
+    transition: $header_transition;
+    &:active{
+        background: $click_violet;
+    }
+}
 .header.container-fluid{
     padding: 0;
     .kugoo-navbar{
@@ -11,33 +24,46 @@
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 0;
             .kugoo-navbar-backgrounds-top{
                 height: 39px;
                 background:  white;
-                border-bottom: 1px solid #ECF3FF;
-                z-index: 1;
+                border-bottom: 2px solid #ECF3FF;
+            }
+            .kugoo-navbar-backgrounds-middle{
+                height: 104px;
+                background: white;
+            }
+            .kugoo-navbar-backgrounds-bottom{
+                height: 25px;
+                background: $base_blue;
             }
         }
         .kugoo-navbar-container{
+            position: relative;
             display: flex;
             width: 100%;
             max-width: 1440px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 0 30px;
+            z-index: 1;
+            .hidden{
+                display: none!important;
+            }
             .kugoo-navbar-top, .kugoo-navbar-middle, .kugoo-navbar-bottom{
                 display: flex;
                 flex-direction: row;
                 width: 100%;
                 align-items: center;
-                z-index: 2;
             }
             .kugoo-navbar-top{
-            height: 39px;
+                height: 39px;
                 font-weight: 400;
                 font-size: 12px;
                 line-height: 17px;
-                color: #5D6C7B;
+                color: $text_color;
                 .kugoo-navbar-top-left{
                     display: flex;
                     align-items: center;
@@ -48,19 +74,49 @@
                     align-items: center;
                     justify-content: flex-end;
                 }
+                .kugoo-navbar-top-right-application-btn{
+                    @extend %violet_click;
+                    border-radius: 20px;
+                    border: none;
+                }
                 .kugoo-navbar-top-socials{
                     padding-left: 0;
                     margin-bottom: 0;
                     list-style-type: none;
                     display: flex;
                     flex-direction: row;
+                    .kugoo-navbar-top-socials-link{
+                        svg{
+                            height: 16px;
+                            width: 16px;
+                        }
+                    }
                 }
                 .kugoo-navbar-top-tel{
                     font-weight: 500;
                     color: black;
+                    position: relative;
+                    padding-right: 20px;
+                    &:after{
+                        content: "+";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        display: flex;
+                        width: 15px;
+                        height: 15px;
+                        align-items: center;
+                        justify-content: center;
+                        border: 2px solid black;
+                        border-radius: 50%;
+                        font-weight: 700;
+                    }
                 }
             }
             .kugoo-navbar-middle{
+                height: 104px;
+                padding-top: 30px;
+                padding-bottom: 30px;
                 justify-content: space-between;
                 .kugoo-navbar-middle-brand{
                     text-transform: uppercase;
@@ -69,21 +125,208 @@
                     line-height: 44px;
                 }
                 .kugoo-navbar-middle-catalog{
-                    background: #6F73EE;
-                    border: 1.5px solid #6F73EE;
-                    border-radius: 5px;
+                    border: 1.5px solid $base_violet;
+                    border-radius: 15px;
                     font-weight: 500;
                     font-size: 16px;
                     line-height: 23px;
-                    color: white;
+                    @extend %violet_click;
+                    position: relative;
+                    padding: 5px 15px 5px 40px;
+                    &:active{
+                        .kugoo-navbar-middle-catalog-icon{
+                            &:after{
+                                right: -1px;
+                                width: 13px;
+                            }
+                        }
+                    }
+                    .kugoo-navbar-middle-catalog-icon{
+                        position: absolute;
+                        left: 15px;
+                        top: calc(50% - 1px);
+                        width: 13px;
+                        height: 3px;
+                        background: white;
+                        border: 1.3px solid #FFFFFF;
+                        border-radius: 1px;
+                        &:after{
+                            content: "";
+                            position: absolute;
+                            right: 0px;
+                            bottom: -6px;
+                            width: 7px;
+                            height: 3px;
+                            background: white;
+                            border: 1.3px solid #FFFFFF;
+                            border-radius: 1px;
+                            transition: $header_transition;
+                        }
+                        &:before{
+                            content: "";
+                            position: absolute;
+                            left: -2px;
+                            top: -6px;
+                            width: 13px;
+                            height: 3px;
+                            background: white;
+                            border: 1.3px solid #FFFFFF;
+                            border-radius: 1px;
+                        }
+                    }
                 }
+                .kugoo-navbar-middle-search{
+                    height: 40px;
+                    width: 444px;
+                    border-radius: 15px;
+                    border: 5px solid #6F73EE;
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 20px;
+                    letter-spacing: 0em;
+                    text-align: left;
+                    position: relative;
+                    .kugoo-navbar-middle-search-dropdown{
+                        background: $base_blue;
+                        border: none;
+                        border-radius: 15px;
+                        height: 100%;
+                        width: 76px;
+                        position: relative;
+                        &:after{
+                            content: "";
+                            position: absolute;
+                            top: calc(50% - 1px);
+                            right: 5px;
+                            height: 6.999999523162868px;
+                            width: 8.000000953674347px;
+                            border-radius: 1px;
+                            margin-left: 0;
+                        }
+                        .kugoo-navbar-middle-search-field{
+
+                        }
+                    }
+                    .kugoo-navbar-middle-search-dropdown-menu{
+                        z-index: 3;
+                        border-radius: 15px;
+                        background: $base_blue;
+                        color: black;
+                        .kugoo-navbar-middle-search-dropdown-item{
+                            .dropdown-item{
+                                transition: $header_transition;
+                                &:focus{
+                                    background: none;
+                                }
+                                &:hover, &:active, &:focus{
+                                    color: $base_violet;
+                                    background: none;
+                                }
+                            }
+                        }
+                        .kugoo-navbar-middle-search-dropdown-item{
+                            &:hover, &:active, &:focus{
+                                .dropdown-item{
+                                    color: $base_violet;
+                                }
+                            }
+                        }
+                    }
+                    .kugoo-navbar-middle-search-field{
+                        width: 328px;
+                        height: 100%;
+                        border: none;
+                        padding-left: 10px;
+                        &:focus-visible{
+                            outline: none;
+                        }
+                    }
+                    .kugoo-navbar-middle-search-btn{
+                        position: absolute;
+                        right: -8px;
+                        top: -8px;
+                        height: 45px;
+                        width: 45px;
+                        border-radius: 5px 10px 10px 5px;
+                        border: 1px solid $base_violet;
+                        @extend %violet_click;
+                    }
+                }
+
             }
             .kugoo-navbar-bottom{
+                height: 25px;
                 font-weight: 700;
+                .kugoo-navbar-bottom-link.kugoo-navbar-bottom-link-hint{
+                    &:after{
+                        content: "Доступна рассрочка";
+                        background: $base_violet;
+                        border-radius: 50%;
+                        color: white;
+                    }
+                }
+                .kugoo-navbar-bottom-search-field{
+                    background: $base_blue;
+                    border-radius: 20px;
+                    border: none;
+                    padding-left: 10px;
+                    &:focus-visible{
+                        outline: none;
+                    }
+                    &::placeholder{
+                       color: black;
+                    }
+                }
+            }
+
+            .kugoo-navbar-toggler{
+                height: 40px;
+                width: 40px;
+                position: relative;
+                border: none;
+                background: none;
+                &:active{
+                    .navbar-toggler-icon{
+                        &:after{
+                            right: -1px;
+                            width: 26px;
+                        }
+                    }
+                }
+                .kugoo-navbar-toggler-icon{
+                    position: absolute;
+                    left: calc(50% - 13px);
+                    top: calc(50% - 1px);
+                    width: 26px;
+                    height: 5px;
+                    background: $base_violet;
+                    border: 1.3px solid $base_violet;
+                    border-radius: 2px;
+                    &:after{
+                        content: "";
+                        position: absolute;
+                        right: -1px;
+                        bottom: -8px;
+                        width: 13px;
+                        height: 5px;
+                        background: $base_violet;
+                        border: 1.3px solid $base_violet;
+                        border-radius: 2px;
+                        transition: $header_transition;
+                    }
+                    &:before{
+                        content: "";
+                        position: absolute;
+                        left: -1px;
+                        top: -8px;
+                        width: 26px;
+                        height: 5px;
+                        background: $base_violet;
+                        border: 1.3px solid $base_violet;
+                        border-radius: 2px;
+                    }
+                }
             }
         }
     }
-}
-.footer.container-fluid{
-
 }

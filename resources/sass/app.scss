@@ -5,6 +5,7 @@
 @import 'variables';
 @import 'fonts';
 @import 'header';
+@import 'mobile_menu';
 @import 'footer';
 
 // Bootstrap
@@ -23,6 +24,11 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
     &::-webkit-scrollbar-track{
         background-color: $scrollbar-color;
         border-radius: 0 4px 4px 0;
+    }
+}
+*{
+    &:focus-visible{
+        outline: none;
     }
 }
 a{
