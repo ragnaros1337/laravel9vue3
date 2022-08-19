@@ -1,0 +1,80 @@
+
+position: absolute;
+left: 23.4%;
+right: 76.11%;
+top: 51.09%;
+bottom: 48.91%;
+
+/* White */
+
+background: #FFFFFF;
+/* White */
+
+border: 1.3px solid #FFFFFF;
+
+7 -13
+
+clicl
+background: #8185F9;
+
+
+search
+height: 40px;
+width: 444px;
+left: 44px;
+top: 47px;
+border-radius: [object Object]px;
+
+
+height: 6.999999523162868px;
+width: 8.000000953674347px;
+left: 112px;
+top: 71px;
+border-radius: 1px;
+black +
+
+font-family: Jost;
+font-size: 14px;
+font-weight: 400;
+line-height: 20px;
+letter-spacing: 0em;
+text-align: left;
+
+//styleName: 14 px (regular);
+font-family: Jost;
+font-size: 14px;
+font-weight: 400;
+line-height: 20px;
+letter-spacing: 0em;
+text-align: left;
+
+
+background: #F4F7FB;
+height: 32px;
+width: 76px;
+left: 48px;
+top: 51px;
+border-radius: 5px;
+
+
+background: #6F73EE;
+height: 40px;
+width: 444px;
+left: 44px;
+top: 47px;
+border-radius: 5px;
+
+
+height: 40px;
+width: 40px;
+left: 448px;
+top: 116px;
+border-radius: [object Object]px;
+
+
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="512.000000pt" height="512.000000pt" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+
+<g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+</g>
+</svg>

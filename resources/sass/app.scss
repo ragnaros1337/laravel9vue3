@@ -1,5 +1,5 @@
 // Fonts
-
+@import "@fontsource/jost";
 
 // Variables
 @import 'variables';
@@ -37,6 +37,7 @@ ul{
 }
 
 body{
+    font-family: "Jost";
     .wrapper{
         min-height: 100%;
         display: flex;

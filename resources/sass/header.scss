@@ -1,6 +1,23 @@
 .header.container-fluid{
     padding: 0;
     .kugoo-navbar{
+        position:  relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .kugoo-navbar-backgrounds{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            .kugoo-navbar-backgrounds-top{
+                height: 39px;
+                background:  white;
+                border-bottom: 1px solid #ECF3FF;
+                z-index: 1;
+            }
+        }
         .kugoo-navbar-container{
             display: flex;
             width: 100%;
@@ -13,8 +30,14 @@
                 flex-direction: row;
                 width: 100%;
                 align-items: center;
+                z-index: 2;
             }
             .kugoo-navbar-top{
+            height: 39px;
+                font-weight: 400;
+                font-size: 12px;
+                line-height: 17px;
+                color: #5D6C7B;
                 .kugoo-navbar-top-left{
                     display: flex;
                     align-items: center;
@@ -32,9 +55,28 @@
                     display: flex;
                     flex-direction: row;
                 }
+                .kugoo-navbar-top-tel{
+                    font-weight: 500;
+                    color: black;
+                }
             }
             .kugoo-navbar-middle{
                 justify-content: space-between;
+                .kugoo-navbar-middle-brand{
+                    text-transform: uppercase;
+                    font-size: 30px;
+                    font-weight: 700;
+                    line-height: 44px;
+                }
+                .kugoo-navbar-middle-catalog{
+                    background: #6F73EE;
+                    border: 1.5px solid #6F73EE;
+                    border-radius: 5px;
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 23px;
+                    color: white;
+                }
             }
             .kugoo-navbar-bottom{
                 font-weight: 700;
