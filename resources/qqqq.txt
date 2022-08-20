@@ -1,0 +1,81 @@
+h39 
+pt 11
+
+between 30
+
+bw9 icons
+
+middle 35 20 47 27 27
+
+pt30
+bott
+h40
+50. 8 (height: 20px;
+width: 106px;
+left: 125px;
+top: 0px;
+border-radius: 300px;
+)
+
+
+pt10
+
+
+
+
+
+font-family: Jost;
+font-size: 18px;
+font-weight: 600;
+line-height: 26px;
+letter-spacing: 0em;
+text-align: left;
+
+
+pt24-21 bw95
+
+search 25 15
+
+height: 53px;
+width: 410px;
+left: 705px;
+top: 23px;
+border-radius: 5px;
+padding: 15px, 25px, 15px, 25px;
+
+
+btn 25 15
+bw10
+
+height: 53px;
+width: 140px;
+left: 1135px;
+top: 23px;
+border-radius: 5px;
+padding: 15px, 25px, 15px, 
+
+h97 up
+
+
+down
+
+17 10 125
+
+46
+
+
+
+height: 45px;
+width: 123px;
+left: 133px;
+top: 0px;
+border-radius: 5px;
+
+
+
+height: 23.36727523803711px;
+width: 34.077274322509766px;
+left: 0px;
+top: 0px;
+border-radius: 2.9209094047546387px;
+
