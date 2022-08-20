@@ -44,15 +44,11 @@
         }
     }
     .kugoo-mobile-menu-chats{
-        display: flex;
-        flex-direction: row;
         justify-content: center;
         align-items: center;
-        .kugoo-mobile-menu-item{
-            svg{
-                height: 20px;
-                width: 20px;
-            }
+        svg{
+            height: 20px;
+            width: 20px;
         }
     }
 }

@@ -55,6 +55,43 @@ body{
             flex-grow: 1;
         }
     }
+    .hidden{
+        display: none!important;
+    }
+    .socials-viber-whatsup-telegram{
+        display: flex;
+        flex-direction: row;
+        .social-item{
+            margin-right: 9px;
+            .social-item-viber, .social-item-telegram{
+                path{
+                    fill: #5D6C7BFF;
+                }
+            }
+            .social-item-whatsup{
+                path:first-child, path:last-child{
+                    fill: white;
+                }
+                path:nth-child(2){
+                    fill: #5D6C7BFF;
+                }
+            }
+            svg path{
+                transition: $header_transition;
+            }
+            &:hover, &:active{
+                .social-item-viber path{
+                    fill: #9c3fb4;
+                }
+                .social-item-whatsup path:nth-child(2){
+                    fill: #4caf50;
+                }
+                .social-item-telegram path{
+                    fill: #039be5;
+                }
+            }
+        }
+    }
     &::-webkit-scrollbar{
         display: none;
     }

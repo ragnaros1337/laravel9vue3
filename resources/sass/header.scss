@@ -49,9 +49,6 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
             justify-content: center;
             padding: 0 30px;
             z-index: 1;
-            .hidden{
-                display: none!important;
-            }
             .kugoo-navbar-top, .kugoo-navbar-middle, .kugoo-navbar-bottom{
                 display: flex;
                 flex-direction: row;
@@ -60,6 +57,8 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
             }
             .kugoo-navbar-top{
                 height: 39px;
+                padding-top: 11px;
+                padding-bottom: 11px;
                 font-weight: 400;
                 font-size: 12px;
                 line-height: 17px;
@@ -67,9 +66,13 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 .kugoo-navbar-top-left{
                     display: flex;
                     align-items: center;
-                    justify-content: space-between;
+                    padding: 0;
+                    .kugoo-navbar-top-link{
+                        margin-right: 30px;
+                    }
                 }
                 .kugoo-navbar-top-right{
+                    padding: 0;
                     display: flex;
                     align-items: center;
                     justify-content: flex-end;
@@ -83,46 +86,22 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                     padding-left: 0;
                     margin-bottom: 0;
                     list-style-type: none;
-                    display: flex;
-                    flex-direction: row;
-                    .kugoo-navbar-top-socials-link{
-                        svg{
-                            height: 16px;
-                            width: 16px;
-                        }
+                    svg{
+                        height: 16px;
+                        width: 16px;
                     }
                 }
                 .kugoo-navbar-top-tel{
                     font-weight: 500;
                     color: black;
-                    position: relative;
                     padding-right: 20px;
-                    &:after{
-                        content: "+";
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        display: flex;
-                        width: 15px;
-                        height: 15px;
-                        align-items: center;
-                        justify-content: center;
-                        border: 2px solid black;
-                        border-radius: 50%;
-                        font-weight: 700;
-                    }
                 }
             }
             .kugoo-navbar-middle{
-                height: 104px;
                 padding-top: 30px;
                 padding-bottom: 30px;
-                justify-content: space-between;
                 .kugoo-navbar-middle-brand{
-                    text-transform: uppercase;
-                    font-size: 30px;
-                    font-weight: 700;
-                    line-height: 44px;
+                    margin-right: 35px;
                 }
                 .kugoo-navbar-middle-catalog{
                     border: 1.5px solid $base_violet;
@@ -130,6 +109,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                     font-weight: 500;
                     font-size: 16px;
                     line-height: 23px;
+                    margin-right: 20px;
                     @extend %violet_click;
                     position: relative;
                     padding: 5px 15px 5px 40px;
@@ -177,7 +157,8 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 }
                 .kugoo-navbar-middle-search{
                     height: 40px;
-                    width: 444px;
+                    min-width: 444px;
+                    width: 100%;
                     border-radius: 15px;
                     border: 5px solid #6F73EE;
                     font-size: 14px;
@@ -186,6 +167,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                     letter-spacing: 0em;
                     text-align: left;
                     position: relative;
+                    margin-right: 47px;
                     .kugoo-navbar-middle-search-dropdown{
                         background: $base_blue;
                         border: none;
@@ -252,17 +234,30 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                         @extend %violet_click;
                     }
                 }
-
+                .kugoo-navbar-middle-link{
+                    margin-right: 27px;
+                }
+                .kugoo-navbar-middle-link:last-child{
+                    margin-right: 0;
+                }
             }
             .kugoo-navbar-bottom{
-                height: 25px;
+                height: 40px;
                 font-weight: 700;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                .kugoo-navbar-bottom-link{
+                    margin-right: 50px;
+                }
                 .kugoo-navbar-bottom-link.kugoo-navbar-bottom-link-hint{
                     &:after{
                         content: "Доступна рассрочка";
                         background: $base_violet;
-                        border-radius: 50%;
+                        border-radius: 300px;
+                        padding: 0 10px;
                         color: white;
+                        margin-left: 9px;
+                        font-weight: 500;
                     }
                 }
                 .kugoo-navbar-bottom-search-field{

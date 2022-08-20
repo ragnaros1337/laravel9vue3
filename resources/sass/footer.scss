@@ -56,31 +56,38 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
         }
         .footer-subscribe{
             height: 100px;
-            padding-top: 30px;
-            padding-bottom: 30px;
-            justify-content: space-between;
+            padding-top: 24px;
+            padding-bottom: 24px;
             align-items: center;
             .footer-subscribe-text{
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 26px;
+                text-align: left;
                 text-transform: uppercase;
                 color: white;
-                font-weight: 700;
+                margin-right: 95px;
             }
             .footer-feedback-subscribe-email-input{
                 background: #8c8ff2;
-                padding: 15px 20px;
+                height: 53px;
+                width: 410px;
+                padding: 15px 25px;
                 border-radius: 15px;
                 border: none;
                 color: white;
-                width: 300px;
+                margin-right: 95px;
                 &::placeholder{
                     color: white;
                 }
             }
             .footer-feedback-subscribe-btn{
                 @extend %violet_revert_click;
+                height: 53px;
+                width: 140px;
                 border-radius: 15px;
                 border: none;
-                padding: 15px 20px;
+                padding: 15px 25px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -95,10 +102,12 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
             }
             .footer-links-header{
                 font-weight: 700;
+                margin-bottom: 17px;
             }
             .footer-links-buyers, .footer-links-catalog{
                 .footer-links-item-link{
                     color: $text_color;
+                    margin-bottom: 10px;
                 }
             }
             .footer-links-contacts{
@@ -211,7 +220,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 .footer-payments-right{
                     display: flex;
                     justify-content: space-between;
-                    .footer-payments-right-banks, .footer-payments-right-chats{
+                    .footer-payments-right-banks{
                         display: flex;
                         flex-direction: row;
                         .footer-payments-right-bank{
@@ -220,11 +229,9 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                             border: none;
                         }
                         .footer-payments-right-chat{
-                            .footer-payments-right-chat-link{
-                                svg{
-                                    height: 20px;
-                                    width: 20px;
-                                }
+                            svg{
+                                height: 20px;
+                                width: 20px;
                             }
                         }
                     }
