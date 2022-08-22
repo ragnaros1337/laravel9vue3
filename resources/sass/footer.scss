@@ -22,6 +22,10 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 }
 
 .footer.container-fluid{
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
     padding: 0;
     position: relative;
     .footer-backgrounds{
@@ -66,7 +70,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 text-align: left;
                 text-transform: uppercase;
                 color: white;
-                margin-right: 95px;
+                margin-right: auto;
             }
             .footer-feedback-subscribe-email-input{
                 background: #8c8ff2;
@@ -76,7 +80,6 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 border-radius: 15px;
                 border: none;
                 color: white;
-                margin-right: 95px;
                 &::placeholder{
                     color: white;
                 }
@@ -91,6 +94,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                margin-left: 20px;
             }
         }
         .footer-links{

@@ -1,0 +1,143 @@
+w142
+
+bw 50 10
+
+p10
+tw
+//styleName: 14 px (medium);
+font-family: Jost;
+font-size: 14px;
+font-weight: 500;
+line-height: 20px;
+letter-spacing: 0em;
+text-align: left;
+
+td
+font-family: Jost;
+font-size: 10px;
+font-weight: 400;
+line-height: 14px;
+letter-spacing: 0em;
+text-align: left;
+
+
+payment 5 5 40
+рекв поли 44
+
+
+
+карта
+
+height: 492px;
+width: 255px;
+left: 1701px;
+top: 155px;
+border-radius: 0px;
+
+
+новинка 10о. краев
+height: 25px;
+width: 63px;
+left: 10px;
+top: 10px;
+border-radius: 5px;
+
+
+height: 25px;
+width: 63px;
+left: 10px;
+top: 10px;
+border-radius: 5px;
+
+
+4 8 p
+
+
+ellipse
+height: 25px;
+width: 63px;
+left: 10px;
+top: 10px;
+border-radius: 5px;
+35
+
+svg 20
+
+
+left 
+height: 40px;
+width: 40px;
+left: 13px;
+top: 95px;
+border-radius: 0px;
+
+
+
+main
+
+height: 492px;
+width: 255px;
+left: 0px;
+top: 0px;
+border-radius: 10px;
+
+
+
+more
+height: 231px;
+width: 255px;
+left: 0px;
+top: 0px;
+border-radius: [object Object]px;
+
+
+less
+height: 182px;
+width: 242px;
+left: 3px;
+top: 27px;
+border-radius: 0px;
+
+
+height: 26px;
+width: 130px;
+left: 24px;
+top: 251px;
+border-radius: nullpx;
+
+
+vverh 20
+left24
+
+
+down 20
+
+right 27
+
+
+circle
+height: 26px;
+width: 130px;
+left: 24px;
+top: 251px;
+border-radius: nullpx;
+border: 1.3px solid #EAEBED
+
+bw 10
+left 28
+vniz 19
+height: 37px;
+width: 206px;
+left: 24px;
+top: 435px;
+border-radius: 5px;
+padding: 10px, 20px, 10px, 20px;
+
+
+do teksr 20 16
+font-family: Jost;
+font-size: 20px;
+font-weight: 600;
+line-height: 29px;
+letter-spacing: 0em;
+text-align: left;

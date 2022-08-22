@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@fontsource/jost": "^4.5.11",
-        "bootstrap-icons": "^1.9.1",
+        "material-symbols": "^0.2.8",
         "path": "^0.12.7",
         "vuex": "^4.0.2"
     }

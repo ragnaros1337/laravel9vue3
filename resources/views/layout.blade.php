@@ -54,7 +54,7 @@
                     </div>
                     <div class="kugoo-navbar-top-right col-6">
                         <a href="tel:+78005055461" class="kugoo-navbar-top-tel">+7 (800) 5055461</a>
-                        <i class="bi bi-plus-circle"></i>
+                        <span class="material-symbols-outlined">add_circle</span>
                     </div>
                 </section>
                 <section class="kugoo-navbar-top row hidden">
@@ -84,7 +84,9 @@
                             <li class="kugoo-navbar-middle-search-dropdown-item"><a class="dropdown-item kugoo-navbar-middle-search-dropdown-item-link" href="">Separated link</a></li>
                         </ul>
                         <input type="text" class="kugoo-navbar-middle-search-field" placeholder="Искать самокат KUGO">
-                        <button class="kugoo-navbar-middle-search-btn" type="button">+</button>
+                        <button class="kugoo-navbar-middle-search-btn" type="button">
+                            <span class="material-symbols-outlined">search</span>
+                        </button>
                     </div>
                     <a href="" role="button" class="kugoo-navbar-middle-filter kugoo-navbar-middle-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="12" viewBox="0 0 20 12" fill="none">
