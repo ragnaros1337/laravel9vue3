@@ -80,10 +80,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 border-radius: 15px;
                 border: none;
                 color: white;
-<<<<<<< Updated upstream
-=======
                 margin-left: auto;
->>>>>>> Stashed changes
                 &::placeholder{
                     color: white;
                 }
@@ -98,12 +95,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 display: flex;
                 justify-content: center;
                 align-items: center;
-<<<<<<< Updated upstream
                 margin-left: 20px;
-=======
-                //see
-                margin-left: 95px;
->>>>>>> Stashed changes
             }
         }
         .footer-links{

@@ -19,5 +19,5 @@ Route::get('/', function () {
     return view('index');
 });
 Route::get('/a', function () {
-    return DB::table('kugoo_samokats')->exists();
+    return view('test');
 });
