@@ -1,42 +1,44 @@
-git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
+# Laravel Socialite
 
----
-
-# Пакет Laravel Socialite
-
-- [Введение](#introduction)
-- [Установка](#installation)
-    - [Обновление пакета Socialite](#upgrading-socialite)
-- [Конфигурирование](#configuration)
-- [Аутентификация](#authentication)
-    - [Маршрутизация](#routing)
-    - [Необязательные параметры](#optional-parameters)
-    - [Права доступа](#access-scopes)
-- [Получение сведений о пользователе](#retrieving-user-details)
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Upgrading Socialite](#upgrading-socialite)
+- [Configuration](#configuration)
+- [Authentication](#authentication)
+    - [Routing](#routing)
+    - [Authentication & Storage](#authentication-and-storage)
+    - [Access Scopes](#access-scopes)
+    - [Optional Parameters](#optional-parameters)
+- [Retrieving User Details](#retrieving-user-details)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Помимо типичной аутентификации на основе форм, Laravel также предлагает простой и удобный способ аутентификации через провайдеров OAuth с помощью [Laravel Socialite](https://github.com/laravel/socialite). Socialite в настоящее время поддерживает аутентификацию через Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, и Bitbucket.
+In addition to typical, form based authentication, Laravel also provides a simple, convenient way to authenticate with OAuth providers using [Laravel Socialite](https://github.com/laravel/socialite). Socialite currently supports authentication via Facebook, Twitter, LinkedIn, Google, GitHub, GitLab, and Bitbucket.
 
-> {tip} Адаптеры для других платформ перечислены на веб-сайте [Socialite Providers](https://socialiteproviders.com/), управляемом сообществом.
+> **Note**  
+> Adapters for other platforms are available via the community driven [Socialite Providers](https://socialiteproviders.com/) website.
 
 <a name="installation"></a>
-## Установка
+## Installation
 
-Чтобы начать работу с Socialite, используйте менеджер пакетов Composer, чтобы добавить пакет в зависимости вашего проекта:
+To get started with Socialite, use the Composer package manager to add the package to your project's dependencies:
 
-    composer require laravel/socialite
+```shell
+composer require laravel/socialite
+```
 
 <a name="upgrading-socialite"></a>
-### Обновление пакета Socialite
+## Upgrading Socialite
 
-При обновлении Socialite важно внимательно изучить [руководство по обновлению](https://github.com/laravel/socialite/blob/master/UPGRADE).
+When upgrading to a new major version of Socialite, it's important that you carefully review [the upgrade guide](https://github.com/laravel/socialite/blob/master/UPGRADE.md).
 
 <a name="configuration"></a>
-## Конфигурирование
+## Configuration
 
-Перед использованием Socialite вам нужно будет добавить учетные данные для провайдеров OAuth, которые использует ваше приложение. Эти учетные данные должны быть размещены в файле конфигурации вашего приложения `config/services.php` и должны использовать ключ `facebook`, `twitter`, `linkedin`, `google`, `github`, `gitlab`, или `bitbucket`, в зависимости от провайдеров, которые требуются вашему приложению:
+Before using Socialite, you will need to add credentials for the OAuth providers your application utilizes. Typically, these credentials may be retrieved by creating a "developer application" within the dashboard of the service you will be authenticating with.
+
+These credentials should be placed in your application's `config/services.php` configuration file, and should use the key `facebook`, `twitter` (OAuth 1.0), `twitter-oauth-2` (OAuth 2.0), `linkedin`, `google`, `github`, `gitlab`, or `bitbucket`, depending on the providers your application requires:
 
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),
@@ -44,15 +46,16 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
         'redirect' => 'http://example.com/callback-url',
     ],
 
-> {tip} Если параметр `redirect` содержит относительный путь, то он будет автоматически преобразован в абсолютный URL.
+> **Note**  
+> If the `redirect` option contains a relative path, it will automatically be resolved to a fully qualified URL.
 
 <a name="authentication"></a>
-## Аутентификация
+## Authentication
 
 <a name="routing"></a>
-### Маршрутизация
+### Routing
 
-Для аутентификации пользователей с помощью провайдера OAuth вам понадобятся два маршрута: один для перенаправления пользователя к провайдеру OAuth, а другой для получения обратного вызова от провайдера после аутентификации. Пример контроллера ниже демонстрирует реализацию обоих маршрутов:
+To authenticate users using an OAuth provider, you will need two routes: one for redirecting the user to the OAuth provider, and another for receiving the callback from the provider after authentication. The example routes below demonstrate the implementation of both routes:
 
     use Laravel\Socialite\Facades\Socialite;
 
@@ -66,25 +69,41 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
         // $user->token
     });
 
-Метод `redirect` фасада `Socialite`, отвечает за перенаправление пользователя к провайдеру OAuth, в то время как метод `user` обрабатывает входящий запрос и получает информацию о пользователе от провайдера после его аутентификации.
+The `redirect` method provided by the `Socialite` facade takes care of redirecting the user to the OAuth provider, while the `user` method will examine the incoming request and retrieve the user's information from the provider after they have approved the authentication request.
 
-<a name="optional-parameters"></a>
-### Необязательные параметры
+<a name="authentication-and-storage"></a>
+### Authentication & Storage
 
-Некоторые провайдеры OAuth поддерживают необязательные параметры в запросе перенаправления. Чтобы включить в запрос любые необязательные параметры, вызовите метод `with` с ассоциативным массивом:
+Once the user has been retrieved from the OAuth provider, you may determine if the user exists in your application's database and [authenticate the user](/docs/{{version}}/authentication#authenticate-a-user-instance). If the user does not exist in your application's database, you will typically create a new record in your database to represent the user:
 
+    use App\Models\User;
+    use Illuminate\Support\Facades\Auth;
     use Laravel\Socialite\Facades\Socialite;
 
-    return Socialite::driver('google')
-        ->with(['hd' => 'example.com'])
-        ->redirect();
+    Route::get('/auth/callback', function () {
+        $githubUser = Socialite::driver('github')->user();
 
-> {note} При использовании метода `with` будьте осторожны, чтобы не передавать какие-либо зарезервированные ключевые слова, такие как `state` или `response_type`.
+        $user = User::updateOrCreate([
+            'github_id' => $githubUser->id,
+        ], [
+            'name' => $githubUser->name,
+            'email' => $githubUser->email,
+            'github_token' => $githubUser->token,
+            'github_refresh_token' => $githubUser->refreshToken,
+        ]);
+
+        Auth::login($user);
+
+        return redirect('/dashboard');
+    });
+
+> **Note**  
+> For more information regarding what user information is available from specific OAuth providers, please consult the documentation on [retrieving user details](#retrieving-user-details).
 
 <a name="access-scopes"></a>
-### Права доступа
+### Access Scopes
 
-Перед перенаправлением пользователя вы также можете добавить дополнительные «права» к запросу аутентификации, используя метод `scopes`. Этот метод объединит все существующие права с указанными:
+Before redirecting the user, you may use the `scopes` method to specify the "scopes" that should be included in the authentication request. This method will merge all previously specified scopes with the scopes that you specify:
 
     use Laravel\Socialite\Facades\Socialite;
 
@@ -92,30 +111,48 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
         ->scopes(['read:user', 'public_repo'])
         ->redirect();
 
-Вы можете перезаписать все существующие права в запросе аутентификации, используя метод `setScopes`:
+You can overwrite all existing scopes on the authentication request using the `setScopes` method:
 
     return Socialite::driver('github')
         ->setScopes(['read:user', 'public_repo'])
         ->redirect();
 
-<a name="retrieving-user-details"></a>
-## Получение сведений о пользователе
+<a name="optional-parameters"></a>
+### Optional Parameters
 
-После того, как пользователь будет перенаправлен обратно на ваш маршрут `callback` аутентификации, вы можете получить данные пользователя, используя метод `user` пакета Socialite. Объект пользователя, возвращаемый методом `user`, содержит множество свойств и методов, которые вы можете использовать для сохранения информации о пользователе в вашей собственной базе данных. Различные свойства и методы могут быть доступны в зависимости от версии провайдера OAuth, с которым вы выполняете аутентификацию, OAuth 1.0 или OAuth 2.0:
+A number of OAuth providers support other optional parameters on the redirect request. To include any optional parameters in the request, call the `with` method with an associative array:
+
+    use Laravel\Socialite\Facades\Socialite;
+
+    return Socialite::driver('google')
+        ->with(['hd' => 'example.com'])
+        ->redirect();
+
+> **Warning**  
+> When using the `with` method, be careful not to pass any reserved keywords such as `state` or `response_type`.
+
+<a name="retrieving-user-details"></a>
+## Retrieving User Details
+
+After the user is redirected back to your application's authentication callback route, you may retrieve the user's details using Socialite's `user` method. The user object returned by the `user` method provides a variety of properties and methods you may use to store information about the user in your own database.
+
+Differing properties and methods may be available on this object depending on whether the OAuth provider you are authenticating with supports OAuth 1.0 or OAuth 2.0:
+
+    use Laravel\Socialite\Facades\Socialite;
 
     Route::get('/auth/callback', function () {
         $user = Socialite::driver('github')->user();
 
-        // Провайдер OAuth 2.0 ...
+        // OAuth 2.0 providers...
         $token = $user->token;
         $refreshToken = $user->refreshToken;
         $expiresIn = $user->expiresIn;
 
-        // Провайдер OAuth 1.0 ...
+        // OAuth 1.0 providers...
         $token = $user->token;
         $tokenSecret = $user->tokenSecret;
 
-        // Все провайдеры ...
+        // All providers...
         $user->getId();
         $user->getNickname();
         $user->getName();
@@ -124,30 +161,31 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     });
 
 <a name="retrieving-user-details-from-a-token-oauth2"></a>
-#### Получение сведений о пользователе из токена (OAuth2)
+#### Retrieving User Details From A Token (OAuth2)
 
-Если у вас уже есть действительный токен доступа пользователя, то вы можете получить его данные с помощью метода `userFromToken` пакета Socialite:
+If you already have a valid access token for a user, you can retrieve their user details using Socialite's `userFromToken` method:
 
     use Laravel\Socialite\Facades\Socialite;
 
     $user = Socialite::driver('github')->userFromToken($token);
 
 <a name="retrieving-user-details-from-a-token-and-secret-oauth1"></a>
-#### Получение сведений о пользователе из токена и секретного ключа (OAuth1)
+#### Retrieving User Details From A Token And Secret (OAuth1)
 
-Если у вас уже есть действительный токен и секретный ключ пользователя, то вы можете получить его данные с помощью метода `userFromTokenAndSecret` пакета Socialite:
+If you already have a valid token and secret for a user, you can retrieve their user details using Socialite's `userFromTokenAndSecret` method:
 
     use Laravel\Socialite\Facades\Socialite;
 
     $user = Socialite::driver('twitter')->userFromTokenAndSecret($token, $secret);
 
 <a name="stateless-authentication"></a>
-#### Аутентификация без сохранения состояния
+#### Stateless Authentication
 
-Метод `stateless` используется для отключения проверки состояния сессии. Это полезно при добавлении социальной аутентификации в API:
+The `stateless` method may be used to disable session state verification. This is useful when adding social authentication to a stateless API that does not utilize cookie based sessions:
 
     use Laravel\Socialite\Facades\Socialite;
 
     return Socialite::driver('google')->stateless()->user();
 
-> {note} Аутентификация без сохранения состояния недоступна для драйвера `twitter`, который использует OAuth 1.0 для аутентификации.
+> **Warning**  
+> Stateless authentication is not available for the Twitter OAuth 1.0 driver.
