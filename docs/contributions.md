@@ -1,107 +1,105 @@
-git f1c4847b9196b1bdaa51629b16bcd4c82d5ebf78
+# Contribution Guide
 
----
-
-# Рекомендации по участию
-
-- [Рекомендации по участию](#рекомендации-по-участию)
-  - [Отчеты об ошибках](#отчеты-об-ошибках)
-  - [Вопросы поддержки](#вопросы-поддержки)
-  - [Обсуждение разработки ядра](#обсуждение-разработки-ядра)
-  - [Какую ветку выбрать при запросах слияния?](#какую-ветку-выбрать-при-запросах-слияния)
-  - [Скомпилированные ресурсы исходников](#скомпилированные-ресурсы-исходников)
-  - [Уязвимости безопасности](#уязвимости-безопасности)
-  - [Стиль кодирования](#стиль-кодирования)
+- [Bug Reports](#bug-reports)
+- [Support Questions](#support-questions)
+- [Core Development Discussion](#core-development-discussion)
+- [Which Branch?](#which-branch)
+- [Compiled Assets](#compiled-assets)
+- [Security Vulnerabilities](#security-vulnerabilities)
+- [Coding Style](#coding-style)
     - [PHPDoc](#phpdoc)
     - [StyleCI](#styleci)
-  - [Нормы поведения](#нормы-поведения)
+- [Code of Conduct](#code-of-conduct)
 
 <a name="bug-reports"></a>
-## Отчеты об ошибках
+## Bug Reports
 
-Чтобы стимулировать активное сотрудничество, Laravel настоятельно рекомендует запросы на слияние, а не только отчеты об ошибках. «Отчеты об ошибках» также могут быть отправлены в форме запроса на слияние, но содержащего тест с воспроизведением ошибки.
+To encourage active collaboration, Laravel strongly encourages pull requests, not just bug reports. Pull requests will only be reviewed when marked as "ready for review" (not in the "draft" state) and all tests for new features are passing. Lingering, non-active pull requests left in the "draft" state will be closed after a few days.
 
-Однако, если вы отправляете отчет об ошибке, ваш тикет о проблеме должен содержать заголовок и четкое описание проблемы. Вы также должны включить как можно больше релевантной информации и образец кода, демонстрирующий проблему. Цель отчета об ошибке – упростить для вас и окружающих воспроизведение ошибки и разработать исправления.
+However, if you file a bug report, your issue should contain a title and a clear description of the issue. You should also include as much relevant information as possible and a code sample that demonstrates the issue. The goal of a bug report is to make it easy for yourself - and others - to replicate the bug and develop a fix.
 
-Помните, отчеты об ошибках создаются в надежде, что другие с той же проблемой смогут сотрудничать с вами при ее решении. Не ожидайте, что отчет об ошибке автоматически сподвигнет на какие-либо действия или что другие будут прыгать, чтобы исправить ее. Создание отчета об ошибке поможет вам и другим начать работу по устранению проблемы. Если хотите внести свой вклад, то вы можете помочь, исправив [любые ошибки, перечисленные в нашем трекере тикетов ошибок](https://github.com/issues?q=is%3Aopen+is%3Aissue+label%3Abug+user%3Alaravel). Вы должны пройти аутентификацию в GitHub, чтобы просмотреть все проблемы Laravel.
+Remember, bug reports are created in the hope that others with the same problem will be able to collaborate with you on solving it. Do not expect that the bug report will automatically see any activity or that others will jump to fix it. Creating a bug report serves to help yourself and others start on the path of fixing the problem. If you want to chip in, you can help out by fixing [any bugs listed in our issue trackers](https://github.com/issues?q=is%3Aopen+is%3Aissue+label%3Abug+user%3Alaravel). You must be authenticated with GitHub to view all of Laravel's issues.
 
-В управлении исходным кодом Laravel используется GitHub, и для каждого проекта есть репозитории:
+The Laravel source code is managed on GitHub, and there are repositories for each of the Laravel projects:
 
-<!-- <div class="content-list" markdown="1"> -->
-- [Приложение Laravel](https://github.com/laravel/laravel)
-- [Логотипы Laravel](https://github.com/laravel/art)
-- [Документация Laravel](https://github.com/laravel/docs)
-- [Пакет Laravel Dusk](https://github.com/laravel/dusk)
-- [Пакет Laravel Cashier Stripe](https://github.com/laravel/cashier)
-- [Пакет Laravel Cashier Paddle](https://github.com/laravel/cashier-paddle)
-- [Пакет Laravel Echo](https://github.com/laravel/echo)
-- [Пакет Laravel Envoy](https://github.com/laravel/envoy)
-- [Фреймворк Laravel](https://github.com/laravel/framework)
-- [Пакет Laravel Homestead](https://github.com/laravel/homestead)
-- [Скрипты для сборки Laravel Homestead](https://github.com/laravel/settler)
-- [Пакет Laravel Horizon](https://github.com/laravel/horizon)
-- [Пакет Laravel Jetstream](https://github.com/laravel/jetstream)
-- [Пакет Laravel Passport](https://github.com/laravel/passport)
-- [Пакет Laravel Sail](https://github.com/laravel/sail)
-- [Пакет Laravel Sanctum](https://github.com/laravel/sanctum)
-- [Пакет Laravel Scout](https://github.com/laravel/scout)
-- [Пакет Laravel Socialite](https://github.com/laravel/socialite)
-- [Пакет Laravel Telescope](https://github.com/laravel/telescope)
-- [Исходики официального сайта Laravel](https://github.com/laravel/laravel.com-next)
-<!-- </div> -->
+<div class="content-list" markdown="1">
+
+- [Laravel Application](https://github.com/laravel/laravel)
+- [Laravel Art](https://github.com/laravel/art)
+- [Laravel Documentation](https://github.com/laravel/docs)
+- [Laravel Dusk](https://github.com/laravel/dusk)
+- [Laravel Cashier Stripe](https://github.com/laravel/cashier)
+- [Laravel Cashier Paddle](https://github.com/laravel/cashier-paddle)
+- [Laravel Echo](https://github.com/laravel/echo)
+- [Laravel Envoy](https://github.com/laravel/envoy)
+- [Laravel Framework](https://github.com/laravel/framework)
+- [Laravel Homestead](https://github.com/laravel/homestead)
+- [Laravel Homestead Build Scripts](https://github.com/laravel/settler)
+- [Laravel Horizon](https://github.com/laravel/horizon)
+- [Laravel Jetstream](https://github.com/laravel/jetstream)
+- [Laravel Passport](https://github.com/laravel/passport)
+- [Laravel Pint](https://github.com/laravel/pint)
+- [Laravel Sail](https://github.com/laravel/sail)
+- [Laravel Sanctum](https://github.com/laravel/sanctum)
+- [Laravel Scout](https://github.com/laravel/scout)
+- [Laravel Socialite](https://github.com/laravel/socialite)
+- [Laravel Telescope](https://github.com/laravel/telescope)
+- [Laravel Website](https://github.com/laravel/laravel.com-next)
+
+</div>
 
 <a name="support-questions"></a>
-## Вопросы поддержки
+## Support Questions
 
-Трекеры с тикетами проблем Laravel на GitHub не предназначены для предоставления помощи или поддержки Laravel. Вместо этого используйте один из следующих каналов:
+Laravel's GitHub issue trackers are not intended to provide Laravel help or support. Instead, use one of the following channels:
 
-<!-- <div class="content-list" markdown="1"> -->
-- [Обсуждения на GitHub](https://github.com/laravel/framework/discussions)
-- [Форум Laracasts](https://laracasts.com/discuss)
-- [Форум Laravel.io](https://laravel.io/forum)
+<div class="content-list" markdown="1">
+
+- [GitHub Discussions](https://github.com/laravel/framework/discussions)
+- [Laracasts Forums](https://laracasts.com/discuss)
+- [Laravel.io Forums](https://laravel.io/forum)
 - [StackOverflow](https://stackoverflow.com/questions/tagged/laravel)
-- [Discord](https://discordapp.com/invite/KxwQuKb)
+- [Discord](https://discord.gg/laravel)
 - [Larachat](https://larachat.co)
-- [IRC](https://webchat.freenode.net/?nick=artisan&channels=%23laravel&prompt=1)
-<!-- </div> -->
+- [IRC](https://web.libera.chat/?nick=artisan&channels=#laravel)
+
+</div>
 
 <a name="core-development-discussion"></a>
-## Обсуждение разработки ядра
+## Core Development Discussion
 
-Вы можете предлагать новый функционал или улучшения к уже существующему поведению на [доске](https://github.com/laravel/ideas/issues) Laravel Ideas. Если вы предлагаете новый функционал, то пожалуйста, будьте готовы реализовать по крайней мере часть кода, который потребуется для его завершения.
+You may propose new features or improvements of existing Laravel behavior in the Laravel framework repository's [GitHub discussion board](https://github.com/laravel/framework/discussions). If you propose a new feature, please be willing to implement at least some of the code that would be needed to complete the feature.
 
-Неформальное обсуждение ошибок, нового функционала и реализаций существующего происходит на канале `#internals` сервера [Laravel Discord](https://discordapp.com/invite/mPZNm7A). Тейлор Отвелл, сопровождающий Laravel, обычно присутствует на канале в будние дни с 8:00 до 17:00 (UTC-06:00 или Америка / Чикаго) и от случая к случаю – в остальное время.
+Informal discussion regarding bugs, new features, and implementation of existing features takes place in the `#internals` channel of the [Laravel Discord server](https://discord.gg/laravel). Taylor Otwell, the maintainer of Laravel, is typically present in the channel on weekdays from 8am-5pm (UTC-06:00 or America/Chicago), and sporadically present in the channel at other times.
 
 <a name="which-branch"></a>
-## Какую ветку выбрать при запросах слияния?
+## Which Branch?
 
-**Все** исправления ошибок следует отправлять в последнюю стабильную ветку или в [текущую ветку LTS](/docs/{{version}}/releases#support-policy). Исправления ошибок **никогда** не следует отправлять в ветку `master`, если они не исправляют функционал, которой присутствует только в следующем релизе.
+**All** bug fixes should be sent to the latest version that supports bug fixes (currently `9.x`). Bug fixes should **never** be sent to the `master` branch unless they fix features that exist only in the upcoming release.
 
-**Минорный** функционал, **полностью обратно совместимый** с текущим релизом, может быть отправлен в последнюю стабильную ветку.
+**Minor** features that are **fully backward compatible** with the current release may be sent to the latest stable branch (currently `9.x`).
 
-**Мажорный** новый функционал всегда следует отправлять в ветку `master`, содержащую предстоящий релиз.
-
-Если вы не уверены, квалифицируется ли ваш функционал как мажорный или минорный, то спросите Тейлора Отвелла на канале `#internals` сервера [Laravel Discord](https://discordapp.com/invite/mPZNm7A).
+**Major** new features or features with breaking changes should always be sent to the `master` branch, which contains the upcoming release.
 
 <a name="compiled-assets"></a>
-## Скомпилированные ресурсы исходников
+## Compiled Assets
 
-Если вы отправляете изменение, которое повлияет на скомпилированные файлы, например, касательно файлов в `resources/css` или` resources/js` репозитория `laravel/laravel`, то не включайте в коммит эти скомпилированные файлы. Из-за большого размера они не могут быть реально рассмотрены сопровождающим. Это может быть использовано как способ внедрения вредоносного кода в Laravel. Чтобы предотвратить это, все скомпилированные файлы будут сгенерированы и включены в коммит сопровождающими Laravel.
+If you are submitting a change that will affect a compiled file, such as most of the files in `resources/css` or `resources/js` of the `laravel/laravel` repository, do not commit the compiled files. Due to their large size, they cannot realistically be reviewed by a maintainer. This could be exploited as a way to inject malicious code into Laravel. In order to defensively prevent this, all compiled files will be generated and committed by Laravel maintainers.
 
 <a name="security-vulnerabilities"></a>
-## Уязвимости безопасности
+## Security Vulnerabilities
 
-Если вы обнаружите уязвимость в системе безопасности Laravel, отправьте электронное письмо Тейлору Отвеллу по адресу <a href="mailto:taylor@laravel.com">taylor@laravel.com</a>. Все уязвимости безопасности будут незамедлительно устранены.
+If you discover a security vulnerability within Laravel, please send an email to Taylor Otwell at <a href="mailto:taylor@laravel.com">taylor@laravel.com</a>. All security vulnerabilities will be promptly addressed.
 
 <a name="coding-style"></a>
-## Стиль кодирования
+## Coding Style
 
-Laravel следует стандарту кодирования [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide) и стандарту автозагрузки [PSR- 4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader).
+Laravel follows the [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) coding standard and the [PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) autoloading standard.
 
 <a name="phpdoc"></a>
 ### PHPDoc
 
-Ниже приведен пример валидного блока документации Laravel. Обратите внимание, что за атрибутом `@param` идут два пробела, тип аргумента, еще два пробела и, наконец, имя переменной:
+Below is an example of a valid Laravel documentation block. Note that the `@param` attribute is followed by two spaces, the argument type, two more spaces, and finally the variable name:
 
     /**
      * Register a binding with the container.
@@ -121,16 +119,18 @@ Laravel следует стандарту кодирования [PSR-2](https:/
 <a name="styleci"></a>
 ### StyleCI
 
-Не волнуйтесь, если стиль вашего кода не идеален! [StyleCI](https://styleci.io/) автоматически объединит любые исправления стиля после слияния вашего запроса с репозиторием Laravel. Это позволяет нам сосредоточиться на содержании вашего вклада, а не на стиле кода.
+Don't worry if your code styling isn't perfect! [StyleCI](https://styleci.io/) will automatically merge any style fixes into the Laravel repository after pull requests are merged. This allows us to focus on the content of the contribution and not the code style.
 
 <a name="code-of-conduct"></a>
-## Нормы поведения
+## Code of Conduct
 
-Кодекс поведения Laravel основан на кодексе поведения Ruby. О любых нарушениях кодекса поведения можно сообщить Тейлору Отвеллу (taylor@laravel.com):
+The Laravel code of conduct is derived from the Ruby code of conduct. Any violations of the code of conduct may be reported to Taylor Otwell (taylor@laravel.com):
 
-<!-- <div class="content-list" markdown="1"> -->
-- Участники будут терпимо относиться к противоположным взглядам.
-- Участники должны гарантировать, что их язык и действия не содержат личных нападок и пренебрежительных личных замечаний.
-- Толкуя слова и действия других, участники всегда должны исходить из добрых намерений.
-- Не допускается поведение, которое можно обоснованно считать преследованием.
-<!-- </div> -->
+<div class="content-list" markdown="1">
+
+- Participants will be tolerant of opposing views.
+- Participants must ensure that their language and actions are free of personal attacks and disparaging personal remarks.
+- When interpreting the words and actions of others, participants should always assume good intentions.
+- Behavior that can be reasonably considered harassment will not be tolerated.
+
+</div>
