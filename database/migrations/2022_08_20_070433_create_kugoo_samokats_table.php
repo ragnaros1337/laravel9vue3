@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('kugoo_samokats', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->smallInteger('сapacity');
+            $table->smallInteger('capacity');
             $table->float('power');
 			$table->smallInteger('speed');
 			$table->smallInteger('hours');

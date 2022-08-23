@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class KugooSamokat extends Model
 {
     use HasFactory;
+
+	protected $fillable = [
+            'name',
+            'сapacity',
+			'power',
+			'speed',
+			'hours',
+			'price',
+			'discount_price'
+	];
 }

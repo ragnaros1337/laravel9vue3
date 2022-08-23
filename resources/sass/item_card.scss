@@ -1,0 +1,54 @@
+.item-card-container{
+    height: 490px;
+    width: 255px;
+    border: none;
+    border-radius: 10px;
+    .item-card-carousel{
+        height: 100px;
+        position: relative;
+        .item-card-carousel-mask{
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            .new{
+                padding: 10px;
+                height: 25px;
+                width: 85px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #839583;
+                color: white;
+            }
+            .filter{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background: grey;
+            }
+        }
+    }
+    .item-card-description{
+        .item-card-description-title{
+
+        }
+        .item-card-description-info{
+
+        }
+        .item-card-description-price{
+
+        }
+    }
+    .item-card-btn{
+
+    }
+}
