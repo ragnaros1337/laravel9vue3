@@ -1,52 +1,53 @@
-git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
+# Eloquent: API Resources
 
----
-
-# Eloquent · Ресурсы API (Resource)
-
-- [Введение](#introduction)
-- [Генерация ресурсов](#generating-resources)
-- [Обзор концепции](#concept-overview)
-    - [Коллекции ресурса](#resource-collections)
-- [Написание ресурсов](#writing-resources)
-    - [Обертывание данных](#data-wrapping)
-    - [Постраничная разбивка](#pagination)
-    - [Условные атрибуты](#conditional-attributes)
-    - [Условные отношения](#conditional-relationships)
-    - [Добавление метаданных](#adding-meta-data)
-- [Ответы ресурса](#resource-responses)
+- [Introduction](#introduction)
+- [Generating Resources](#generating-resources)
+- [Concept Overview](#concept-overview)
+    - [Resource Collections](#resource-collections)
+- [Writing Resources](#writing-resources)
+    - [Data Wrapping](#data-wrapping)
+    - [Pagination](#pagination)
+    - [Conditional Attributes](#conditional-attributes)
+    - [Conditional Relationships](#conditional-relationships)
+    - [Adding Meta Data](#adding-meta-data)
+- [Resource Responses](#resource-responses)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-При создании API вам может потребоваться слой преобразования, который находится между вашими моделями Eloquent и ответами JSON, которые фактически возвращаются пользователям вашего приложения. Например, бывает необходимо отображать определенные атрибуты только для некоторого сегмента пользователей, а не для всех, или бывает необходимо всегда отображать определенные отношения в JSON-представление ваших моделей. Классы ресурсов Eloquent позволяют легко и выразительно преобразовывать модели и коллекции моделей в JSON.
+When building an API, you may need a transformation layer that sits between your Eloquent models and the JSON responses that are actually returned to your application's users. For example, you may wish to display certain attributes for a subset of users and not others, or you may wish to always include certain relationships in the JSON representation of your models. Eloquent's resource classes allow you to expressively and easily transform your models and model collections into JSON.
 
-Конечно, вы всегда можете преобразовать модели или коллекции Eloquent в JSON, используя их методы `toJson`; однако ресурсы Eloquent обеспечивают более детальный и надежный контроль над сериализацией в JSON ваших моделей и их отношений.
+Of course, you may always convert Eloquent models or collections to JSON using their `toJson` methods; however, Eloquent resources provide more granular and robust control over the JSON serialization of your models and their relationships.
 
 <a name="generating-resources"></a>
-## Генерация ресурсов
+## Generating Resources
 
-Ресурсы расширяют класс `Illuminate\Http\Resources\Json\JsonResource`. Чтобы сгенерировать новый ресурс, используйте команду `make:resource` [Artisan](artisan). Эта команда поместит новый класс ресурса в каталог `app/Http/Resources` вашего приложения:
+To generate a resource class, you may use the `make:resource` Artisan command. By default, resources will be placed in the `app/Http/Resources` directory of your application. Resources extend the `Illuminate\Http\Resources\Json\JsonResource` class:
 
-    php artisan make:resource UserResource
+```shell
+php artisan make:resource UserResource
+```
 
 <a name="generating-resource-collections"></a>
-#### Генерация коллекций ресурса
+#### Resource Collections
 
-Помимо создания ресурсов, преобразующих отдельные модели, вы можете создавать ресурсы, отвечающие за преобразование коллекций моделей. Это позволяет вашим ответам JSON включать ссылки и другую метаинформацию, имеющую отношение ко всей коллекции конкретного ресурса.
+In addition to generating resources that transform individual models, you may generate resources that are responsible for transforming collections of models. This allows your JSON responses to include links and other meta information that is relevant to an entire collection of a given resource.
 
-Чтобы сгенерировать новую коллекцию ресурса, вы должны использовать флаг `--collection` при создании ресурса. Или включение слова `Collection` в имя ресурса укажет Laravel, что он должен создать коллекцию ресурса. Коллекции ресурса расширяют класс `Illuminate\Http\Resources\Json\ResourceCollection`:
+To create a resource collection, you should use the `--collection` flag when creating the resource. Or, including the word `Collection` in the resource name will indicate to Laravel that it should create a collection resource. Collection resources extend the `Illuminate\Http\Resources\Json\ResourceCollection` class:
 
-    php artisan make:resource User --collection
+```shell
+php artisan make:resource User --collection
 
-    php artisan make:resource UserCollection
+php artisan make:resource UserCollection
+```
 
 <a name="concept-overview"></a>
-## Обзор концепции
+## Concept Overview
 
-> {tip} Это лишь общий обзор ресурсов и коллекций ресурса. Мы настоятельно рекомендуем вам прочитать другие разделы этой документации, чтобы получить более глубокое понимание возможностей создания и настройки ресурса, предлагаемые вам.
+> **Note**  
+> This is a high-level overview of resources and resource collections. You are highly encouraged to read the other sections of this documentation to gain a deeper understanding of the customization and power offered to you by resources.
 
-Прежде чем углубляться во все варианты, доступные вам при написании ресурсов, давайте сначала рассмотрим, как ресурсы используются в Laravel. Класс ресурсов представляет собой единую модель, которую необходимо преобразовать в структуру JSON. Например, вот простой класс ресурса `UserResource`:
+Before diving into all of the options available to you when writing resources, let's first take a high-level look at how resources are used within Laravel. A resource class represents a single model that needs to be transformed into a JSON structure. For example, here is a simple `UserResource` resource class:
 
     <?php
 
@@ -57,7 +58,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserResource extends JsonResource
     {
         /**
-         * Преобразовать ресурс в массив.
+         * Transform the resource into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -74,9 +75,9 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
     }
 
-Каждый класс ресурсов определяет метод `toArray`, который возвращает массив атрибутов, которые должны быть преобразованы в JSON, когда ресурс возвращается в качестве ответа из метода маршрута или контроллера.
+Every resource class defines a `toArray` method which returns the array of attributes that should be converted to JSON when the resource is returned as a response from a route or controller method.
 
-Обратите внимание, что мы можем получить доступ к свойствам модели непосредственно из переменной `$this`. Это связано с тем, что класс ресурсов автоматически проксирует свойства и методы к базовой модели для удобства доступа. Как только ресурс определен, он может быть возвращен из маршрута или контроллера. Ресурс принимает основной экземпляр модели через свой конструктор:
+Note that we can access model properties directly from the `$this` variable. This is because a resource class will automatically proxy property and method access down to the underlying model for convenient access. Once the resource is defined, it may be returned from a route or controller. The resource accepts the underlying model instance via its constructor:
 
     use App\Http\Resources\UserResource;
     use App\Models\User;
@@ -86,9 +87,9 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     });
 
 <a name="resource-collections"></a>
-### Коллекции ресурса
+### Resource Collections
 
-Если вы возвращаете коллекцию ресурса или ответ с постраничной разбивкой, то вы должны использовать метод `collection` класса ресурса, при создании экземпляра ресурса в вашем маршруте или контроллере:
+If you are returning a collection of resources or a paginated response, you should use the `collection` method provided by your resource class when creating the resource instance in your route or controller:
 
     use App\Http\Resources\UserResource;
     use App\Models\User;
@@ -97,11 +98,13 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         return UserResource::collection(User::all());
     });
 
-Обратите внимание, что это не позволит добавить пользовательские метаданные, которые могут потребоваться при возвращении с вашей коллекцией. Если вы хотите получить больший контроль над ответом коллекции ресурса, то вы можете создать выделенный ресурс для представления коллекции:
+Note that this does not allow any addition of custom meta data that may need to be returned with your collection. If you would like to customize the resource collection response, you may create a dedicated resource to represent the collection:
 
-    php artisan make:resource UserCollection
+```shell
+php artisan make:resource UserCollection
+```
 
-После создания класса коллекции ресурса, вы можете легко определить любые метаданные, которые должны быть включены в ответ:
+Once the resource collection class has been generated, you may easily define any meta data that should be included with the response:
 
     <?php
 
@@ -112,7 +115,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserCollection extends ResourceCollection
     {
         /**
-         * Преобразовать коллекцию ресурса в массив.
+         * Transform the resource collection into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -128,7 +131,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
     }
 
-После определения вашей коллекции ресурса, ее можно вернуть из маршрута или контроллера:
+After defining your resource collection, it may be returned from a route or controller:
 
     use App\Http\Resources\UserCollection;
     use App\Models\User;
@@ -138,9 +141,9 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     });
 
 <a name="preserving-collection-keys"></a>
-#### Сохранение ключей коллекции
+#### Preserving Collection Keys
 
-При возврате коллекции ресурсов из маршрута, Laravel сбрасывает ключи коллекции для расположения их в числовом порядке. Однако, вы можете добавить свойство `$preserveKeys` в свой класс ресурса, указывающее, должны ли сохраняться исходные ключи коллекции:
+When returning a resource collection from a route, Laravel resets the collection's keys so that they are in numerical order. However, you may add a `preserveKeys` property to your resource class indicating whether a collection's original keys should be preserved:
 
     <?php
 
@@ -151,14 +154,14 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserResource extends JsonResource
     {
         /**
-         * Указывает, следует ли сохранить ключи коллекции ресурса.
+         * Indicates if the resource's collection keys should be preserved.
          *
          * @var bool
          */
         public $preserveKeys = true;
     }
 
-Когда для свойства `$preserveKeys` установлено значение `true`, ключи коллекции будут сохранены, когда коллекция будет возвращена из маршрута или контроллера:
+When the `preserveKeys` property is set to `true`, collection keys will be preserved when the collection is returned from a route or controller:
 
     use App\Http\Resources\UserResource;
     use App\Models\User;
@@ -168,11 +171,11 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     });
 
 <a name="customizing-the-underlying-resource-class"></a>
-#### Настройка базового класса ресурсов
+#### Customizing The Underlying Resource Class
 
-Обычно свойство `$this->collection` коллекции ресурса автоматически заполняется результатом сопоставления каждого элемента коллекции с его единственным классом ресурсов. Предполагается, что единственным классом ресурса является имя класса коллекции без завершающей части `Collection`. Кроме того, в зависимости от личных предпочтений, класс ресурсов в единственном числе может иметь суффикс `Resource`, а может и не иметь его.
+Typically, the `$this->collection` property of a resource collection is automatically populated with the result of mapping each item of the collection to its singular resource class. The singular resource class is assumed to be the collection's class name without the trailing `Collection` portion of the class name. In addition, depending on your personal preference, the singular resource class may or may not be suffixed with `Resource`.
 
-Например, `UserCollection` попытается сопоставить переданные экземпляры пользователя с ресурсом `UserResource`. Чтобы изменить это поведение, вы можете переопределить свойство `$collects` вашей коллекции ресурса:
+For example, `UserCollection` will attempt to map the given user instances into the `UserResource` resource. To customize this behavior, you may override the `$collects` property of your resource collection:
 
     <?php
 
@@ -183,7 +186,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserCollection extends ResourceCollection
     {
         /**
-         * Ресурс, используемый при формировании коллекции.
+         * The resource that this resource collects.
          *
          * @var string
          */
@@ -191,11 +194,12 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     }
 
 <a name="writing-resources"></a>
-## Написание ресурсов
+## Writing Resources
 
-> {tip} Если вы не читали [обзор концепции](#concept-overview), настоятельно рекомендуется сделать это, прежде чем приступить к работе с этой документацией.
+> **Note**  
+> If you have not read the [concept overview](#concept-overview), you are highly encouraged to do so before proceeding with this documentation.
 
-По сути, ресурсы просты. Им нужно только преобразовать переданную модель в массив. Итак, каждый ресурс содержит метод `toArray`, который переводит атрибуты вашей модели в удобный для API массив, который может быть возвращен из маршрутов или контроллеров вашего приложения:
+In essence, resources are simple. They only need to transform a given model into an array. So, each resource contains a `toArray` method which translates your model's attributes into an API friendly array that can be returned from your application's routes or controllers:
 
     <?php
 
@@ -206,7 +210,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserResource extends JsonResource
     {
         /**
-         * Преобразовать ресурс в массив.
+         * Transform the resource into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -223,7 +227,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
     }
 
-Как только ресурс определен, он может быть возвращен непосредственно из маршрута или контроллера:
+Once a resource has been defined, it may be returned directly from a route or controller:
 
     use App\Http\Resources\UserResource;
     use App\Models\User;
@@ -233,14 +237,14 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     });
 
 <a name="relationships"></a>
-#### Отношения
+#### Relationships
 
-Если вы хотите включить связанные ресурсы в свой ответ, вы можете добавить их в массив, возвращаемый методом вашего ресурса `toArray`. В этом примере мы будем использовать метод `collection` ресурса `PostResource`, чтобы добавить посты пользователя из блога в ответ ресурса:
+If you would like to include related resources in your response, you may add them to the array returned by your resource's `toArray` method. In this example, we will use the `PostResource` resource's `collection` method to add the user's blog posts to the resource response:
 
     use App\Http\Resources\PostResource;
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -257,12 +261,13 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         ];
     }
 
-> {tip} Если вы хотите включить отношения только тогда, когда они уже загружены, ознакомьтесь с документацией по [условным отношениям](#conditional-relationships).
+> **Note**  
+> If you would like to include relationships only when they have already been loaded, check out the documentation on [conditional relationships](#conditional-relationships).
 
 <a name="writing-resource-collections"></a>
-#### Коллекции ресурса
+#### Resource Collections
 
-В то время как ресурсы преобразуют одну модель в массив, коллекции ресурса преобразуют коллекцию моделей в массив. Однако, необязательно определять класс коллекции ресурса для каждой из ваших моделей, поскольку все ресурсы предоставляют метод `collection` для генерации «специальной» (ad hoc) коллекции ресурсов на лету:
+While resources transform a single model into an array, resource collections transform a collection of models into an array. However, it is not absolutely necessary to define a resource collection class for each one of your models since all resources provide a `collection` method to generate an "ad-hoc" resource collection on the fly:
 
     use App\Http\Resources\UserResource;
     use App\Models\User;
@@ -271,7 +276,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         return UserResource::collection(User::all());
     });
 
-Однако, если вам нужно настроить метаданные, возвращаемые с коллекцией, необходимо определить собственную коллекцию ресурса:
+However, if you need to customize the meta data returned with the collection, it is necessary to define your own resource collection:
 
     <?php
 
@@ -282,7 +287,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserCollection extends ResourceCollection
     {
         /**
-         * Преобразовать коллекцию ресурса в массив.
+         * Transform the resource collection into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -298,7 +303,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
     }
 
-Как и отдельные ресурсы, коллекции ресурса могут быть возвращены непосредственно из маршрутов или контроллеров:
+Like singular resources, resource collections may be returned directly from routes or controllers:
 
     use App\Http\Resources\UserCollection;
     use App\Models\User;
@@ -308,26 +313,28 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     });
 
 <a name="data-wrapping"></a>
-### Обертывание данных
+### Data Wrapping
 
-По умолчанию, ваш самый верхний ресурс будет заключен в ключ `data`, когда ответ ресурса преобразуется в JSON. Так, например, типичный ответ коллекции ресурса выглядит следующим образом:
+By default, your outermost resource is wrapped in a `data` key when the resource response is converted to JSON. So, for example, a typical resource collection response looks like the following:
 
-    {
-        "data": [
-            {
-                "id": 1,
-                "name": "Eladio Schroeder Sr.",
-                "email": "therese28@example.com",
-            },
-            {
-                "id": 2,
-                "name": "Liliana Mayert",
-                "email": "evandervort@example.com",
-            }
-        ]
-    }
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Eladio Schroeder Sr.",
+            "email": "therese28@example.com"
+        },
+        {
+            "id": 2,
+            "name": "Liliana Mayert",
+            "email": "evandervort@example.com"
+        }
+    ]
+}
+```
 
-Если вы хотите использовать собственный ключ вместо `data`, вы можете определить свойство `$wrap` в классе ресурса:
+If you would like to use a custom key instead of `data`, you may define a `$wrap` attribute on the resource class:
 
     <?php
 
@@ -338,14 +345,14 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserResource extends JsonResource
     {
         /**
-         * Обертка «данных», которую следует применить.
+         * The "data" wrapper that should be applied.
          *
-         * @var string
+         * @var string|null
          */
         public static $wrap = 'user';
     }
 
-Если вы хотите отключить обертывание самого верхнего ресурса, то вы должны вызвать метод `withoutWrapping` базового класса `Illuminate\Http\Resources\Json\JsonResource`. Обычно вы должны вызывать этот метод из вашего `AppServiceProvider` или другого [сервис-провайдера](/docs/{{version}}/providers):
+If you would like to disable the wrapping of the outermost resource, you should invoke the `withoutWrapping` method on the base `Illuminate\Http\Resources\Json\JsonResource` class. Typically, you should call this method from your `AppServiceProvider` or another [service provider](/docs/{{version}}/providers) that is loaded on every request to your application:
 
     <?php
 
@@ -357,7 +364,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class AppServiceProvider extends ServiceProvider
     {
         /**
-         * Регистрация любых служб приложения.
+         * Register any application services.
          *
          * @return void
          */
@@ -367,7 +374,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
 
         /**
-         * Загрузка любых служб приложения.
+         * Bootstrap any application services.
          *
          * @return void
          */
@@ -377,14 +384,15 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
     }
 
-> {note} Метод `withoutWrapping` влияет только на самый верхний уровень ответа и не удаляет ключи `data`, которые вы вручную добавляете в свои собственные коллекции ресурса.
+> **Warning**  
+> The `withoutWrapping` method only affects the outermost response and will not remove `data` keys that you manually add to your own resource collections.
 
 <a name="wrapping-nested-resources"></a>
-#### Обертывание вложенных ресурсов
+#### Wrapping Nested Resources
 
-У вас есть полная свобода определять, как обернуты отношения между вашими ресурсами. Если вы хотите, чтобы все коллекции ресурсов были обернуты ключом `data`, независимо от их вложенности, то вы должны определить класс коллекции для каждого ресурса и вернуть коллекцию с ключом `data`.
+You have total freedom to determine how your resource's relationships are wrapped. If you would like all resource collections to be wrapped in a `data` key, regardless of their nesting, you should define a resource collection class for each resource and return the collection within a `data` key.
 
-Вам может быть интересно: не приведет ли это к тому, что верхний уровень вашего ресурса будет дважды обернут ключом `data`? Не волнуйтесь, Laravel не позволит вашим ресурсам быть случайно обернутыми двойной оберткой, поэтому вам не нужно беспокоиться об уровне вложенности трансформируемой коллекции ресурсов:
+You may be wondering if this will cause your outermost resource to be wrapped in two `data` keys. Don't worry, Laravel will never let your resources be accidentally double-wrapped, so you don't have to be concerned about the nesting level of the resource collection you are transforming:
 
     <?php
 
@@ -395,7 +403,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class CommentsCollection extends ResourceCollection
     {
         /**
-         * Преобразовать коллекцию ресурса в массив.
+         * Transform the resource collection into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -407,44 +415,46 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     }
 
 <a name="data-wrapping-and-pagination"></a>
-#### Обертывание данных и постраничная разбивка
+#### Data Wrapping And Pagination
 
-При возврате разбитых на страницы коллекций через ответ ресурса, Laravel обернет ваши данные ресурса в ключ `data`, даже если был вызван метод `withoutWrapping`. Это потому, что разбитые на страницы ответы всегда содержат ключи `meta` и `links` с информацией о состоянии постраничной разбивки:
+When returning paginated collections via a resource response, Laravel will wrap your resource data in a `data` key even if the `withoutWrapping` method has been called. This is because paginated responses always contain `meta` and `links` keys with information about the paginator's state:
 
-    {
-        "data": [
-            {
-                "id": 1,
-                "name": "Eladio Schroeder Sr.",
-                "email": "therese28@example.com",
-            },
-            {
-                "id": 2,
-                "name": "Liliana Mayert",
-                "email": "evandervort@example.com",
-            }
-        ],
-        "links":{
-            "first": "http://example.com/pagination?page=1",
-            "last": "http://example.com/pagination?page=1",
-            "prev": null,
-            "next": null
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Eladio Schroeder Sr.",
+            "email": "therese28@example.com"
         },
-        "meta":{
-            "current_page": 1,
-            "from": 1,
-            "last_page": 1,
-            "path": "http://example.com/pagination",
-            "per_page": 15,
-            "to": 10,
-            "total": 10
+        {
+            "id": 2,
+            "name": "Liliana Mayert",
+            "email": "evandervort@example.com"
         }
+    ],
+    "links":{
+        "first": "http://example.com/pagination?page=1",
+        "last": "http://example.com/pagination?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta":{
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "path": "http://example.com/pagination",
+        "per_page": 15,
+        "to": 10,
+        "total": 10
     }
+}
+```
 
 <a name="pagination"></a>
-### Постраничная разбивка
+### Pagination
 
-Вы можете передать экземпляр пагинатора Laravel методу `collection` ресурса или вашей коллекции ресурса:
+You may pass a Laravel paginator instance to the `collection` method of a resource or to a custom resource collection:
 
     use App\Http\Resources\UserCollection;
     use App\Models\User;
@@ -453,47 +463,47 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         return new UserCollection(User::paginate());
     });
 
-Ответы с постраничной разбивкой всегда содержат ключи `meta` и `links` с информацией о состоянии пагинатора:
+Paginated responses always contain `meta` and `links` keys with information about the paginator's state:
 
-    {
-        "data": [
-            {
-                "id": 1,
-                "name": "Eladio Schroeder Sr.",
-                "email": "therese28@example.com",
-            },
-            {
-                "id": 2,
-                "name": "Liliana Mayert",
-                "email": "evandervort@example.com",
-            }
-        ],
-        "links":{
-            "first": "http://example.com/pagination?page=1",
-            "last": "http://example.com/pagination?page=1",
-            "prev": null,
-            "next": null
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Eladio Schroeder Sr.",
+            "email": "therese28@example.com"
         },
-        "meta":{
-            "current_page": 1,
-            "from": 1,
-            "last_page": 1,
-            "path": "http://example.com/pagination",
-            "per_page": 15,
-            "to": 10,
-            "total": 10
+        {
+            "id": 2,
+            "name": "Liliana Mayert",
+            "email": "evandervort@example.com"
         }
+    ],
+    "links":{
+        "first": "http://example.com/pagination?page=1",
+        "last": "http://example.com/pagination?page=1",
+        "prev": null,
+        "next": null
+    },
+    "meta":{
+        "current_page": 1,
+        "from": 1,
+        "last_page": 1,
+        "path": "http://example.com/pagination",
+        "per_page": 15,
+        "to": 10,
+        "total": 10
     }
+}
+```
 
 <a name="conditional-attributes"></a>
-### Условные атрибуты
+### Conditional Attributes
 
-По желанию можно включить атрибут в ответ ресурса, только если какое-то условие выполнено. Например, бывает необходимо включить значение, только если текущий пользователь является «администратором». Laravel предлагает множество вспомогательных методов, которые помогут вам в этой ситуации. Метод `when` используется для условного добавления атрибута в ответ ресурса:
-
-    use Illuminate\Support\Facades\Auth;
+Sometimes you may wish to only include an attribute in a resource response if a given condition is met. For example, you may wish to only include a value if the current user is an "administrator". Laravel provides a variety of helper methods to assist you in this situation. The `when` method may be used to conditionally add an attribute to a resource response:
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -504,27 +514,31 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'secret' => $this->when(Auth::user()->isAdmin(), 'secret-value'),
+            'secret' => $this->when($request->user()->isAdmin(), 'secret-value'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
     }
 
-В этом примере ключ `secret` будет возвращен в конечном ответе ресурса только в том случае, если метод `isAdmin` аутентифицированного пользователя вернет `true`. Если метод возвращает `false`, то ключ `secret` будет удален из ответа ресурса перед его отправкой клиенту. Метод `when` позволяет вам выразительно определять ваши ресурсы, не прибегая к условным операторам при построении массива.
+In this example, the `secret` key will only be returned in the final resource response if the authenticated user's `isAdmin` method returns `true`. If the method returns `false`, the `secret` key will be removed from the resource response before it is sent to the client. The `when` method allows you to expressively define your resources without resorting to conditional statements when building the array.
 
-Метод `when` также принимает замыкание в качестве второго аргумента, позволяя вам вычислить результирующее значение, только если переданное условие истинно:
+The `when` method also accepts a closure as its second argument, allowing you to calculate the resulting value only if the given condition is `true`:
 
-    'secret' => $this->when(Auth::user()->isAdmin(), function () {
+    'secret' => $this->when($request->user()->isAdmin(), function () {
         return 'secret-value';
     }),
 
-<a name="merging-conditional-attributes"></a>
-#### Слияние условных атрибутов
+Additionally, the `whenNotNull` method may be used to include an attribute in the resource response if the attribute is not null:
 
-Иногда у вас может быть несколько атрибутов, которые следует включать в ответ ресурса только при одном и том же условии. В этом случае вы можете использовать метод `mergeWhen` для включения атрибутов в ответ только в том случае, если переданное условие истинно:
+    'name' => $this->whenNotNull($this->name),
+
+<a name="merging-conditional-attributes"></a>
+#### Merging Conditional Attributes
+
+Sometimes you may have several attributes that should only be included in the resource response based on the same condition. In this case, you may use the `mergeWhen` method to include the attributes in the response only when the given condition is `true`:
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -535,7 +549,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            $this->mergeWhen(Auth::user()->isAdmin(), [
+            $this->mergeWhen($request->user()->isAdmin(), [
                 'first-secret' => 'value',
                 'second-secret' => 'value',
             ]),
@@ -544,21 +558,22 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         ];
     }
 
-Опять же, если переданное условие равносильно `false`, то эти атрибуты будут удалены из ответа ресурса перед его отправкой клиенту.
+Again, if the given condition is `false`, these attributes will be removed from the resource response before it is sent to the client.
 
-> {note} Метод `mergeWhen` не следует использовать в массивах, в которых смешиваются строковые и числовые ключи. Кроме того, его не следует использовать в массивах с цифровыми ключами, которые не упорядочены последовательно.
+> **Warning**  
+> The `mergeWhen` method should not be used within arrays that mix string and numeric keys. Furthermore, it should not be used within arrays with numeric keys that are not ordered sequentially.
 
 <a name="conditional-relationships"></a>
-### Условные отношения
+### Conditional Relationships
 
-В дополнение к условной загрузке атрибутов, вы можете условно включать отношения в свои ответы ресурса в зависимости от того, было ли отношение уже загружено в модель. Это позволяет вашему контроллеру решать, какие отношения должны быть загружены в модель, и ваш ресурс может легко включить их, только когда они действительно были загружены. В конечном итоге это позволяет избежать проблем «N+1» с запросами в ваших ресурсах.
+In addition to conditionally loading attributes, you may conditionally include relationships on your resource responses based on if the relationship has already been loaded on the model. This allows your controller to decide which relationships should be loaded on the model and your resource can easily include them only when they have actually been loaded. Ultimately, this makes it easier to avoid "N+1" query problems within your resources.
 
-Метод `whenLoaded` используется для условной загрузки отношения. Чтобы избежать ненужной загрузки отношений, этот метод принимает имя отношения вместо самого отношения:
+The `whenLoaded` method may be used to conditionally load a relationship. In order to avoid unnecessarily loading relationships, this method accepts the name of the relationship instead of the relationship itself:
 
     use App\Http\Resources\PostResource;
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -575,15 +590,44 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         ];
     }
 
-В этом примере, если отношение не было загружено, ключ `posts` будет удален из ответа ресурса перед его отправкой клиенту.
+In this example, if the relationship has not been loaded, the `posts` key will be removed from the resource response before it is sent to the client.
 
-<a name="conditional-pivot-information"></a>
-#### Условная сводная информация
+<a name="conditional-relationship-counts"></a>
+#### Conditional Relationship Counts
 
-В дополнение к условному включению информации об отношениях в ответах ваших ресурсов, вы можете условно включать данные из сводных таблиц отношений «многие ко многим» с помощью метода `whenPivotLoaded`. Метод `whenPivotLoaded` принимает имя сводной таблицы в качестве своего первого аргумента. Второй аргумент должен быть замыканием, возвращающем значение, если в модели доступна сводная информация:
+In addition to conditionally including relationships, you may conditionally include relationship "counts" on your resource responses based on if the relationship's count has been loaded on the model:
+
+    new UserResource($user->loadCount('posts'));
+
+The `whenCounted` method may be used to conditionally include a relationship's count in your resource response. This method avoids unnecessarily including the attribute if the relationships' count is not present:
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'posts_count' => $this->whenCounted('posts'),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+
+In this example, if the `posts` relationship's count has not been loaded, the `posts_count` key will be removed from the resource response before it is sent to the client.
+
+<a name="conditional-pivot-information"></a>
+#### Conditional Pivot Information
+
+In addition to conditionally including relationship information in your resource responses, you may conditionally include data from the intermediate tables of many-to-many relationships using the `whenPivotLoaded` method. The `whenPivotLoaded` method accepts the name of the pivot table as its first argument. The second argument should be a closure that returns the value to be returned if the pivot information is available on the model:
+
+    /**
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -599,16 +643,16 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         ];
     }
 
-Если ваши отношения используют [пользовательскую модель сводной таблицы](/docs/{{version}}/eloquent-relationships#defining-custom-intermediate-table-models), то вы можете передать экземпляр модели сводной таблицы в качестве первого аргумента методу `whenPivotLoaded`. :
+If your relationship is using a [custom intermediate table model](/docs/{{version}}/eloquent-relationships#defining-custom-intermediate-table-models), you may pass an instance of the intermediate table model as the first argument to the `whenPivotLoaded` method:
 
     'expires_at' => $this->whenPivotLoaded(new Membership, function () {
         return $this->pivot->expires_at;
     }),
 
-Если ваша сводная таблица использует аксессор, отличный от `pivot`, то вы можете использовать метод `whenPivotLoadedAs`:
+If your intermediate table is using an accessor other than `pivot`, you may use the `whenPivotLoadedAs` method:
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -625,12 +669,12 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     }
 
 <a name="adding-meta-data"></a>
-### Добавление метаданных
+### Adding Meta Data
 
-Некоторые стандарты API JSON требуют добавления метаданных в ответы ваших ресурсов и коллекции ресурсов. Это часто включает такие вещи, как «ссылки» на ресурс или связанные ресурсы или метаданные о самом ресурсе. Если вам нужно вернуть дополнительные метаданные о ресурсе, включите их в свой метод `toArray`. Например, вы можете включить информацию `links` при преобразовании коллекции ресурса:
+Some JSON API standards require the addition of meta data to your resource and resource collections responses. This often includes things like `links` to the resource or related resources, or meta data about the resource itself. If you need to return additional meta data about a resource, include it in your `toArray` method. For example, you might include `link` information when transforming a resource collection:
 
     /**
-     * Преобразовать ресурс в массив.
+     * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
@@ -645,12 +689,12 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         ];
     }
 
-При возврате дополнительных метаданных из ваших ресурсов вам никогда не придется беспокоиться о случайном переопределении ключей `links` или `meta`, которые автоматически добавляются Laravel при возврате ответов с постраничной разбивкой. Любые дополнительные `links`, которые вы определяете, будут объединены с предоставленными пагинатором.
+When returning additional meta data from your resources, you never have to worry about accidentally overriding the `links` or `meta` keys that are automatically added by Laravel when returning paginated responses. Any additional `links` you define will be merged with the links provided by the paginator.
 
 <a name="top-level-meta-data"></a>
-#### Метаданные верхнего уровня
+#### Top Level Meta Data
 
-По желанию можно включить в ответ ресурса только определенные метаданные, если ресурс является самым верхним из возвращаемых ресурсов. Обычно это метаинформация об ответе в целом. Чтобы определить эти метаданные, добавьте метод `with` к вашему классу ресурсов. Этот метод должен возвращать массив метаданных, которые будут включены в ответ ресурса, только если ресурс является самым верхним ресурсом, который преобразуется:
+Sometimes you may wish to only include certain meta data with a resource response if the resource is the outermost resource being returned. Typically, this includes meta information about the response as a whole. To define this meta data, add a `with` method to your resource class. This method should return an array of meta data to be included with the resource response only when the resource is the outermost resource being transformed:
 
     <?php
 
@@ -661,7 +705,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserCollection extends ResourceCollection
     {
         /**
-         * Преобразовать коллекцию ресурса в массив.
+         * Transform the resource collection into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -672,7 +716,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
 
         /**
-         * Получить дополнительные данные, возвращаемые с массивом ресурса.
+         * Get additional data that should be returned with the resource array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -688,9 +732,9 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     }
 
 <a name="adding-meta-data-when-constructing-resources"></a>
-#### Добавление метаданных при создании ресурсов
+#### Adding Meta Data When Constructing Resources
 
-Вы также можете добавить данные верхнего уровня при создании экземпляров ресурсов в своем маршруте или контроллере. Метод `additional`, доступный для всех ресурсов, принимает массив данных, которые должны быть добавлены в ответ ресурса:
+You may also add top-level data when constructing resource instances in your route or controller. The `additional` method, which is available on all resources, accepts an array of data that should be added to the resource response:
 
     return (new UserCollection(User::all()->load('roles')))
                     ->additional(['meta' => [
@@ -698,18 +742,18 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
                     ]]);
 
 <a name="resource-responses"></a>
-## Ответы ресурса
+## Resource Responses
 
-Как вы уже читали, ресурсы могут быть возвращены напрямую из маршрутов и контроллеров:
+As you have already read, resources may be returned directly from routes and controllers:
 
-    use App\Http\Resources\User as UserResource;
+    use App\Http\Resources\UserResource;
     use App\Models\User;
 
     Route::get('/user/{id}', function ($id) {
         return new UserResource(User::findOrFail($id));
     });
 
-Иногда требуется настроить исходящий HTTP-ответ перед его отправкой клиенту. Это можно сделать двумя способами. Во-первых, вы можете связать метод `response` с ресурсом. Этот метод вернет экземпляр `Illuminate\Http\JsonResponse`, что даст вам полный контроль над заголовками ответа:
+However, sometimes you may need to customize the outgoing HTTP response before it is sent to the client. There are two ways to accomplish this. First, you may chain the `response` method onto the resource. This method will return an `Illuminate\Http\JsonResponse` instance, giving you full control over the response's headers:
 
     use App\Http\Resources\UserResource;
     use App\Models\User;
@@ -720,7 +764,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
                     ->header('X-Value', 'True');
     });
 
-В качестве альтернативы вы можете определить метод `withResponse` внутри самого ресурса. Этот метод будет вызываться, только когда ресурс будет возвращен как самый верхний ресурс в ответе:
+Alternatively, you may define a `withResponse` method within the resource itself. This method will be called when the resource is returned as the outermost resource in a response:
 
     <?php
 
@@ -731,7 +775,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
     class UserResource extends JsonResource
     {
         /**
-         * Преобразовать ресурс в массив.
+         * Transform the resource into an array.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return array
@@ -744,7 +788,7 @@ git e354ac4af15c16a8a8e3a38cbfdcce7010ca0afc
         }
 
         /**
-         * Настроить исходящий ответ для ресурса.
+         * Customize the outgoing response for the resource.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  \Illuminate\Http\Response  $response

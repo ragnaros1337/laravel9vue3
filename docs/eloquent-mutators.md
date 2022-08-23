@@ -1,60 +1,62 @@
-git bd5808288d5882b3177a80bda4825a50b5e02045
+# Eloquent: Mutators & Casting
 
----
-
-# Eloquent · Мутаторы и типизация
-
-- [Введение](#introduction)
-- [Аксессоры и мутаторы](#accessors-and-mutators)
-    - [Определение аксессора](#defining-an-accessor)
-    - [Определение мутатора](#defining-a-mutator)
-- [Приведение атрибутов к типам](#attribute-casting)
-    - [Преобразование в массив и JSON](#array-and-json-casting)
-    - [Типизация даты](#date-casting)
-    - [Типизация во время запроса](#query-time-casting)
-- [Пользовательская типизация](#custom-casts)
-    - [Типизация объект-значение](#value-object-casting)
-    - [Сериализация в массив и JSON](#array-json-serialization)
-    - [Входящая типизация](#inbound-casting)
-    - [Параметры типизации](#cast-parameters)
-    - [Интерфейс `Castable`](#castables)
+- [Introduction](#introduction)
+- [Accessors & Mutators](#accessors-and-mutators)
+    - [Defining An Accessor](#defining-an-accessor)
+    - [Defining A Mutator](#defining-a-mutator)
+- [Attribute Casting](#attribute-casting)
+    - [Array & JSON Casting](#array-and-json-casting)
+    - [Date Casting](#date-casting)
+    - [Enum Casting](#enum-casting)
+    - [Encrypted Casting](#encrypted-casting)
+    - [Query Time Casting](#query-time-casting)
+- [Custom Casts](#custom-casts)
+    - [Value Object Casting](#value-object-casting)
+    - [Array / JSON Serialization](#array-json-serialization)
+    - [Inbound Casting](#inbound-casting)
+    - [Cast Parameters](#cast-parameters)
+    - [Castables](#castables)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Аксессоры, мутаторы и приведение атрибутов к типам позволяют преобразовывать значения атрибутов Eloquent, когда вы извлекаете экземпляр модели или присваиваете их экземпляру модели. Например, вы можете использовать [шифровальщик Laravel](/docs/{{version}}/encryption), чтобы зашифровать значение при его сохранении в базу данных, а затем автоматически расшифровать атрибут при доступе к нему в модели Eloquent. Или вы можете преобразовать строку JSON, которая хранится в вашей базе данных, в массив при доступе к ней через вашу модель Eloquent.
+Accessors, mutators, and attribute casting allow you to transform Eloquent attribute values when you retrieve or set them on model instances. For example, you may want to use the [Laravel encrypter](/docs/{{version}}/encryption) to encrypt a value while it is stored in the database, and then automatically decrypt the attribute when you access it on an Eloquent model. Or, you may want to convert a JSON string that is stored in your database to an array when it is accessed via your Eloquent model.
 
 <a name="accessors-and-mutators"></a>
-## Аксессоры и мутаторы (Accessors and Mutators)
+## Accessors & Mutators
 
 <a name="defining-an-accessor"></a>
-### Определение аксессора (Accessor)
+### Defining An Accessor
 
-Аксессор преобразует значение атрибута экземпляра Eloquent при обращении к нему. Чтобы определить метод доступа, создайте метод `get{Attribute}Attribute` в вашей модели, где `{Attribute}` – это имя столбца, к которому вы хотите получить доступ, в «верхнем» регистре.
+An accessor transforms an Eloquent attribute value when it is accessed. To define an accessor, create a protected method on your model to represent the accessible attribute. This method name should correspond to the "camel case" representation of the true underlying model attribute / database column when applicable.
 
-В этом примере мы определим аксессор для атрибута `first_name`. Аксессор будет автоматически вызван Eloquent при попытке получить значение атрибута `first_name`:
+In this example, we'll define an accessor for the `first_name` attribute. The accessor will automatically be called by Eloquent when attempting to retrieve the value of the `first_name` attribute. All attribute accessor / mutator methods must declare a return type-hint of `Illuminate\Database\Eloquent\Casts\Attribute`:
 
     <?php
 
     namespace App\Models;
 
+    use Illuminate\Database\Eloquent\Casts\Attribute;
     use Illuminate\Database\Eloquent\Model;
 
     class User extends Model
     {
         /**
-         * Получить имя пользователя.
+         * Get the user's first name.
          *
-         * @param  string  $value
-         * @return string
+         * @return \Illuminate\Database\Eloquent\Casts\Attribute
          */
-        public function getFirstNameAttribute($value)
+        protected function firstName(): Attribute
         {
-            return ucfirst($value);
+            return Attribute::make(
+                get: fn ($value) => ucfirst($value),
+            );
         }
     }
 
-Как видите, исходное значение столбца передается аксессору, что позволяет вам манипулировать и возвращать значение. Чтобы получить доступ к значению аксессора, вы можете просто получить доступ к атрибуту `first_name` экземпляра модели:
+All accessor methods return an `Attribute` instance which defines how the attribute will be accessed and, optionally, mutated. In this example, we are only defining how the attribute will be accessed. To do so, we supply the `get` argument to the `Attribute` class constructor.
+
+As you can see, the original value of the column is passed to the accessor, allowing you to manipulate and return the value. To access the value of the accessor, you may simply access the `first_name` attribute on a model instance:
 
     use App\Models\User;
 
@@ -62,48 +64,107 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
 
     $firstName = $user->first_name;
 
-Вы не ограничены взаимодействием с одним атрибутом в вашем аксессоре. Вы также можете использовать аксессор для возврата новых вычисленных значений из существующих атрибутов:
+> **Note**  
+> If you would like these computed values to be added to the array / JSON representations of your model, [you will need to append them](/docs/{{version}}/eloquent-serialization#appending-values-to-json).
 
-    /**
-     * Получить полное имя пользователя.
-     *
-     * @return string
-     */
-    public function getFullNameAttribute()
-    {
-        return "{$this->first_name} {$this->last_name}";
-    }
+<a name="building-value-objects-from-multiple-attributes"></a>
+#### Building Value Objects From Multiple Attributes
 
-> {tip} Если вы хотите, чтобы эти вычисленные значения были добавлены к представлениям массива / JSON вашей модели, [вам нужно будет добавить их](/docs/{{version}}/eloquent-serialization#appending-values-to-json).
+Sometimes your accessor may need to transform multiple model attributes into a single "value object". To do so, your `get` closure may accept a second argument of `$attributes`, which will be automatically supplied to the closure and will contain an array of all of the model's current attributes:
+
+```php
+use App\Support\Address;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+/**
+ * Interact with the user's address.
+ *
+ * @return  \Illuminate\Database\Eloquent\Casts\Attribute
+ */
+protected function address(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value, $attributes) => new Address(
+            $attributes['address_line_one'],
+            $attributes['address_line_two'],
+        ),
+    );
+}
+```
+
+<a name="accessor-caching"></a>
+#### Accessor Caching
+
+When returning value objects from accessors, any changes made to the value object will automatically be synced back to the model before the model is saved. This is possible because Eloquent retains instances returned by accessors so it can return the same instance each time the accessor is invoked:
+
+    use App\Models\User;
+
+    $user = User::find(1);
+
+    $user->address->lineOne = 'Updated Address Line 1 Value';
+    $user->address->lineTwo = 'Updated Address Line 2 Value';
+
+    $user->save();
+
+However, you may sometimes wish to enable caching for primitive values like strings and booleans, particularly if they are computationally intensive. To accomplish this, you may invoke the `shouldCache` method when defining your accessor:
+
+```php
+protected function hash(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value) => bcrypt(gzuncompress($value)),
+    )->shouldCache();
+}
+```
+
+If you would like to disable the object caching behavior of attributes, you may invoke the `withoutObjectCaching` method when defining the attribute:
+
+```php
+/**
+ * Interact with the user's address.
+ *
+ * @return  \Illuminate\Database\Eloquent\Casts\Attribute
+ */
+protected function address(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value, $attributes) => new Address(
+            $attributes['address_line_one'],
+            $attributes['address_line_two'],
+        ),
+    )->withoutObjectCaching();
+}
+```
 
 <a name="defining-a-mutator"></a>
-### Определение мутатора (Mutator)
+### Defining A Mutator
 
-Мутатор преобразует значение атрибута в момент их присвоения экземпляру Eloquent. Чтобы определить мутатор, определите метод `set{Attribute}Attribute` в вашей модели, где `{Attribute}` – это имя столбца, к которому вы хотите получить доступ, в «верхнем» регистре.
-
-Определим мутатор для атрибута `first_name`. Этот мутатор будет автоматически вызываться, когда мы попытаемся присвоить значение атрибута `first_name` модели:
+A mutator transforms an Eloquent attribute value when it is set. To define a mutator, you may provide the `set` argument when defining your attribute. Let's define a mutator for the `first_name` attribute. This mutator will be automatically called when we attempt to set the value of the `first_name` attribute on the model:
 
     <?php
 
     namespace App\Models;
 
+    use Illuminate\Database\Eloquent\Casts\Attribute;
     use Illuminate\Database\Eloquent\Model;
 
     class User extends Model
     {
         /**
-         * Присвоить имя пользователю.
+         * Interact with the user's first name.
          *
-         * @param  string  $value
-         * @return void
+         * @return \Illuminate\Database\Eloquent\Casts\Attribute
          */
-        public function setFirstNameAttribute($value)
+        protected function firstName(): Attribute
         {
-            $this->attributes['first_name'] = strtolower($value);
+            return Attribute::make(
+                get: fn ($value) => ucfirst($value),
+                set: fn ($value) => strtolower($value),
+            );
         }
     }
 
-Мутатор получит значение, заданное для атрибута, что позволит вам манипулировать этим значением и устанавливать желаемое значение во внутреннем свойстве `$attributes` модели Eloquent. Чтобы использовать наш мутатор, нам нужно только установить атрибут `first_name` для модели Eloquent:
+The mutator closure will receive the value that is being set on the attribute, allowing you to manipulate the value and return the manipulated value. To use our mutator, we only need to set the `first_name` attribute on an Eloquent model:
 
     use App\Models\User;
 
@@ -111,22 +172,55 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
 
     $user->first_name = 'Sally';
 
-В этом примере метод `setFirstNameAttribute` будет вызываться со значением `Sally`. Затем, мутатор применит к имени функцию `strtolower` и установит полученное значение во внутреннем массиве `$attributes`.
+In this example, the `set` callback will be called with the value `Sally`. The mutator will then apply the `strtolower` function to the name and set its resulting value in the model's internal `$attributes` array.
+
+<a name="mutating-multiple-attributes"></a>
+#### Mutating Multiple Attributes
+
+Sometimes your mutator may need to set multiple attributes on the underlying model. To do so, you may return an array from the `set` closure. Each key in the array should correspond with an underlying attribute / database column associated with the model:
+
+```php
+use App\Support\Address;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+/**
+ * Interact with the user's address.
+ *
+ * @return  \Illuminate\Database\Eloquent\Casts\Attribute
+ */
+protected function address(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value, $attributes) => new Address(
+            $attributes['address_line_one'],
+            $attributes['address_line_two'],
+        ),
+        set: fn (Address $value) => [
+            'address_line_one' => $value->lineOne,
+            'address_line_two' => $value->lineTwo,
+        ],
+    );
+}
+```
 
 <a name="attribute-casting"></a>
-## Приведение атрибутов к типам
+## Attribute Casting
 
-Приведение атрибутов обеспечивает функциональность, аналогичную аксессорам и мутаторам, но без необходимости определения каких-либо дополнительных методов вашей модели. Вместо этого свойство `$casts` вашей модели представляет удобный способ преобразования атрибутов в распространенные типы данных.
+Attribute casting provides functionality similar to accessors and mutators without requiring you to define any additional methods on your model. Instead, your model's `$casts` property provides a convenient method of converting attributes to common data types.
 
-Свойство `$casts` должно быть массивом, где ключ – это имя преобразуемого атрибута, а значение – это тип, к которому вы хотите привести столбец. Поддерживаемые типы преобразования:
+The `$casts` property should be an array where the key is the name of the attribute being cast and the value is the type you wish to cast the column to. The supported cast types are:
 
-<!-- <div class="content-list" markdown="1"> -->
+<div class="content-list" markdown="1">
+
 - `array`
+- `AsStringable::class`
 - `boolean`
 - `collection`
 - `date`
 - `datetime`
-- `decimal:<digits>`
+- `immutable_date`
+- `immutable_datetime`
+- `decimal:`<code>&lt;digits&gt;</code>
 - `double`
 - `encrypted`
 - `encrypted:array`
@@ -138,9 +232,10 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
 - `real`
 - `string`
 - `timestamp`
-<!-- </div> -->
 
-Чтобы продемонстрировать преобразование атрибутов, давайте преобразуем атрибут `is_admin`, который хранится в нашей базе данных в виде целого числа (`0` или `1`), в логическое значение:
+</div>
+
+To demonstrate attribute casting, let's cast the `is_admin` attribute, which is stored in our database as an integer (`0` or `1`) to a boolean value:
 
     <?php
 
@@ -151,7 +246,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class User extends Model
     {
         /**
-         * Атрибуты, которые должны быть типизированы.
+         * The attributes that should be cast.
          *
          * @var array
          */
@@ -160,7 +255,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         ];
     }
 
-После определения типизации, атрибут `is_admin` всегда будет преобразован в логическое значение при доступе к нему, даже если базовое значение хранится в базе данных как целое число:
+After defining the cast, the `is_admin` attribute will always be cast to a boolean when you access it, even if the underlying value is stored in the database as an integer:
 
     $user = App\Models\User::find(1);
 
@@ -168,12 +263,44 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         //
     }
 
-> {note} Атрибуты, которые имеют значение `null`, не будут преобразованы. Кроме того, вы никогда не должны определять типизацию (или атрибут), имя которого совпадает с именем отношения.
+If you need to add a new, temporary cast at runtime, you may use the `mergeCasts` method. These cast definitions will be added to any of the casts already defined on the model:
+
+    $user->mergeCasts([
+        'is_admin' => 'integer',
+        'options' => 'object',
+    ]);
+
+> **Warning**  
+> Attributes that are `null` will not be cast. In addition, you should never define a cast (or an attribute) that has the same name as a relationship.
+
+<a name="stringable-casting"></a>
+#### Stringable Casting
+
+You may use the `Illuminate\Database\Eloquent\Casts\AsStringable` cast class to cast a model attribute to a [fluent `Illuminate\Support\Stringable` object](/docs/{{version}}/helpers#fluent-strings-method-list):
+
+    <?php
+
+    namespace App\Models;
+
+    use Illuminate\Database\Eloquent\Casts\AsStringable;
+    use Illuminate\Database\Eloquent\Model;
+
+    class User extends Model
+    {
+        /**
+         * The attributes that should be cast.
+         *
+         * @var array
+         */
+        protected $casts = [
+            'directory' => AsStringable::class,
+        ];
+    }
 
 <a name="array-and-json-casting"></a>
-### Преобразование в массив и JSON
+### Array & JSON Casting
 
-Преобразование в `array` особенно полезно при работе со столбцами, которые хранятся как сериализованный JSON. Например, если ваша база данных имеет поле типа `JSON` или `TEXT`, содержащее сериализованный JSON, то добавленная типизация `array` этому атрибуту автоматически десериализует атрибут модели Eloquent в массив PHP при обращении к нему:
+The `array` cast is particularly useful when working with columns that are stored as serialized JSON. For example, if your database has a `JSON` or `TEXT` field type that contains serialized JSON, adding the `array` cast to that attribute will automatically deserialize the attribute to a PHP array when you access it on your Eloquent model:
 
     <?php
 
@@ -184,7 +311,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class User extends Model
     {
         /**
-         * Атрибуты, которые должны быть типизированы.
+         * The attributes that should be cast.
          *
          * @var array
          */
@@ -193,7 +320,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         ];
     }
 
-Как только типизация определена, вы можете получить доступ к атрибуту `options`, и он будет автоматически десериализован из JSON в массив PHP. Когда вы устанавливаете значение атрибута `options`, данный массив будет автоматически сериализован обратно в JSON для сохранения:
+Once the cast is defined, you may access the `options` attribute and it will automatically be deserialized from JSON into a PHP array. When you set the value of the `options` attribute, the given array will automatically be serialized back into JSON for storage:
 
     use App\Models\User;
 
@@ -207,27 +334,27 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
 
     $user->save();
 
-Чтобы обновить одно поле JSON-атрибута с помощью краткого синтаксиса, используйте оператор `->` при вызове метода `update`:
+To update a single field of a JSON attribute with a more terse syntax, you may use the `->` operator when calling the `update` method:
 
     $user = User::find(1);
 
     $user->update(['options->key' => 'value']);
 
 <a name="array-object-and-collection-casting"></a>
-#### Типизация ArrayObject и Collection
+#### Array Object & Collection Casting
 
-Хотя типизации стандартного `array` достаточно для многих приложений, но у него есть некоторые недостатки. Поскольку типизация `array` возвращает примитивный тип, невозможно напрямую изменить смещение массива. Например, следующий код вызовет ошибку PHP:
+Although the standard `array` cast is sufficient for many applications, it does have some disadvantages. Since the `array` cast returns a primitive type, it is not possible to mutate an offset of the array directly. For example, the following code will trigger a PHP error:
 
     $user = User::find(1);
 
     $user->options['key'] = $value;
 
-Чтобы решить эту проблему, Laravel предлагает типизацию `AsArrayObject`, которая преобразует ваш атрибут JSON в класс [ArrayObject](https://www.php.net/manual/ru/class.arrayobject.php). Эта функция реализована с использованием реализации [пользовательской типизации](#custom-casts) Laravel, которая позволяет Laravel интеллектуально кешировать и преобразовывать измененный объект таким образом, что отдельные смещения могли быть изменены без ошибок PHP. Чтобы использовать типизацию `AsArrayObject`, просто назначьте его атрибуту:
+To solve this, Laravel offers an `AsArrayObject` cast that casts your JSON attribute to an [ArrayObject](https://www.php.net/manual/en/class.arrayobject.php) class. This feature is implemented using Laravel's [custom cast](#custom-casts) implementation, which allows Laravel to intelligently cache and transform the mutated object such that individual offsets may be modified without triggering a PHP error. To use the `AsArrayObject` cast, simply assign it to an attribute:
 
     use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 
     /**
-     * Атрибуты, которые должны быть типизированы.
+     * The attributes that should be cast.
      *
      * @var array
      */
@@ -235,12 +362,12 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         'options' => AsArrayObject::class,
     ];
 
-Точно так же Laravel предлагает типизацию `AsCollection`, которая преобразует ваш атрибут JSON в экземпляр Laravel [Collection](/docs/{{version}}/collections):
+Similarly, Laravel offers an `AsCollection` cast that casts your JSON attribute to a Laravel [Collection](/docs/{{version}}/collections) instance:
 
     use Illuminate\Database\Eloquent\Casts\AsCollection;
 
     /**
-     * Атрибуты, которые должны быть типизированы.
+     * The attributes that should be cast.
      *
      * @var array
      */
@@ -249,14 +376,14 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     ];
 
 <a name="date-casting"></a>
-### Типизация даты
+### Date Casting
 
-По умолчанию Eloquent преобразует столбцы `created_at` и `updated_at` в экземпляры [Carbon](https://github.com/briannesbitt/Carbon), расширяющего класс DateTime PHP и предоставляющего набор полезных методов. Вы можете типизировать дополнительные атрибуты даты, определив дополнительные преобразования даты в массиве свойств вашей модели `$cast`. Обычно даты следует приводить с использованием типизации `datetime`.
+By default, Eloquent will cast the `created_at` and `updated_at` columns to instances of [Carbon](https://github.com/briannesbitt/Carbon), which extends the PHP `DateTime` class and provides an assortment of helpful methods. You may cast additional date attributes by defining additional date casts within your model's `$casts` property array. Typically, dates should be cast using the `datetime` or `immutable_datetime` cast types.
 
-При определении типизации `date` или `datetime` вы также можете указать формат даты. Этот формат будет использоваться, когда [модель сериализуется в массив или JSON](/docs/{{version}}/eloquent-serialization):
+When defining a `date` or `datetime` cast, you may also specify the date's format. This format will be used when the [model is serialized to an array or JSON](/docs/{{version}}/eloquent-serialization):
 
     /**
-     * Атрибуты, которые должны быть типизированы.
+     * The attributes that should be cast.
      *
      * @var array
      */
@@ -264,12 +391,12 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         'created_at' => 'datetime:Y-m-d',
     ];
 
-Когда столбец типизирован как дата, вы можете установить его значение в виде временной метки форматов UNIX, строки даты (`Y-m-d`), строки даты-времени или экземпляров `DateTime` / `Carbon`. Значение даты будет правильно преобразовано и сохранено в вашей базе данных:
+When a column is cast as a date, you may set the corresponding model attribute value to a UNIX timestamp, date string (`Y-m-d`), date-time string, or a `DateTime` / `Carbon` instance. The date's value will be correctly converted and stored in your database.
 
-Вы можете настроить формат сериализации по умолчанию для всех дат вашей модели, переопределив метод `serializeDate` вашей модели. Этот метод не влияет на форматирование дат для их сохранения в базе данных:
+You may customize the default serialization format for all of your model's dates by defining a `serializeDate` method on your model. This method does not affect how your dates are formatted for storage in the database:
 
     /**
-     * Подготовить дату для сериализации массива / JSON.
+     * Prepare a date for array / JSON serialization.
      *
      * @param  \DateTimeInterface  $date
      * @return string
@@ -279,19 +406,65 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         return $date->format('Y-m-d');
     }
 
-Чтобы указать формат, который следует использовать при фактическом сохранении дат модели в вашей базе данных, вы должны определить свойство `$dateFormat` вашей модели:
+To specify the format that should be used when actually storing a model's dates within your database, you should define a `$dateFormat` property on your model:
 
     /**
-     * Формат хранения столбцов даты модели.
+     * The storage format of the model's date columns.
      *
      * @var string
      */
     protected $dateFormat = 'U';
 
-<a name="query-time-casting"></a>
-### Типизация во время запроса
+<a name="date-casting-and-timezones"></a>
+#### Date Casting, Serialization, & Timezones
 
-Иногда может потребоваться применить типизацию при выполнении запроса, например, при выборе сырого значения из таблицы. Например, рассмотрим следующий запрос:
+By default, the `date` and `datetime` casts will serialize dates to a UTC ISO-8601 date string (`1986-05-28T21:05:54.000000Z`), regardless of the timezone specified in your application's `timezone` configuration option. You are strongly encouraged to always use this serialization format, as well as to store your application's dates in the UTC timezone by not changing your application's `timezone` configuration option from its default `UTC` value. Consistently using the UTC timezone throughout your application will provide the maximum level of interoperability with other date manipulation libraries written in PHP and JavaScript.
+
+If a custom format is applied to the `date` or `datetime` cast, such as `datetime:Y-m-d H:i:s`, the inner timezone of the Carbon instance will be used during date serialization. Typically, this will be the timezone specified in your application's `timezone` configuration option.
+
+<a name="enum-casting"></a>
+### Enum Casting
+
+> **Warning**  
+> Enum casting is only available for PHP 8.1+.
+
+Eloquent also allows you to cast your attribute values to PHP ["backed" Enums](https://www.php.net/manual/en/language.enumerations.backed.php). To accomplish this, you may specify the attribute and enum you wish to cast in your model's `$casts` property array:
+
+    use App\Enums\ServerStatus;
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => ServerStatus::class,
+    ];
+
+Once you have defined the cast on your model, the specified attribute will be automatically cast to and from an enum when you interact with the attribute:
+
+    if ($server->status == ServerStatus::provisioned) {
+        $server->status = ServerStatus::ready;
+
+        $server->save();
+    }
+
+<a name="encrypted-casting"></a>
+### Encrypted Casting
+
+The `encrypted` cast will encrypt a model's attribute value using Laravel's built-in [encryption](/docs/{{version}}/encryption) features. In addition, the `encrypted:array`, `encrypted:collection`, `encrypted:object`, `AsEncryptedArrayObject`, and `AsEncryptedCollection` casts work like their unencrypted counterparts; however, as you might expect, the underlying value is encrypted when stored in your database.
+
+As the final length of the encrypted text is not predictable and is longer than its plain text counterpart, make sure the associated database column is of `TEXT` type or larger. In addition, since the values are encrypted in the database, you will not be able to query or search encrypted attribute values.
+
+<a name="key-rotation"></a>
+#### Key Rotation
+
+As you may know, Laravel encrypts strings using the `key` configuration value specified in your application's `app` configuration file. Typically, this value corresponds to the value of the `APP_KEY` environment variable. If you need to rotate your application's encryption key, you will need to manually re-encrypt your encrypted attributes using the new key.
+
+<a name="query-time-casting"></a>
+### Query Time Casting
+
+Sometimes you may need to apply casts while executing a query, such as when selecting a raw value from a table. For example, consider the following query:
 
     use App\Models\Post;
     use App\Models\User;
@@ -302,7 +475,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
                 ->whereColumn('user_id', 'users.id')
     ])->get();
 
-Атрибут `last_posted_at` результатов этого запроса будет простой строкой. Было бы замечательно, если бы мы могли применить типизацию `datetime` этого атрибута при выполнении запроса. К счастью, мы можем добиться этого с помощью метода `withCasts`:
+The `last_posted_at` attribute on the results of this query will be a simple string. It would be wonderful if we could apply a `datetime` cast to this attribute when executing the query. Thankfully, we may accomplish this using the `withCasts` method:
 
     $users = User::select([
         'users.*',
@@ -313,11 +486,11 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     ])->get();
 
 <a name="custom-casts"></a>
-## Пользовательская типизация
+## Custom Casts
 
-В Laravel есть множество встроенных полезных преобразователей; однако иногда требуется определить свои собственные. Вы можете добиться этого, определив класс, реализующий интерфейс `CastsAttributes`.
+Laravel has a variety of built-in, helpful cast types; however, you may occasionally need to define your own cast types. You may accomplish this by defining a class that implements the `CastsAttributes` interface.
 
-Классы, реализующие этот интерфейс, должны определять методы `get` и `set`. Метод `get` отвечает за преобразование сырого значения из базы данных к типизированному значению, а метод `set` – должен преобразовывать типизированное значение в сырое значение, которое можно сохранить в базе данных. В качестве примера мы повторно реализуем встроенный преобразователь `json` как пользовательский типизатор:
+Classes that implement this interface must define a `get` and `set` method. The `get` method is responsible for transforming a raw value from the database into a cast value, while the `set` method should transform a cast value into a raw value that can be stored in the database. As an example, we will re-implement the built-in `json` cast type as a custom cast type:
 
     <?php
 
@@ -328,7 +501,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class Json implements CastsAttributes
     {
         /**
-         * Преобразовать значение к пользовательскому типу.
+         * Cast the given value.
          *
          * @param  \Illuminate\Database\Eloquent\Model  $model
          * @param  string  $key
@@ -342,7 +515,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         }
 
         /**
-         * Подготовить переданное значение к сохранению.
+         * Prepare the given value for storage.
          *
          * @param  \Illuminate\Database\Eloquent\Model  $model
          * @param  string  $key
@@ -356,7 +529,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         }
     }
 
-После того, как вы определили собственный типизатор, вы можете добавить его к атрибуту модели, используя его имя класса:
+Once you have defined a custom cast type, you may attach it to a model attribute using its class name:
 
     <?php
 
@@ -368,7 +541,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class User extends Model
     {
         /**
-         * Атрибуты, которые должны быть типизированы.
+         * The attributes that should be cast.
          *
          * @var array
          */
@@ -378,11 +551,11 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     }
 
 <a name="value-object-casting"></a>
-### Типизация объект-значение
+### Value Object Casting
 
-Вы не ограничены приведением значений к примитивным типам. Вы также можете преобразовать значения к объектам. Определение пользовательских типизаторов, которые преобразуют значения в объекты, очень похоже на приведение к примитивным типам; однако метод `set` должен возвращать массив пар ключ / значение, который будет использоваться для установки сырых значений, сохраняемых в модели.
+You are not limited to casting values to primitive types. You may also cast values to objects. Defining custom casts that cast values to objects is very similar to casting to primitive types; however, the `set` method should return an array of key / value pairs that will be used to set raw, storable values on the model.
 
-В качестве примера мы определим собственный класс типизатора, который преобразует несколько значений модели в один объект-значение `Address`. Предположим, что значение `Address` имеет два общедоступных свойства: `lineOne` и `lineTwo`:
+As an example, we will define a custom cast class that casts multiple model values into a single `Address` value object. We will assume the `Address` value has two public properties: `lineOne` and `lineTwo`:
 
     <?php
 
@@ -395,7 +568,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class Address implements CastsAttributes
     {
         /**
-         * Преобразовать значение к пользовательскому типу.
+         * Cast the given value.
          *
          * @param  \Illuminate\Database\Eloquent\Model  $model
          * @param  string  $key
@@ -412,7 +585,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         }
 
         /**
-         * Подготовить переданное значение к сохранению.
+         * Prepare the given value for storage.
          *
          * @param  \Illuminate\Database\Eloquent\Model  $model
          * @param  string  $key
@@ -433,7 +606,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         }
     }
 
-При приведении к объектам-значениям любые изменения, внесенные в объект-значения, будут автоматически синхронизированы с моделью до ее сохранения:
+When casting to value objects, any changes made to the value object will automatically be synced back to the model before the model is saved:
 
     use App\Models\User;
 
@@ -443,17 +616,18 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
 
     $user->save();
 
-> {tip} Если вы планируете сериализовать свои модели Eloquent, содержащие объекты-значения, в JSON или массивы, вам следует реализовать интерфейсы `Illuminate\Contracts\Support\Arrayable` и `JsonSerializable` для объекта-значения.
+> **Note**  
+> If you plan to serialize your Eloquent models containing value objects to JSON or arrays, you should implement the `Illuminate\Contracts\Support\Arrayable` and `JsonSerializable` interfaces on the value object.
 
 <a name="array-json-serialization"></a>
-### Сериализация в массив и JSON
+### Array / JSON Serialization
 
-Когда модель Eloquent преобразуется в массив или JSON с использованием методов `toArray` и `toJson`, ваши пользовательские типизаторы объекты-значения обычно будут сериализованы, в частности, пока они (типизаторы) реализуют интерфейсы `Illuminate\Contracts\Support\Arrayable` и `JsonSerializable`. Однако при использовании объектов-значений, предоставляемых сторонними библиотеками, у вас может не быть возможности добавить эти интерфейсы к объекту.
+When an Eloquent model is converted to an array or JSON using the `toArray` and `toJson` methods, your custom cast value objects will typically be serialized as well as long as they implement the `Illuminate\Contracts\Support\Arrayable` and `JsonSerializable` interfaces. However, when using value objects provided by third-party libraries, you may not have the ability to add these interfaces to the object.
 
-Поэтому вы можете указать, что ваш собственный класс типизатора будет отвечать за сериализацию объекта-значения. Для этого ваш собственный класс типизатора должно реализовывать интерфейс `Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes`. В этом интерфейсе указано, что ваш класс должен содержать метод `serialize`, возвращающий сериализованную форму вашего объекта значения:
+Therefore, you may specify that your custom cast class will be responsible for serializing the value object. To do so, your custom cast class should implement the `Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes` interface. This interface states that your class should contain a `serialize` method which should return the serialized form of your value object:
 
     /**
-     * Получить сериализованное представление значения.
+     * Get the serialized representation of the value.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
@@ -467,9 +641,9 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     }
 
 <a name="inbound-casting"></a>
-### Входящая типизация
+### Inbound Casting
 
-Иногда требуется написать свой типизатор, который только преобразует указанные значения атрибутов модели, и не выполняет никаких операций при обращении к этим атрибутам. Классическим примером только входящей типизации является «хеширование». Пользовательские типизаторы только для входящих значений должны реализовывать интерфейс `CastsInboundAttributes`, требующий определение метода `set`.
+Occasionally, you may need to write a custom cast that only transforms values that are being set on the model and does not perform any operations when attributes are being retrieved from the model. A classic example of an inbound only cast is a "hashing" cast. Inbound only custom casts should implement the `CastsInboundAttributes` interface, which only requires a `set` method to be defined.
 
     <?php
 
@@ -480,14 +654,14 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class Hash implements CastsInboundAttributes
     {
         /**
-         * Алгоритм хеширования.
+         * The hashing algorithm.
          *
          * @var string
          */
         protected $algorithm;
 
         /**
-         * Создать новый экземпляр класса типизации.
+         * Create a new cast class instance.
          *
          * @param  string|null  $algorithm
          * @return void
@@ -498,7 +672,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         }
 
         /**
-         * Подготовить переданное значение к сохранению.
+         * Prepare the given value for storage.
          *
          * @param  \Illuminate\Database\Eloquent\Model  $model
          * @param  string  $key
@@ -515,12 +689,12 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     }
 
 <a name="cast-parameters"></a>
-### Параметры типизации
+### Cast Parameters
 
-При добавлении пользовательского типизатора к модели, параметры типизатора задаются отделением их от имени класса с помощью символа `:` и разделением нескольких параметров запятыми. Параметры будут переданы в конструктор класса типизатора:
+When attaching a custom cast to a model, cast parameters may be specified by separating them from the class name using a `:` character and comma-delimiting multiple parameters. The parameters will be passed to the constructor of the cast class:
 
     /**
-     * Атрибуты, которые должны быть типизированы.
+     * The attributes that should be cast.
      *
      * @var array
      */
@@ -529,9 +703,9 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     ];
 
 <a name="castables"></a>
-### Интерфейс `Castable`
+### Castables
 
-Вы можете разрешить объектам-значениям вашего приложения определять свои собственные классы типизаторы. Вместо указания пользовательской типизации в модели, вы можете альтернативно указать класс, который реализует интерфейс `Illuminate\Contracts\Database\Eloquent\Castable`:
+You may want to allow your application's value objects to define their own custom cast classes. Instead of attaching the custom cast class to your model, you may alternatively attach a value object class that implements the `Illuminate\Contracts\Database\Eloquent\Castable` interface:
 
     use App\Models\Address;
 
@@ -539,7 +713,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         'address' => Address::class,
     ];
 
-Объекты, реализующие интерфейс `Castable`, должны определять метод `castUsing`, который возвращает имя [пользовательского класса типизатора](#value-object-casting), отвечающего за двустороннее преобразование:
+Objects that implement the `Castable` interface must define a `castUsing` method that returns the class name of the custom caster class that is responsible for casting to and from the `Castable` class:
 
     <?php
 
@@ -551,7 +725,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     class Address implements Castable
     {
         /**
-         * Получить имя класса типизатора для использования двустороннего преобразования.
+         * Get the name of the caster class to use when casting from / to this cast target.
          *
          * @param  array  $arguments
          * @return string
@@ -562,7 +736,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         }
     }
 
-При использовании классов `Castable` вы все равно можете указывать аргументы в свойстве `$casts`. Аргументы будут переданы методу `castUsing`:
+When using `Castable` classes, you may still provide arguments in the `$casts` definition. The arguments will be passed to the `castUsing` method:
 
     use App\Models\Address;
 
@@ -571,9 +745,9 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
     ];
 
 <a name="anonymous-cast-classes"></a>
-#### Интерфейс `Castable` и анонимные классы типизаторов
+#### Castables & Anonymous Cast Classes
 
-Комбинируя `castable` и [анонимными классами](https://www.php.net/manual/ru/language.oop5.anonymous.php) PHP, вы можете определить объект-значение и его логику преобразования как единый типизируемый объект. Для этого верните анонимный класс из метода `castUsing` вашего объекта-значения. Анонимный класс должен реализовывать интерфейс `CastsAttributes`:
+By combining "castables" with PHP's [anonymous classes](https://www.php.net/manual/en/language.oop5.anonymous.php), you may define a value object and its casting logic as a single castable object. To accomplish this, return an anonymous class from your value object's `castUsing` method. The anonymous class should implement the `CastsAttributes` interface:
 
     <?php
 
@@ -587,7 +761,7 @@ git bd5808288d5882b3177a80bda4825a50b5e02045
         // ...
 
         /**
-         * Получить имя класса типизатора для использования двустороннего преобразования.
+         * Get the caster class to use when casting from / to this cast target.
          *
          * @param  array  $arguments
          * @return object|string

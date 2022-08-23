@@ -1,31 +1,28 @@
-git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
+# Eloquent: Serialization
 
----
-
-# Eloquent · Сериализация
-
-- [Введение](#introduction)
-- [Сериализация моделей и коллекций](#serializing-models-and-collections)
-    - [Сериализация в массивы](#serializing-to-arrays)
-    - [Сериализация в JSON](#serializing-to-json)
-- [Скрытие атрибутов из JSON](#hiding-attributes-from-json)
-- [Добавление значений в JSON](#appending-values-to-json)
-- [Сериализация Даты](#date-serialization)
+- [Introduction](#introduction)
+- [Serializing Models & Collections](#serializing-models-and-collections)
+    - [Serializing To Arrays](#serializing-to-arrays)
+    - [Serializing To JSON](#serializing-to-json)
+- [Hiding Attributes From JSON](#hiding-attributes-from-json)
+- [Appending Values To JSON](#appending-values-to-json)
+- [Date Serialization](#date-serialization)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-При создании API-интерфейсов с использованием Laravel вам часто нужно преобразовывать свои модели и отношения в массивы или JSON. Eloquent включает удобные методы для выполнения этих преобразований, а также для управления тем, какие атрибуты включаются в сериализованное представление ваших моделей.
+When building APIs using Laravel, you will often need to convert your models and relationships to arrays or JSON. Eloquent includes convenient methods for making these conversions, as well as controlling which attributes are included in the serialized representation of your models.
 
-> {tip} Чтобы получить еще более надежный способ обработки JSON-сериализации модели Eloquent и коллекции, ознакомьтесь с документацией на [Ресурсы API Eloquent](/docs/{{version}}/eloquent-resources).
+> **Note**  
+> For an even more robust way of handling Eloquent model and collection JSON serialization, check out the documentation on [Eloquent API resources](/docs/{{version}}/eloquent-resources).
 
 <a name="serializing-models-and-collections"></a>
-## Сериализация моделей и коллекций
+## Serializing Models & Collections
 
 <a name="serializing-to-arrays"></a>
-### Сериализация в массивы
+### Serializing To Arrays
 
-Чтобы преобразовать модель и ее загруженные [отношения](/docs/{{version}}/eloquent-relationships) в массив, вы должны использовать метод `toArray`. Этот метод является рекурсивным, поэтому все атрибуты и все отношения (включая отношения отношений) будут преобразованы в массивы:
+To convert a model and its loaded [relationships](/docs/{{version}}/eloquent-relationships) to an array, you should use the `toArray` method. This method is recursive, so all attributes and all relations (including the relations of relations) will be converted to arrays:
 
     use App\Models\User;
 
@@ -33,22 +30,22 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
 
     return $user->toArray();
 
-Метод `attributesToArray` используется для преобразования атрибутов модели в массив, но не его отношений:
+The `attributesToArray` method may be used to convert a model's attributes to an array but not its relationships:
 
     $user = User::first();
 
     return $user->attributesToArray();
 
-Вы также можете преобразовать целые [коллекции](/docs/{{version}}/eloquent-collections) моделей в массивы, вызвав метод `toArray` экземпляра коллекции:
+You may also convert entire [collections](/docs/{{version}}/eloquent-collections) of models to arrays by calling the `toArray` method on the collection instance:
 
     $users = User::all();
 
     return $users->toArray();
 
 <a name="serializing-to-json"></a>
-### Сериализация в JSON
+### Serializing To JSON
 
-Чтобы преобразовать модель в JSON, вы должны использовать метод `toJson`. Как и `toArray`, метод `toJson` является рекурсивным, поэтому все атрибуты и отношения будут преобразованы в JSON. Вы также можете указать любые параметры кодировки JSON, которые [поддерживаются PHP](https://www.php.net/manual/ru/function.json-encode.php):
+To convert a model to JSON, you should use the `toJson` method. Like `toArray`, the `toJson` method is recursive, so all attributes and relations will be converted to JSON. You may also specify any JSON encoding options that are [supported by PHP](https://secure.php.net/manual/en/function.json-encode.php):
 
     use App\Models\User;
 
@@ -58,25 +55,25 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
 
     return $user->toJson(JSON_PRETTY_PRINT);
 
-В качестве альтернативы вы можете преобразовать модель или коллекцию в строку, которая автоматически вызовет метод `toJson` модели или коллекции:
+Alternatively, you may cast a model or collection to a string, which will automatically call the `toJson` method on the model or collection:
 
     return (string) User::find(1);
 
-Поскольку модели и коллекции преобразуются в JSON при преобразовании в строку, вы можете возвращать объекты Eloquent непосредственно из маршрутов или контроллеров вашего приложения. Laravel автоматически сериализует ваши модели и коллекции Eloquent в JSON, когда они возвращаются из маршрутов или контроллеров:
+Since models and collections are converted to JSON when cast to a string, you can return Eloquent objects directly from your application's routes or controllers. Laravel will automatically serialize your Eloquent models and collections to JSON when they are returned from routes or controllers:
 
     Route::get('users', function () {
         return User::all();
     });
 
 <a name="relationships"></a>
-#### Отношения
+#### Relationships
 
-Когда модель Eloquent преобразуется в JSON, ее загруженные отношения автоматически включаются в качестве атрибутов в объект JSON. Кроме того, хотя методы-отношения Eloquent определены с использованием имен методов в «верблюжьей нотации», атрибут JSON отношения будет в «змеиной нотации».
+When an Eloquent model is converted to JSON, its loaded relationships will automatically be included as attributes on the JSON object. Also, though Eloquent relationship methods are defined using "camel case" method names, a relationship's JSON attribute will be "snake case".
 
 <a name="hiding-attributes-from-json"></a>
-## Скрытие атрибутов из JSON
+## Hiding Attributes From JSON
 
-По желанию можно исключить атрибуты, такие как пароли, содержащиеся в массиве модели или представлении JSON. Для этого добавьте в модель свойство `$hidden`. Атрибуты, перечисленные в массиве свойств `$hidden`, не будут включены в сериализованное представление модели:
+Sometimes you may wish to limit the attributes, such as passwords, that are included in your model's array or JSON representation. To do so, add a `$hidden` property to your model. Attributes that are listed in the `$hidden` property's array will not be included in the serialized representation of your model:
 
     <?php
 
@@ -87,16 +84,17 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     class User extends Model
     {
         /**
-         * Атрибуты, которые должны быть скрыты из массивов.
+         * The attributes that should be hidden for arrays.
          *
          * @var array
          */
         protected $hidden = ['password'];
     }
 
-> {tip} Чтобы скрыть отношения, добавьте имя метода-отношения к свойству `$hidden` модели Eloquent.
+> **Note**  
+> To hide relationships, add the relationship's method name to your Eloquent model's `$hidden` property.
 
-В качестве альтернативы вы можете использовать свойство `visible` для определения «разрешенного списка» атрибутов, которые должны быть включены в массив модели и представление JSON. Все атрибуты, отсутствующие в массиве `$visible`, будут скрыты при преобразовании модели в массив или JSON:
+Alternatively, you may use the `visible` property to define an "allow list" of attributes that should be included in your model's array and JSON representation. All attributes that are not present in the `$visible` array will be hidden when the model is converted to an array or JSON:
 
     <?php
 
@@ -107,7 +105,7 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     class User extends Model
     {
         /**
-         * Атрибуты, которые должны быть видны в массивах.
+         * The attributes that should be visible in arrays.
          *
          * @var array
          */
@@ -115,41 +113,44 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     }
 
 <a name="temporarily-modifying-attribute-visibility"></a>
-#### Временное изменение видимости атрибута
+#### Temporarily Modifying Attribute Visibility
 
-По желанию можно сделать некоторые обычно скрытые атрибуты видимыми на конкретном экземпляре модели, для этого используйте метод `makeVisible`. Метод `makeVisible` возвращает экземпляр модели:
+If you would like to make some typically hidden attributes visible on a given model instance, you may use the `makeVisible` method. The `makeVisible` method returns the model instance:
 
     return $user->makeVisible('attribute')->toArray();
 
-Аналогично, если вы хотите скрыть некоторые атрибуты, которые обычно видны, вы можете использовать метод `makeHidden`:
+Likewise, if you would like to hide some attributes that are typically visible, you may use the `makeHidden` method.
 
     return $user->makeHidden('attribute')->toArray();
 
 <a name="appending-values-to-json"></a>
-## Добавление значений в JSON
+## Appending Values To JSON
 
-Иногда при преобразовании моделей в массивы или JSON вы можете добавить атрибуты, которым нет соответствующего столбца в вашей базе данных. Для этого сначала определите [аксессоры](/docs/{{version}}/eloquent-mutators) для значения:
+Occasionally, when converting models to arrays or JSON, you may wish to add attributes that do not have a corresponding column in your database. To do so, first define an [accessor](/docs/{{version}}/eloquent-mutators) for the value:
 
     <?php
 
     namespace App\Models;
 
+    use Illuminate\Database\Eloquent\Casts\Attribute;
     use Illuminate\Database\Eloquent\Model;
 
     class User extends Model
     {
         /**
-         * Определить, является ли пользователь администратором.
+         * Determine if the user is an administrator.
          *
-         * @return bool
+         * @return \Illuminate\Database\Eloquent\Casts\Attribute
          */
-        public function getIsAdminAttribute()
+        protected function isAdmin(): Attribute
         {
-            return $this->attributes['admin'] === 'yes';
+            return new Attribute(
+                get: fn () => 'yes',
+            );
         }
     }
 
-После создания аксессора добавьте имя атрибута к свойству `appends` модели. Обратите внимание, что на имена атрибутов обычно ссылаются в «змеиной нотации», даже если аксессор определяется с помощью «верблюжьей нотации»:
+After creating the accessor, add the attribute name to the `appends` property of your model. Note that attribute names are typically referenced using their "snake case" serialized representation, even though the accessor's PHP method is defined using "camel case":
 
     <?php
 
@@ -160,34 +161,34 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     class User extends Model
     {
         /**
-         * Аксессоры, добавляемые к массиву модели.
+         * The accessors to append to the model's array form.
          *
          * @var array
          */
         protected $appends = ['is_admin'];
     }
 
-После того, как атрибут был добавлен в список `appends`, он будет включен как в массив модели, так и в представления JSON. Атрибуты в массиве `appends` также будут учитывать настройки `visible` и `hidden`, заданные в модели.
+Once the attribute has been added to the `appends` list, it will be included in both the model's array and JSON representations. Attributes in the `appends` array will also respect the `visible` and `hidden` settings configured on the model.
 
 <a name="appending-at-run-time"></a>
-#### Добавление во время запроса
+#### Appending At Run Time
 
-Во время выполнения скрипта вы можете указать экземпляру модели добавить дополнительные атрибуты с помощью метода `append`. Или вы можете использовать метод `setAppends`, чтобы переопределить весь массив добавленных свойств для конкретного экземпляра модели:
+At runtime, you may instruct a model instance to append additional attributes using the `append` method. Or, you may use the `setAppends` method to override the entire array of appended properties for a given model instance:
 
     return $user->append('is_admin')->toArray();
 
     return $user->setAppends(['is_admin'])->toArray();
 
 <a name="date-serialization"></a>
-## Сериализация Даты
+## Date Serialization
 
 <a name="customizing-the-default-date-format"></a>
-#### Настройка формата даты по умолчанию
+#### Customizing The Default Date Format
 
-Вы можете настроить формат сериализации по умолчанию для всех дат вашей модели, переопределив метод `serializeDate` вашей модели. Этот метод не влияет на форматирование дат для их сохранения в базе данных:
+You may customize the default serialization format by overriding the `serializeDate` method. This method does not affect how your dates are formatted for storage in the database:
 
     /**
-     * Подготовить дату для сериализации массива / JSON.
+     * Prepare a date for array / JSON serialization.
      *
      * @param  \DateTimeInterface  $date
      * @return string
@@ -198,9 +199,9 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     }
 
 <a name="customizing-the-date-format-per-attribute"></a>
-#### Настройка формата даты для каждого атрибута
+#### Customizing The Date Format Per Attribute
 
-Вы можете настроить формат сериализации отдельных атрибутов даты, указав формат даты при [объявлении типизации](/docs/{{version}}/eloquent-mutators#attribute-casting) модели:
+You may customize the serialization format of individual Eloquent date attributes by specifying the date format in the model's [cast declarations](/docs/{{version}}/eloquent-mutators#attribute-casting):
 
     protected $casts = [
         'birthday' => 'date:Y-m-d',
