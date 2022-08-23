@@ -6,6 +6,7 @@
 @import 'fonts';
 @import 'header';
 @import 'mobile_menu';
+@import 'item_card';
 @import 'footer';
 
 // Bootstrap
@@ -69,11 +70,11 @@ body{
                 }
             }
             .social-item-whatsup{
-                path:first-child, path:last-child{
-                    fill: white;
-                }
-                path:nth-child(2){
+                path:first-child{
                     fill: #5D6C7BFF;
+                }
+                path:last-child{
+                    fill: white;
                 }
             }
             svg path{
@@ -83,7 +84,7 @@ body{
                 .social-item-viber path{
                     fill: #9c3fb4;
                 }
-                .social-item-whatsup path:nth-child(2){
+                .social-item-whatsup path:first-child{
                     fill: #4caf50;
                 }
                 .social-item-telegram path{

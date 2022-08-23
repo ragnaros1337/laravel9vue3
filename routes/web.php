@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+    use App\Models\KugooSamokat;
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
+});
+Route::get('/a', function () {
+    return DB::table('kugoo_samokats')->exists();
 });

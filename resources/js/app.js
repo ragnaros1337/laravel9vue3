@@ -19,8 +19,10 @@ const app = createApp({});
 
 //import ExampleComponent from './components/ExampleComponent.vue';
 import layoutVue from './components/layoutVue.vue';
+import ItemCard from './components/ItemCard.vue';
 //app.component('example-component', ExampleComponent);
 app.component('layout_vue', layoutVue);
+app.component('item_card', ItemCard);
 
 /**
  * The following block of code may be used to automatically register your

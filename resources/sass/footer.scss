@@ -80,6 +80,10 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 border-radius: 15px;
                 border: none;
                 color: white;
+<<<<<<< Updated upstream
+=======
+                margin-left: auto;
+>>>>>>> Stashed changes
                 &::placeholder{
                     color: white;
                 }
@@ -94,13 +98,25 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 display: flex;
                 justify-content: center;
                 align-items: center;
+<<<<<<< Updated upstream
                 margin-left: 20px;
+=======
+                //see
+                margin-left: 95px;
+>>>>>>> Stashed changes
             }
         }
         .footer-links{
             border-bottom: 2px solid #ECF3FF;
             padding-top: 30px;
             padding-bottom: 30px;
+            justify-content: space-between;
+            .footer-link{
+                margin-right: 46px;
+            }
+            .footer-link:last-child{
+                margin-right: 0;
+            }
             ul{
                 padding-left: 0;
             }
@@ -108,10 +124,22 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 font-weight: 700;
                 margin-bottom: 17px;
             }
+            .footer-links-context{
+                display: flex;
+                flex-direction: row;
+            }
             .footer-links-buyers, .footer-links-catalog{
                 .footer-links-item-link{
                     color: $text_color;
                     margin-bottom: 10px;
+                }
+            }
+            .footer-links-buyers{
+                .footer-links-items{
+                    margin: 0 46px 0 0;
+                }
+                .footer-links-items:last-child{
+                    margin: 0;
                 }
             }
             .footer-links-contacts{
@@ -132,6 +160,9 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                     .footer-links-items{
                         display: flex;
                         flex-direction: row;
+                        .footer-links-item{
+                            max-width: 160px;
+                        }
                         .footer-links-items-link{
                             font-weight: 700;
                         }
@@ -163,26 +194,40 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 }
             }
             .footer-media-brand{
-                text-transform: uppercase;
-                font-size: 30px;
-                font-weight: 700;
-                line-height: 44px;
+                display: flex;
+                align-items: center;
+                margin-right: 50px;
             }
             .footer-media-store{
+                flex-direction: row;
+                display: flex;
                 .footer-media-btn{
+                    flex-direction: row;
+                    display: flex;
+                    align-items: center;
                     background: white;
                     border-radius: 10px;
                     border: none;
                     color: black;
+                    margin-right: 10px;
+                    padding: 10px;
+                    min-width: 135px;
+                    svg{
+                        margin-right: 10px;
+                    }
                     .footer-media-store-text{
                         display: flex;
                         flex-direction: column;
                         align-items: flex-start;
+                        font-size: 14px;
+                        text-align: left;
                         .footer-media-store-text-top{
-
+                            line-height: 20px;
+                            font-weight: 500;
                         }
                         .footer-media-store-text-bottom{
                             font-weight: 700;
+                            line-height: 14px;
                         }
                     }
                 }
@@ -219,6 +264,7 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                 .footer-payments-left{
                     .footer-payments-left-link{
                         color: $text_color;
+                        margin-right: 40px;
                     }
                 }
                 .footer-payments-right{
@@ -229,13 +275,26 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                         flex-direction: row;
                         .footer-payments-right-bank{
                             background: white;
-                            border-radius: 50%;
+                            border-radius: 5px;
                             border: none;
+                            padding: 5px;
+                            width: 40px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-right: 5px;
                         }
+                    }
+                    .footer-payments-right-chats{
+                        justify-content: center;
+                        align-items: center;
                         .footer-payments-right-chat{
                             svg{
                                 height: 20px;
                                 width: 20px;
+                            }
+                            svg:first-child{
+                                margin-left: 9px;
                             }
                         }
                     }
