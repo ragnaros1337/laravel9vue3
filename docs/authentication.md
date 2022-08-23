@@ -1,148 +1,146 @@
-git 9dd7fc9d33c357a65ed951076d64887ca37582a6
+# Authentication
 
----
-
-# Аутентификация
-
-- [Введение](#introduction)
-    - [Стартовые комплекты](#starter-kits)
-    - [Рекомендации по базе данных](#introduction-database-considerations)
-    - [Обзор экосистемы](#ecosystem-overview)
-- [Быстрый запуск аутентификации](#authentication-quickstart)
-    - [Установка стартовых комплектов](#install-a-starter-kit)
-    - [Получение аутентифицированного пользователя](#retrieving-the-authenticated-user)
-    - [Защита маршрутов](#protecting-routes)
-    - [Частота попыток входа в приложение](#login-throttling)
-- [Самостоятельная реализация аутентификации пользователей](#authenticating-users)
-    - [Запоминание пользователей](#remembering-users)
-    - [Другие методы аутентификации](#other-authentication-methods)
-- [Basic HTTP-аутентификация](#http-basic-authentication)
-    - [Basic HTTP-аутентификация без сохранения состояния](#stateless-http-basic-authentication)
-- [Выход из приложения](#logging-out)
-    - [Аннулирование сессий на других устройствах](#invalidating-sessions-on-other-devices)
-- [Подтверждение пароля](#password-confirmation)
-    - [Конфигурация подтверждения пароля](#password-confirmation-configuration)
-    - [Маршрутизация подтверждения пароля](#password-confirmation-routing)
-    - [Защита маршрутов](#password-confirmation-protecting-routes)
-- [Добавление своих охранников аутентификации](#adding-custom-guards)
-    - [Анонимные охранники аутентификации на базе HTTP-запросов](#closure-request-guards)
-- [Добавление своих провайдеров пользователей](#adding-custom-user-providers)
-    - [Контракт `UserProvider`](#the-user-provider-contract)
-    - [Контракт `Authenticatable`](#the-authenticatable-contract)
-- [Аутентификация через социальные сети](#socialite)
-- [События](#events)
+- [Introduction](#introduction)
+    - [Starter Kits](#starter-kits)
+    - [Database Considerations](#introduction-database-considerations)
+    - [Ecosystem Overview](#ecosystem-overview)
+- [Authentication Quickstart](#authentication-quickstart)
+    - [Install A Starter Kit](#install-a-starter-kit)
+    - [Retrieving The Authenticated User](#retrieving-the-authenticated-user)
+    - [Protecting Routes](#protecting-routes)
+    - [Login Throttling](#login-throttling)
+- [Manually Authenticating Users](#authenticating-users)
+    - [Remembering Users](#remembering-users)
+    - [Other Authentication Methods](#other-authentication-methods)
+- [HTTP Basic Authentication](#http-basic-authentication)
+    - [Stateless HTTP Basic Authentication](#stateless-http-basic-authentication)
+- [Logging Out](#logging-out)
+    - [Invalidating Sessions On Other Devices](#invalidating-sessions-on-other-devices)
+- [Password Confirmation](#password-confirmation)
+    - [Configuration](#password-confirmation-configuration)
+    - [Routing](#password-confirmation-routing)
+    - [Protecting Routes](#password-confirmation-protecting-routes)
+- [Adding Custom Guards](#adding-custom-guards)
+    - [Closure Request Guards](#closure-request-guards)
+- [Adding Custom User Providers](#adding-custom-user-providers)
+    - [The User Provider Contract](#the-user-provider-contract)
+    - [The Authenticatable Contract](#the-authenticatable-contract)
+- [Social Authentication](/docs/{{version}}/socialite)
+- [Events](#events)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Многие веб-приложения предоставляют своим пользователям возможность аутентифицироваться в приложении и «войти в систему». Реализация этого функционала в веб-приложениях может быть сложной и потенциально рискованной задачей. По этой причине Laravel стремится предоставить вам инструменты, необходимые для быстрой, безопасной и простой реализации аутентификации.
+Many web applications provide a way for their users to authenticate with the application and "login". Implementing this feature in web applications can be a complex and potentially risky endeavor. For this reason, Laravel strives to give you the tools you need to implement authentication quickly, securely, and easily.
 
-По своей сути средства аутентификации Laravel состоят из «охранников» и «провайдеров». Охранники определяют, как пользователи проходят проверку подлинности для каждого запроса. Например, Laravel поставляется с охранником `session`, который поддерживает состояние, используя хранилище сессий и файлы Cookies.
+At its core, Laravel's authentication facilities are made up of "guards" and "providers". Guards define how users are authenticated for each request. For example, Laravel ships with a `session` guard which maintains state using session storage and cookies.
 
-Провайдеры определяют, как пользователи извлекаются из вашего постоянного хранилища. Laravel поставляется с поддержкой получения пользователей с помощью [Eloquent](/docs/{{version}}/eloquent) и построителя запросов к базе данных. Однако вы можете определить дополнительных провайдеров, если это необходимо для вашего приложения.
+Providers define how users are retrieved from your persistent storage. Laravel ships with support for retrieving users using [Eloquent](/docs/{{version}}/eloquent) and the database query builder. However, you are free to define additional providers as needed for your application.
 
-Файл конфигурации аутентификации вашего приложения находится в `config/auth.php`. Этот файл содержит несколько хорошо задокументированных вариантов для настройки поведения служб аутентификации Laravel.
+Your application's authentication configuration file is located at `config/auth.php`. This file contains several well-documented options for tweaking the behavior of Laravel's authentication services.
 
-> {tip} Охранников и провайдеров не следует путать с «ролями» и «разрешениями». Чтобы узнать больше об авторизации действий пользователя с помощью разрешений, обратитесь к документации по [авторизации](/docs/{{version}}/authorization).
+> **Note**  
+> Guards and providers should not be confused with "roles" and "permissions". To learn more about authorizing user actions via permissions, please refer to the [authorization](/docs/{{version}}/authorization) documentation.
 
 <a name="starter-kits"></a>
-### Стартовые комплекты
+### Starter Kits
 
-Хотите быстро начать работу? Установите [стартовый комплект приложения](/docs/{{version}}/starter-kits) в новое приложение Laravel. После миграции базы данных перейдите в браузере по адресу `/register` или любому другому URL-адресу вашего приложения. Стартовые комплекты возьмут на себя создание всей вашей системы аутентификации!
+Want to get started fast? Install a [Laravel application starter kit](/docs/{{version}}/starter-kits) in a fresh Laravel application. After migrating your database, navigate your browser to `/register` or any other URL that is assigned to your application. The starter kits will take care of scaffolding your entire authentication system!
 
-**Если вы, все же решите не использовать стартовый комплект в своем текущем приложении Laravel, то установка стартового комплекта [Laravel Breeze](/docs/{{version}}/starter-kits#laravel-breeze) может стать прекрасной возможностью узнать, как реализуется вся функциональность аутентификации в актуальных проектах Laravel.** Поскольку Laravel Breeze создаст для вас контроллеры аутентификации, маршруты и шаблоны, то вы можете изучить код в этих файлах, чтобы узнать, как может быть реализован функционал аутентификации Laravel.
+**Even if you choose not to use a starter kit in your final Laravel application, installing the [Laravel Breeze](/docs/{{version}}/starter-kits#laravel-breeze) starter kit can be a wonderful opportunity to learn how to implement all of Laravel's authentication functionality in an actual Laravel project.** Since Laravel Breeze creates authentication controllers, routes, and views for you, you can examine the code within these files to learn how Laravel's authentication features may be implemented.
 
 <a name="introduction-database-considerations"></a>
-### Рекомендации по базе данных
+### Database Considerations
 
-По умолчанию Laravel содержит [модель Eloquent](/docs/{{version}}/eloquent) `App\Models\User` в вашем каталоге `app/Models`. Эта модель использует по умолчанию драйвер аутентификации `eloquent`. Если ваше приложение не использует Eloquent, то вы можете использовать драйвер аутентификации `database`, основанный на построителе запросов Laravel.
+By default, Laravel includes an `App\Models\User` [Eloquent model](/docs/{{version}}/eloquent) in your `app/Models` directory. This model may be used with the default Eloquent authentication driver. If your application is not using Eloquent, you may use the `database` authentication provider which uses the Laravel query builder.
 
-При построении схемы базы данных для модели `App\Models\User` убедитесь, что длина столбца `password` не менее 60 символов. Конечно, миграция таблицы пользователей, включенная в новые приложения Laravel, уже содержит столбец, длина которого превышает эту длину.
+When building the database schema for the `App\Models\User` model, make sure the password column is at least 60 characters in length. Of course, the `users` table migration that is included in new Laravel applications already creates a column that exceeds this length.
 
-Кроме того, вы должны убедиться, что ваша таблица `users` (или эквивалентная) содержит столбец `remember_token` с параметрами `VARCHAR(100) NULL`. Этот столбец будет использоваться для хранения токена для пользователей, которые выбирают опцию «Запомнить меня» при входе в ваше приложение. Опять же, миграция таблицы пользователей по умолчанию, которая включена в новые приложения Laravel, уже содержит этот столбец.
+Also, you should verify that your `users` (or equivalent) table contains a nullable, string `remember_token` column of 100 characters. This column will be used to store a token for users that select the "remember me" option when logging into your application. Again, the default `users` table migration that is included in new Laravel applications already contains this column.
 
 <a name="ecosystem-overview"></a>
-### Обзор экосистемы
+### Ecosystem Overview
 
-Laravel предлагает несколько пакетов, связанных с аутентификацией. Прежде чем продолжить, мы рассмотрим общую экосистему аутентификации в Laravel и обсудим предназначение каждого пакета.
+Laravel offers several packages related to authentication. Before continuing, we'll review the general authentication ecosystem in Laravel and discuss each package's intended purpose.
 
-Во-первых, рассмотрим, как работает аутентификация. При использовании веб-браузера пользователь вводит свое имя пользователя и пароль через форму входа. Если эти учетные данные верны, то приложение будет хранить информацию об аутентифицированном пользователе в [сессии](/docs/{{version}}/session) пользователя. Файл cookie, отправленный браузеру, содержит идентификатор сессии, чтобы последующие запросы к приложению могли связать пользователя с правильной сессией. После получения файла cookie сессии, приложение извлекает данные сессии на основе идентификатора сессии, отмечает, что аутентификационная информация была сохранена в сессии, и рассматривает пользователя как «аутентифицированного».
+First, consider how authentication works. When using a web browser, a user will provide their username and password via a login form. If these credentials are correct, the application will store information about the authenticated user in the user's [session](/docs/{{version}}/session). A cookie issued to the browser contains the session ID so that subsequent requests to the application can associate the user with the correct session. After the session cookie is received, the application will retrieve the session data based on the session ID, note that the authentication information has been stored in the session, and will consider the user as "authenticated".
 
-Когда удаленной службе необходимо пройти аутентификации для доступа к API, файлы cookie обычно не используются для проверки подлинности, поскольку веб-браузер отсутствует. Вместо этого удаленная служба отправляет API-токен при каждом запросе к API. Приложение может проверять входящий токен по таблице допустимых API-токенов и «аутентифицировать» запрос как выполняемый пользователем, связанным с этим API-токеном.
+When a remote service needs to authenticate to access an API, cookies are not typically used for authentication because there is no web browser. Instead, the remote service sends an API token to the API on each request. The application may validate the incoming token against a table of valid API tokens and "authenticate" the request as being performed by the user associated with that API token.
 
 <a name="laravels-built-in-browser-authentication-services"></a>
-#### Службы Web-аутентификации Laravel из коробки
+#### Laravel's Built-in Browser Authentication Services
 
-Laravel содержит встроенные службы аутентификации и сессии, которые обычно доступны через фасады `Auth` и `Session`. Этот функционал обеспечивают аутентификацию на основе файлов Cookies для запросов, которые инициируются из веб-браузеров. Они предоставляют методы, которые позволяют вам проверять учетные данные пользователя и аутентифицировать пользователя. Кроме того, эти службы автоматически сохраняют необходимые данные аутентификации в сессии пользователя и выдают cookie сессии пользователя. В этой документации содержится информация о том, как использовать эти службы.
+Laravel includes built-in authentication and session services which are typically accessed via the `Auth` and `Session` facades. These features provide cookie-based authentication for requests that are initiated from web browsers. They provide methods that allow you to verify a user's credentials and authenticate the user. In addition, these services will automatically store the proper authentication data in the user's session and issue the user's session cookie. A discussion of how to use these services is contained within this documentation.
 
-**Стартовые комплекты приложения**
+**Application Starter Kits**
 
-Как уже было написано в этой документации, вы можете взаимодействовать с этими службами аутентификации напрямую, чтобы создать собственный слой аутентификации вашего приложения. Однако, чтобы помочь вам быстрее приступить к работе, мы выпустили [бесплатные пакеты](/docs/{{version}}/starter-kits), которые обеспечивают надежную и современную основу всего слоя аутентификации. Это пакеты Laravel Breeze, Laravel Jetstream и Laravel Fortify.
+As discussed in this documentation, you can interact with these authentication services manually to build your application's own authentication layer. However, to help you get started more quickly, we have released [free packages](/docs/{{version}}/starter-kits) that provide robust, modern scaffolding of the entire authentication layer. These packages are [Laravel Breeze](/docs/{{version}}/starter-kits#laravel-breeze), [Laravel Jetstream](/docs/{{version}}/starter-kits#laravel-jetstream), and [Laravel Fortify](/docs/{{version}}/fortify).
 
-[**Laravel Breeze**](/docs/{{version}}/starter-kits#laravel-breeze) – это простая, минимальная реализация всех возможностей аутентификации Laravel, включая вход в систему, регистрацию, сброс пароля, подтверждение электронной почты и подтверждение пароля. Слой представления Laravel Breeze состоит из простых [шаблонов Blade](/docs/{{version}}/blade), стилизованных с помощью [Tailwind CSS](https://tailwindcss.com). Чтобы начать использование, ознакомьтесь с документацией по [стартовым комплектам](/docs/{{version}}/starter-kits). Breeze также предлагает вариант создания каркасов на основе [Inertia](https://inertiajs.com) с использованием Vue или React.
+_Laravel Breeze_ is a simple, minimal implementation of all of Laravel's authentication features, including login, registration, password reset, email verification, and password confirmation. Laravel Breeze's view layer is comprised of simple [Blade templates](/docs/{{version}}/blade) styled with [Tailwind CSS](https://tailwindcss.com). To get started, check out the documentation on Laravel's [application starter kits](/docs/{{version}}/starter-kits).
 
-[**Laravel Fortify**](/docs/{{version}}/fortify) – это лишь серверная часть аутентификации для Laravel, которая реализует многие возможности, описанные в этой документации, включая аутентификацию на основе файлов cookie, а также другие возможности, такие как двухфакторная аутентификация и проверка электронной почты. Fortify обеспечивает серверную реализацию аутентификации для Laravel Jetstream, но может использоваться и независимо в сочетании с [Laravel Sanctum](/docs/{{version}}/sanctum) для обеспечения одностраничных приложений (SPA) возможностью аутентификацией с Laravel.
+_Laravel Fortify_ is a headless authentication backend for Laravel that implements many of the features found in this documentation, including cookie-based authentication as well as other features such as two-factor authentication and email verification. Fortify provides the authentication backend for Laravel Jetstream or may be used independently in combination with [Laravel Sanctum](/docs/{{version}}/sanctum) to provide authentication for an SPA that needs to authenticate with Laravel.
 
-[**Laravel Jetstream**](https://jetstream.laravel.com) – это надежный стартовый комплект, который использует и предлагает службы аутентификации Laravel Fortify, но с красивым современным пользовательским интерфейсом на основе [Tailwind CSS](https://tailwindcss.com), [Livewire](https://laravel-livewire.com) и / или [Inertia.js](https://inertiajs.com). Laravel Jetstream дополнительно включает поддержку двухфакторной аутентификации, поддержку команды, управление сеансами браузера, управление профилями и встроенную интеграцию с [Laravel Sanctum](/docs/{{version}}/sanctum) для аутентификации токена API.
+_[Laravel Jetstream](https://jetstream.laravel.com)_ is a robust application starter kit that consumes and exposes Laravel Fortify's authentication services with a beautiful, modern UI powered by [Tailwind CSS](https://tailwindcss.com), [Livewire](https://laravel-livewire.com), and / or [Inertia](https://inertiajs.com). Laravel Jetstream includes optional support for two-factor authentication, team support, browser session management, profile management, and built-in integration with [Laravel Sanctum](/docs/{{version}}/sanctum) to offer API token authentication. Laravel's API authentication offerings are discussed below.
 
 <a name="laravels-api-authentication-services"></a>
-#### Службы API-аутентификации Laravel
+#### Laravel's API Authentication Services
 
-Laravel предлагает два дополнительных пакета, которые помогут вам в управлении токенами API и аутентификации запросов, сделанных с помощью токенов API: [Passport](/docs/{{version}}/passport) и [Sanctum](/docs/{{version}}/sanctum). Обратите внимание, что эти библиотеки и встроенные в Laravel библиотеки аутентификации на основе файлов cookie не являются взаимоисключающими. Эти библиотеки в основном ориентированы на аутентификацию токена API, в то время как встроенные службы аутентификации ориентированы на web-аутентификацию на основе файлов cookie. Многие приложения будут использовать как встроенные службы аутентификации Laravel на основе файлов cookie, так и один из пакетов API-аутентификации Laravel.
+Laravel provides two optional packages to assist you in managing API tokens and authenticating requests made with API tokens: [Passport](/docs/{{version}}/passport) and [Sanctum](/docs/{{version}}/sanctum). Please note that these libraries and Laravel's built-in cookie based authentication libraries are not mutually exclusive. These libraries primarily focus on API token authentication while the built-in authentication services focus on cookie based browser authentication. Many applications will use both Laravel's built-in cookie based authentication services and one of Laravel's API authentication packages.
 
 **Passport**
 
-Passport – это провайдер аутентификации OAuth2, предлагающий различные OAuth2 Grant Types («способы запросы»), которые позволяют вам выдавать различные типы токенов. В общем, это надежный и сложный пакет для аутентификации API. Однако большинству приложений не требуются сложный функционал, предлагаемый спецификацией OAuth2, что может сбивать с толку как пользователей, так и разработчиков. Кроме того, разработчики исторически не понимали, как аутентифицировать приложения SPA или мобильные приложения с помощью провайдеров аутентификации OAuth2, таких, как Passport.
+Passport is an OAuth2 authentication provider, offering a variety of OAuth2 "grant types" which allow you to issue various types of tokens. In general, this is a robust and complex package for API authentication. However, most applications do not require the complex features offered by the OAuth2 spec, which can be confusing for both users and developers. In addition, developers have been historically confused about how to authenticate SPA applications or mobile applications using OAuth2 authentication providers like Passport.
 
 **Sanctum**
 
-В ответ на сложность OAuth2 и путаницу разработчиков мы решили создать более простой и оптимизированный пакет аутентификации, который мог бы обрабатывать как сторонние веб-запросы из браузера, так и запросы API через токены. Эта цель была реализована с выпуском [Laravel Sanctum](/docs/{{version}}/sanctum), который следует считать предпочтительным и рекомендуемым пакетом аутентификации для приложений, и который будет предлагать собственный веб-интерфейс в дополнение к API, или работать с одностраничным приложением (SPA), которое существует отдельно от серверного приложения Laravel, или приложений, предлагающих мобильный клиент.
+In response to the complexity of OAuth2 and developer confusion, we set out to build a simpler, more streamlined authentication package that could handle both first-party web requests from a web browser and API requests via tokens. This goal was realized with the release of [Laravel Sanctum](/docs/{{version}}/sanctum), which should be considered the preferred and recommended authentication package for applications that will be offering a first-party web UI in addition to an API, or will be powered by a single-page application (SPA) that exists separately from the backend Laravel application, or applications that offer a mobile client.
 
-[Laravel Sanctum](/docs/{{version}}/sanctum) – это гибридный пакет аутентификации через Web / API, который может управлять всем процессом аутентификации вашего приложения. Это возможно, потому что когда приложения на основе Sanctum получают запрос, Sanctum сначала определяет, содержит ли запрос файл cookie сессии, который ссылается на аутентифицированную сессию. Sanctum выполняет это, вызывая встроенные службы аутентификации Laravel, которые мы обсуждали ранее. Если запрос не аутентифицируется с помощью файла cookie сессии, то Sanctum проверит запрос на наличие токена API. Если присутствует токен API, то Sanctum аутентифицирует запрос с помощью этого токена. Чтобы узнать больше об этом процессе, обратитесь к разделу [«Как это работает»](/docs/{{version}}/sanctum#how-it-works) документации Sanctum.
+Laravel Sanctum is a hybrid web / API authentication package that can manage your application's entire authentication process. This is possible because when Sanctum based applications receive a request, Sanctum will first determine if the request includes a session cookie that references an authenticated session. Sanctum accomplishes this by calling Laravel's built-in authentication services which we discussed earlier. If the request is not being authenticated via a session cookie, Sanctum will inspect the request for an API token. If an API token is present, Sanctum will authenticate the request using that token. To learn more about this process, please consult Sanctum's ["how it works"](/docs/{{version}}/sanctum#how-it-works) documentation.
 
-Laravel Sanctum – это пакет API, который мы выбрали для включения в стартовый комплект [Laravel Jetstream](https://jetstream.laravel.com), потому что мы считаем, что он лучше всего подходит для большинства веб-приложений, требующих аутентификации.
+Laravel Sanctum is the API package we have chosen to include with the [Laravel Jetstream](https://jetstream.laravel.com) application starter kit because we believe it is the best fit for the majority of web application's authentication needs.
 
 <a name="summary-choosing-your-stack"></a>
-#### Предварительный итог и выбор вашего стека
+#### Summary & Choosing Your Stack
 
-Таким образом, если ваше приложение будет доступно через браузер, и вы создаете монолитное приложение Laravel, то ваше приложение будет использовать встроенные службы аутентификации Laravel.
+In summary, if your application will be accessed using a browser and you are building a monolithic Laravel application, your application will use Laravel's built-in authentication services.
 
-Затем, если ваше приложение предлагает API, который будут использовать третьи стороны, то вы можете выбрать между [Passport](/docs/{{version}}/passport) или [Sanctum](/docs/{{version}}/sanctum), чтобы обеспечить аутентификацию токена API для вашего приложения. В целом, по возможности следует отдавать предпочтение Sanctum, поскольку это простое и полное решение для аутентификации API, аутентификации SPA и мобильной аутентификации, включая поддержку «scopes» или «abilities».
+Next, if your application offers an API that will be consumed by third parties, you will choose between [Passport](/docs/{{version}}/passport) or [Sanctum](/docs/{{version}}/sanctum) to provide API token authentication for your application. In general, Sanctum should be preferred when possible since it is a simple, complete solution for API authentication, SPA authentication, and mobile authentication, including support for "scopes" or "abilities".
 
-Если вы создаете одностраничное приложение (SPA), которое будет работать с серверной частью Laravel, то вам следует использовать [Laravel Sanctum](/docs/{{version}}/sanctum). При использовании Sanctum вам потребуется либо [самостоятельно реализовать свои собственные маршруты аутентификации на сервере](#authenticating-users), либо использовать [Laravel Fortify](/docs/{{version}}/fortify) как серверную службу аутентификации, которая предлагает маршруты и контроллеры для такого функционала, как регистрация, сброс пароля, подтверждение электронной почты и многое другое.
+If you are building a single-page application (SPA) that will be powered by a Laravel backend, you should use [Laravel Sanctum](/docs/{{version}}/sanctum). When using Sanctum, you will either need to [manually implement your own backend authentication routes](#authenticating-users) or utilize [Laravel Fortify](/docs/{{version}}/fortify) as a headless authentication backend service that provides routes and controllers for features such as registration, password reset, email verification, and more.
 
-Passport можно выбрать, если вашему приложению необходим абсолютно весь функционал, предоставляемый спецификацией OAuth2.
+Passport may be chosen when your application absolutely needs all of the features provided by the OAuth2 specification.
 
-И, если вы хотите быстро начать работу, то мы рады порекомендовать пакет [Laravel Jetstream](https://jetstream.laravel.com) как быстрый способ запустить новое приложение Laravel, который уже использует предпочтительный стек аутентификации: встроенные службы аутентификации Laravel и Laravel Sanctum.
+And, if you would like to get started quickly, we are pleased to recommend [Laravel Jetstream](https://jetstream.laravel.com) as a quick way to start a new Laravel application that already uses our preferred authentication stack of Laravel's built-in authentication services and Laravel Sanctum.
 
 <a name="authentication-quickstart"></a>
-## Быстрый запуск аутентификации
+## Authentication Quickstart
 
-> {note} В этой части документации обсуждается аутентификация пользователей с помощью [стартовых комплектов Laravel](/docs/{{version}}/starter-kits), которые включают в себя каркас пользовательского интерфейса, и помогут вам быстро начать работу. Если вы хотите напрямую интегрироваться с системами аутентификации Laravel, то ознакомьтесь с документацией по [самостоятельной аутентификации пользователей](#authenticating-users).
+> **Warning**  
+> This portion of the documentation discusses authenticating users via the [Laravel application starter kits](/docs/{{version}}/starter-kits), which includes UI scaffolding to help you get started quickly. If you would like to integrate with Laravel's authentication systems directly, check out the documentation on [manually authenticating users](#authenticating-users).
 
 <a name="install-a-starter-kit"></a>
-### Установка стартовых комплектов
+### Install A Starter Kit
 
-Во-первых, вы должны [установить стартовый комплект Laravel](/docs/{{version}}/starter-kits). Наши текущие стартовые комплекты, Laravel Breeze и Laravel Jetstream, предлагают красиво оформленные отправные точки для интеграции аутентификации в ваше новое приложение Laravel.
+First, you should [install a Laravel application starter kit](/docs/{{version}}/starter-kits). Our current starter kits, Laravel Breeze and Laravel Jetstream, offer beautifully designed starting points for incorporating authentication into your fresh Laravel application.
 
-Laravel Breeze – это минимальная и простая реализация всех возможностей аутентификации Laravel, включая вход в систему, регистрацию, сброс пароля, подтверждение электронной почты и подтверждение пароля. Слой представления Laravel Breeze состоит из простых [шаблонов Blade](/docs/{{version}}/blade), стилизованных с помощью [Tailwind CSS](https://tailwindcss.com).
+Laravel Breeze is a minimal, simple implementation of all of Laravel's authentication features, including login, registration, password reset, email verification, and password confirmation. Laravel Breeze's view layer is made up of simple [Blade templates](/docs/{{version}}/blade) styled with [Tailwind CSS](https://tailwindcss.com). Breeze also offers an [Inertia](https://inertiajs.com) based scaffolding option using Vue or React.
 
-[Laravel Jetstream](https://jetstream.laravel.com) – это более надежный стартовый комплект для приложений, который включает поддержку построения вашего приложения с помощью [Livewire](https://laravel-livewire.com) или [Inertia.js и Vue](https://inertiajs.com). Кроме того, Jetstream предлагает дополнительную поддержку двухфакторной аутентификации, команд, управления профилями, управления сеансами браузера, поддержки API через [Laravel Sanctum](/docs/{{version}}/sanctum), удаления аккаунтов и т. д.
+[Laravel Jetstream](https://jetstream.laravel.com) is a more robust application starter kit that includes support for scaffolding your application with [Livewire](https://laravel-livewire.com) or [Inertia and Vue](https://inertiajs.com). In addition, Jetstream features optional support for two-factor authentication, teams, profile management, browser session management, API support via [Laravel Sanctum](/docs/{{version}}/sanctum), account deletion, and more.
 
 <a name="retrieving-the-authenticated-user"></a>
-### Получение аутентифицированного пользователя
+### Retrieving The Authenticated User
 
-После установки стартового аутентификационного комплекта и вашего разрешения пользователям регистрироваться и аутентифицироваться в приложении, вам часто будет требоваться взаимодействовать с текущим аутентифицированным пользователем. При обработке входящего запроса вы можете получить доступ к аутентифицированному пользователю с помощью метода `user` фасада `Auth`:
+After installing an authentication starter kit and allowing users to register and authenticate with your application, you will often need to interact with the currently authenticated user. While handling an incoming request, you may access the authenticated user via the `Auth` facade's `user` method:
 
     use Illuminate\Support\Facades\Auth;
 
-    // Получить текущего аутентифицированного пользователя ...
+    // Retrieve the currently authenticated user...
     $user = Auth::user();
 
-    // Получить текущего аутентифицированного пользователя по идентификатору ...
+    // Retrieve the currently authenticated user's ID...
     $id = Auth::id();
 
-В качестве альтернативы, как только пользователь аутентифицирован, вы можете получить доступ к аутентифицированному пользователю через экземпляр `Illuminate\Http\Request`. Помните, что объявленные типы зависимостей в методах вашего контроллера будут автоматически внедрены. Объявив объект `Illuminate\Http\Request`, вы можете получить доступ к аутентифицированному пользователю из любого метода контроллера вашего приложения с помощью метода `user` запроса:
+Alternatively, once a user is authenticated, you may access the authenticated user via an `Illuminate\Http\Request` instance. Remember, type-hinted classes will automatically be injected into your controller methods. By type-hinting the `Illuminate\Http\Request` object, you may gain convenient access to the authenticated user from any controller method in your application via the request's `user` method:
 
     <?php
 
@@ -153,7 +151,7 @@ Laravel Breeze – это минимальная и простая реализ�
     class FlightController extends Controller
     {
         /**
-         * Обновить информацию о рейсе.
+         * Update the flight information for an existing flight.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return \Illuminate\Http\Response
@@ -165,34 +163,35 @@ Laravel Breeze – это минимальная и простая реализ�
     }
 
 <a name="determining-if-the-current-user-is-authenticated"></a>
-#### Определение статуса аутентификации пользователя
+#### Determining If The Current User Is Authenticated
 
-Чтобы определить, аутентифицирован ли пользователь, выполняющий входящий HTTP-запрос, вы можете использовать метод `check` фасада `Auth`. Этот метод вернет `true`, если пользователь аутентифицирован:
+To determine if the user making the incoming HTTP request is authenticated, you may use the `check` method on the `Auth` facade. This method will return `true` if the user is authenticated:
 
     use Illuminate\Support\Facades\Auth;
 
     if (Auth::check()) {
-        //
+        // The user is logged in...
     }
 
-> {tip} Несмотря на то, что можно определить, аутентифицирован ли пользователь с помощью метода `check`, вы обычно будете использовать посредника для проверки статуса аутентификации пользователя перед предоставлением пользователю доступа к определенным маршрутам / контроллерам. Чтобы узнать больше об этом, ознакомьтесь с документацией по [защите маршрутов](#protecting-routes).
+> **Note**  
+> Even though it is possible to determine if a user is authenticated using the `check` method, you will typically use a middleware to verify that the user is authenticated before allowing the user access to certain routes / controllers. To learn more about this, check out the documentation on [protecting routes](/docs/{{version}}/authentication#protecting-routes).
 
 <a name="protecting-routes"></a>
-### Защита маршрутов
+### Protecting Routes
 
-[Посредник маршрута](/docs/{{version}}/middleware) используется для того, чтобы разрешить только аутентифицированным пользователям доступ к указанному маршруту. Laravel содержит посредник `auth`, который ссылается на класс `Illuminate\Auth\Middleware\Authenticate`. Поскольку этот посредник уже зарегистрирован в HTTP-ядре вашего приложения, все, что вам нужно сделать, это задать посредника к определению маршрута:
+[Route middleware](/docs/{{version}}/middleware) can be used to only allow authenticated users to access a given route. Laravel ships with an `auth` middleware, which references the `Illuminate\Auth\Middleware\Authenticate` class. Since this middleware is already registered in your application's HTTP kernel, all you need to do is attach the middleware to a route definition:
 
     Route::get('/flights', function () {
-        // Только аутентифицированные пользователи могут получить доступ к этому маршруту ...
+        // Only authenticated users may access this route...
     })->middleware('auth');
 
 <a name="redirecting-unauthenticated-users"></a>
-#### Перенаправление неаутентифицированных пользователей
+#### Redirecting Unauthenticated Users
 
-Когда посредник `auth` обнаруживает неаутентифицированного пользователя, он перенаправляет пользователя на [именованный маршрут](/docs/{{version}}/routing#named-routes) `login`. Вы можете изменить это поведение, обновив функцию `redirectTo` в файле `app/Http/Middleware/Authenticate.php` вашего приложения:
+When the `auth` middleware detects an unauthenticated user, it will redirect the user to the `login` [named route](/docs/{{version}}/routing#named-routes). You may modify this behavior by updating the `redirectTo` function in your application's `app/Http/Middleware/Authenticate.php` file:
 
     /**
-     * Получить путь, по которому пользователь должен быть перенаправлен.
+     * Get the path the user should be redirected to.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return string
@@ -203,27 +202,28 @@ Laravel Breeze – это минимальная и простая реализ�
     }
 
 <a name="specifying-a-guard"></a>
-#### Указание охранника аутентификации
+#### Specifying A Guard
 
-При задании посредника `auth` маршруту вы также можете указать, какой «охранник» должен использоваться для аутентификации пользователя. Указанный охранник должен соответствовать одному из указанных в массиве `guards` конфигурационного файла `config/auth.php`:
+When attaching the `auth` middleware to a route, you may also specify which "guard" should be used to authenticate the user. The guard specified should correspond to one of the keys in the `guards` array of your `auth.php` configuration file:
 
     Route::get('/flights', function () {
-        // Только аутентифицированные пользователи могут получить доступ к этому маршруту ...
+        // Only authenticated users may access this route...
     })->middleware('auth:admin');
 
 <a name="login-throttling"></a>
-### Частота попыток входа в приложение
+### Login Throttling
 
-Если вы используете [стартовые комплекты](/docs/{{version}}/starter-kits) Laravel Breeze или Laravel Jetstream, то к попыткам входа в систему будет автоматически применяться ограничение. По умолчанию, если пользователь не сможет предоставить правильные учетные данные после нескольких попыток, то он не сможет войти в систему в течение одной минуты. Частота попыток уникальна для имени пользователя / адреса электронной почты и в совокупности с IP-адресом.
+If you are using the Laravel Breeze or Laravel Jetstream [starter kits](/docs/{{version}}/starter-kits), rate limiting will automatically be applied to login attempts. By default, the user will not be able to login for one minute if they fail to provide the correct credentials after several attempts. The throttling is unique to the user's username / email address and their IP address.
 
-> {tip} Если вы хотите ограничить частоту запросов к другим маршрутам своего приложения, то ознакомьтесь с [документацией по ограничению частоты запросов](/docs/{{version}}/routing#rate-limiting).
+> **Note**  
+> If you would like to rate limit other routes in your application, check out the [rate limiting documentation](/docs/{{version}}/routing#rate-limiting).
 
 <a name="authenticating-users"></a>
-## Самостоятельная реализация аутентификации пользователей
+## Manually Authenticating Users
 
-Вам необязательно использовать каркас аутентификации, включенный в [стартовые комплекты](/docs/{{version}}/starter-kits) Laravel. Если вы решите не использовать их, то вам нужно будет управлять аутентификацией пользователей напрямую, используя классы аутентификации Laravel. Не волнуйтесь, но это круто!
+You are not required to use the authentication scaffolding included with Laravel's [application starter kits](/docs/{{version}}/starter-kits). If you choose not to use this scaffolding, you will need to manage user authentication using the Laravel authentication classes directly. Don't worry, it's a cinch!
 
-Мы получим доступ к службам аутентификации Laravel через [фасад](/docs/{{version}}/facades) `Auth`, поэтому нам нужно обязательно импортировать фасад `Auth` в верхней части нашего класса. Далее, давайте проверим метод `attempt`. Метод `attempt` обычно используется для обработки попыток аутентификации из формы входа в систему вашего приложения. Если аутентификация прошла успешно, то вы должны повторно создать [сессию](/docs/{{version}}/session) пользователя, чтобы предотвратить [фиксацию сессии](https://en.wikipedia.org/wiki/Session_fixation):
+We will access Laravel's authentication services via the `Auth` [facade](/docs/{{version}}/facades), so we'll need to make sure to import the `Auth` facade at the top of the class. Next, let's check out the `attempt` method. The `attempt` method is normally used to handle authentication attempts from your application's "login" form. If authentication is successful, you should regenerate the user's [session](/docs/{{version}}/session) to prevent [session fixation](https://en.wikipedia.org/wiki/Session_fixation):
 
     <?php
 
@@ -235,9 +235,9 @@ Laravel Breeze – это минимальная и простая реализ�
     class LoginController extends Controller
     {
         /**
-         * Обработка попыток аутентификации.
+         * Handle an authentication attempt.
          *
-         * @param  \Illuminate\Http\Request $request
+         * @param  \Illuminate\Http\Request  $request
          * @return \Illuminate\Http\Response
          */
         public function authenticate(Request $request)
@@ -255,116 +255,138 @@ Laravel Breeze – это минимальная и простая реализ�
 
             return back()->withErrors([
                 'email' => 'The provided credentials do not match our records.',
-            ]);
+            ])->onlyInput('email');
         }
     }
 
-Метод `attempt` принимает массив пар ключ / значение в качестве своего первого аргумента. Значения в массиве будут использоваться для поиска пользователя в таблице базы данных. Итак, в приведенном выше примере пользователь будет извлечен по значению столбца `email`. Если пользователь найден, то хешированный пароль, хранящийся в базе данных, будет сравниваться со значением `password`, переданным в метод через массив. Вы не должны хешировать значение пароля входящего запроса, поскольку фреймворк автоматически хеширует это значение, прежде чем сравнивать его с хешированным паролем в базе данных. Если два хешированных пароля совпадают, то для пользователя будет запущена аутентифицированная сессия.
+The `attempt` method accepts an array of key / value pairs as its first argument. The values in the array will be used to find the user in your database table. So, in the example above, the user will be retrieved by the value of the `email` column. If the user is found, the hashed password stored in the database will be compared with the `password` value passed to the method via the array. You should not hash the incoming request's `password` value, since the framework will automatically hash the value before comparing it to the hashed password in the database. An authenticated session will be started for the user if the two hashed passwords match.
 
-Помните, что службы аутентификации Laravel будут получать пользователей из вашей базы данных на основе конфигурации провайдера вашего охранника аутентификации. В конфигурационном файле `config/auth.php` по умолчанию указан провайдер пользователей Eloquent, и ему дано указание использовать модель `App\Models\User` при получении пользователей. Вы можете изменить эти значения в своем файле конфигурации в зависимости от потребностей вашего приложения.
+Remember, Laravel's authentication services will retrieve users from your database based on your authentication guard's "provider" configuration. In the default `config/auth.php` configuration file, the Eloquent user provider is specified and it is instructed to use the `App\Models\User` model when retrieving users. You may change these values within your configuration file based on the needs of your application.
 
-Метод `attempt` вернет `true`, если аутентификация прошла успешно. В противном случае будет возвращено `false`.
+The `attempt` method will return `true` if authentication was successful. Otherwise, `false` will be returned.
 
-Метод `intended` экземпляра `Illuminate\Routing\Redirector` Laravel, будет перенаправлять пользователя на URL-адрес, к которому он пытался получить доступ, прежде чем он будет перехвачен посредником аутентификации. Этому методу может быть предоставлен резервный URI, в случае, если методу `intended` переданный адрес недоступен.
+The `intended` method provided by Laravel's redirector will redirect the user to the URL they were attempting to access before being intercepted by the authentication middleware. A fallback URI may be given to this method in case the intended destination is not available.
 
 <a name="specifying-additional-conditions"></a>
-#### Указание дополнительных условий
+#### Specifying Additional Conditions
 
-При желании вы также можете добавить дополнительные условия запроса к запросу аутентификации в дополнение к электронной почте и паролю пользователя. Для этого мы можем просто добавить условия запроса в массив, переданному методу `attempt`. Например, мы можем проверить, что пользователь отмечен как «активный»:
+If you wish, you may also add extra query conditions to the authentication query in addition to the user's email and password. To accomplish this, we may simply add the query conditions to the array passed to the `attempt` method. For example, we may verify that the user is marked as "active":
 
     if (Auth::attempt(['email' => $email, 'password' => $password, 'active' => 1])) {
         // Authentication was successful...
     }
 
-> {note} В этих примерах `email` не является обязательным параметром, он просто используется в качестве примера. Вы должны использовать любое имя столбца, равнозначное «имени пользователя» в таблице базы данных.
+> **Warning**  
+> In these examples, `email` is not a required option, it is merely used as an example. You should use whatever column name corresponds to a "username" in your database table.
+
+The `attemptWhen` method, which receives a closure as its second argument, may be used to perform more extensive inspection of the potential user before actually authenticating the user. The closure receives the potential user and should return `true` or `false` to indicate if the user may be authenticated:
+
+    if (Auth::attemptWhen([
+        'email' => $email,
+        'password' => $password,
+    ], function ($user) {
+        return $user->isNotBanned();
+    })) {
+        // Authentication was successful...
+    }
 
 <a name="accessing-specific-guard-instances"></a>
-#### Доступ к конкретному экземпляру охранника аутентификации
+#### Accessing Specific Guard Instances
 
-Используя метод `guard` фасада `Auth`, вы можете указать, какой экземпляр охранника вы хотите использовать при аутентификации пользователя. Это позволяет вам управлять аутентификацией для отдельных частей вашего приложения с использованием абсолютно отдельных аутентифицируемых моделей или пользовательских таблиц.
+Via the `Auth` facade's `guard` method, you may specify which guard instance you would like to utilize when authenticating the user. This allows you to manage authentication for separate parts of your application using entirely separate authenticatable models or user tables.
 
-Имя охранника, переданное методу `guard`, должно соответствовать одному из настроенных в вашем файле конфигурации `auth.php` охраннику:
+The guard name passed to the `guard` method should correspond to one of the guards configured in your `auth.php` configuration file:
 
     if (Auth::guard('admin')->attempt($credentials)) {
         // ...
     }
 
 <a name="remembering-users"></a>
-### Запоминание пользователей
+### Remembering Users
 
-Многие веб-приложения содержат флажок «Запомнить меня» в форме входа. Если вы хотите реализовать функционал «Запомнить меня» в своем приложении, то вы можете передать логическое значение в качестве второго аргумента метода `attempt`.
+Many web applications provide a "remember me" checkbox on their login form. If you would like to provide "remember me" functionality in your application, you may pass a boolean value as the second argument to the `attempt` method.
 
-Когда это значение равно `true`, Laravel будет поддерживать аутентификацию пользователя неопределенно долго или до тех пор, пока он не выйдет из системы вручную. Ваша таблица `users` должна включать столбец `remember_token`, который будет использоваться для хранения токена функционала «Запомнить меня». Миграция таблицы пользователей, входящая в новые приложения Laravel, уже содержит этот столбец:
+When this value is `true`, Laravel will keep the user authenticated indefinitely or until they manually logout. Your `users` table must include the string `remember_token` column, which will be used to store the "remember me" token. The `users` table migration included with new Laravel applications already includes this column:
 
     use Illuminate\Support\Facades\Auth;
 
     if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-        // Запоминаем пользователя ...
+        // The user is being remembered...
+    }
+
+If your application offers "remember me" functionality, you may use the `viaRemember`  method to determine if the currently authenticated user was authenticated using the "remember me" cookie:
+
+    use Illuminate\Support\Facades\Auth;
+
+    if (Auth::viaRemember()) {
+        // ...
     }
 
 <a name="other-authentication-methods"></a>
-### Другие методы аутентификации
+### Other Authentication Methods
 
 <a name="authenticate-a-user-instance"></a>
-#### Аутентификация пользователя по экземпляру модели
+#### Authenticate A User Instance
 
-Если вам нужно задать экземпляр существующего пользователя в качестве текущего аутентифицированного, то вы можете передать этот экземпляр методу `login` фасада `Auth`. Переданный экземпляр пользователя должен быть реализацией [контракта](/docs/{{version}}/contracts) `Illuminate\Contracts\Auth\Authenticatable`. Модель `App\Models\User`, поставляемая с Laravel, уже реализует этот интерфейс. Этот метод аутентификации полезен, когда у вас уже есть экземпляр пользователя, например, сразу после того, как пользователь регистрируется в вашем приложении:
+If you need to set an existing user instance as the currently authenticated user, you may pass the user instance to the `Auth` facade's `login` method. The given user instance must be an implementation of the `Illuminate\Contracts\Auth\Authenticatable` [contract](/docs/{{version}}/contracts). The `App\Models\User` model included with Laravel already implements this interface. This method of authentication is useful when you already have a valid user instance, such as directly after a user registers with your application:
 
     use Illuminate\Support\Facades\Auth;
 
     Auth::login($user);
 
-Вы можете передать логическое значение в качестве второго аргумента метода `login`. Это значение указывает, требуется ли для аутентифицированной сессии функциональность «Запомнить меня». Помните, это означает, что сессия будет аутентифицироваться бесконечно или до тех пор, пока пользователь вручную не выйдет из приложения:
+You may pass a boolean value as the second argument to the `login` method. This value indicates if "remember me" functionality is desired for the authenticated session. Remember, this means that the session will be authenticated indefinitely or until the user manually logs out of the application:
 
     Auth::login($user, $remember = true);
 
-При необходимости вы можете указать охранника аутентификации перед вызовом метода `login`:
+If needed, you may specify an authentication guard before calling the `login` method:
 
     Auth::guard('admin')->login($user);
 
 <a name="authenticate-a-user-by-id"></a>
-#### Аутентификация пользователя по идентификатору
+#### Authenticate A User By ID
 
-Для аутентификации пользователя с использованием первичного ключа записи в базе данных вы можете использовать метод `loginUsingId`. Этот метод принимает первичный ключ пользователя, которого вы хотите аутентифицировать:
+To authenticate a user using their database record's primary key, you may use the `loginUsingId` method. This method accepts the primary key of the user you wish to authenticate:
 
     Auth::loginUsingId(1);
 
-Вы можете передать логическое значение в качестве второго аргумента метода `loginUsingId`. Это значение указывает, требуется ли для аутентифицированной сессии функциональность «Запомнить меня». Помните, это означает, что сессия будет аутентифицироваться бесконечно или до тех пор, пока пользователь вручную не выйдет из приложения:
+You may pass a boolean value as the second argument to the `loginUsingId` method. This value indicates if "remember me" functionality is desired for the authenticated session. Remember, this means that the session will be authenticated indefinitely or until the user manually logs out of the application:
 
     Auth::loginUsingId(1, $remember = true);
 
 <a name="authenticate-a-user-once"></a>
-#### Аутентификация пользователя для текущего запроса
+#### Authenticate A User Once
 
-Вы можете использовать метод `once` для аутентификации пользователя в приложении только для одного запроса. При вызове этого метода не будут использоваться сессии или файлы cookie:
+You may use the `once` method to authenticate a user with the application for a single request. No sessions or cookies will be utilized when calling this method:
 
     if (Auth::once($credentials)) {
         //
     }
 
 <a name="http-basic-authentication"></a>
-## Basic HTTP-аутентификация
+## HTTP Basic Authentication
 
-[Basic HTTP-аутентификация](https://en.wikipedia.org/wiki/Basic_access_authentication) обеспечивает быстрый способ аутентификации пользователей вашего приложения без создания специальной «страницы входа». Для начала задайте маршруту [посредника](/docs/{{version}}/middleware) `auth.basic`. Посредник `auth.basic` поставляется с Laravel, поэтому вам не нужно его определять:
+[HTTP Basic Authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) provides a quick way to authenticate users of your application without setting up a dedicated "login" page. To get started, attach the `auth.basic` [middleware](/docs/{{version}}/middleware) to a route. The `auth.basic` middleware is included with the Laravel framework, so you do not need to define it:
 
     Route::get('/profile', function () {
-        // Только аутентифицированные пользователи могут получить доступ к этому маршруту ...
+        // Only authenticated users may access this route...
     })->middleware('auth.basic');
 
-После того как посредник задан маршруту, вам будет автоматически предложено ввести учетные данные при доступе к маршруту в вашем браузере. По умолчанию посредник `auth.basic` предполагает, что столбец `email` в вашей таблице базы данных `users` является его «логином».
+Once the middleware has been attached to the route, you will automatically be prompted for credentials when accessing the route in your browser. By default, the `auth.basic` middleware will assume the `email` column on your `users` database table is the user's "username".
 
 <a name="a-note-on-fastcgi"></a>
-#### Примечание о FastCGI
+#### A Note On FastCGI
 
-Если вы используете PHP FastCGI и Apache для своего приложения Laravel, то аутентификация HTTP Basic может работать некорректно. Чтобы исправить эти проблемы, в файл `.htaccess` вашего приложения можно добавить следующие строки:
+If you are using PHP FastCGI and Apache to serve your Laravel application, HTTP Basic authentication may not work correctly. To correct these problems, the following lines may be added to your application's `.htaccess` file:
 
-    RewriteCond %{HTTP:Authorization} ^(.+)$
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+```apache
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+```
 
 <a name="stateless-http-basic-authentication"></a>
-### Basic HTTP-аутентификация без сохранения состояния
+### Stateless HTTP Basic Authentication
 
-Вы также можете использовать Basic HTTP-аутентификацию без задания cookie идентификатора пользователя в сессии. Это в первую очередь полезно, если вы решите использовать HTTP-аутентификацию для аутентификации запросов к API вашего приложения. Для этого [определите посредника](/docs/{{version}}/middleware), который вызывает метод `onceBasic`. Если метод `onceBasic` не возвращает ответа, то запрос может быть передан дальше в приложение:
+You may also use HTTP Basic Authentication without setting a user identifier cookie in the session. This is primarily helpful if you choose to use HTTP Authentication to authenticate requests to your application's API. To accomplish this, [define a middleware](/docs/{{version}}/middleware) that calls the `onceBasic` method. If no response is returned by the `onceBasic` method, the request may be passed further into the application:
 
     <?php
 
@@ -375,7 +397,7 @@ Laravel Breeze – это минимальная и простая реализ�
     class AuthenticateOnceWithBasicAuth
     {
         /**
-         * Обработка входящего запроса.
+         * Handle an incoming request.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  \Closure  $next
@@ -388,26 +410,26 @@ Laravel Breeze – это минимальная и простая реализ�
 
     }
 
-Затем [зарегистрируйте посредника](/docs/{{version}}/middleware#registering-middleware) и задайте его маршруту:
+Next, [register the route middleware](/docs/{{version}}/middleware#registering-middleware) and attach it to a route:
 
     Route::get('/api/user', function () {
-        // Только аутентифицированные пользователи могут получить доступ к этому маршруту ...
+        // Only authenticated users may access this route...
     })->middleware('auth.basic.once');
 
 <a name="logging-out"></a>
-## Выход из приложения
+## Logging Out
 
-Чтобы обеспечить пользователю возможность выхода из вашего приложения, вы можете использовать метод `logout` фасада `Auth`. Это удалит информацию аутентификации из сессии пользователя, так что последующие запросы не будут аутентифицированы.
+To manually log users out of your application, you may use the `logout` method provided by the `Auth` facade. This will remove the authentication information from the user's session so that subsequent requests are not authenticated.
 
-В дополнение к вызову метода `logout` рекомендуется аннулировать сессию пользователя и повторно сгенерировать его [токен CSRF](/docs/{{version}}/csrf). После выхода пользователя из системы вы обычно перенаправляете пользователя в корень вашего приложения:
+In addition to calling the `logout` method, it is recommended that you invalidate the user's session and regenerate their [CSRF token](/docs/{{version}}/csrf). After logging the user out, you would typically redirect the user to the root of your application:
 
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Auth;
 
     /**
-     * Выход пользователя из приложения.
+     * Log the user out of the application.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function logout(Request $request)
@@ -422,56 +444,57 @@ Laravel Breeze – это минимальная и простая реализ�
     }
 
 <a name="invalidating-sessions-on-other-devices"></a>
-### Аннулирование сессий на других устройствах
+### Invalidating Sessions On Other Devices
 
-Laravel также предлагает механизм для «выхода» пользователя и аннулирования сессий, активных на других устройствах, без аннулирования сессии на его текущем устройстве. Этот функционал обычно используется, когда пользователь меняет или обновляет свой пароль, и вы хотите аннулировать сессии на других устройствах, сохранив аутентификацию текущего устройства.
+Laravel also provides a mechanism for invalidating and "logging out" a user's sessions that are active on other devices without invalidating the session on their current device. This feature is typically utilized when a user is changing or updating their password and you would like to invalidate sessions on other devices while keeping the current device authenticated.
 
-Перед тем как начать, вы должны убедиться, что посредник `Illuminate\Session\Middleware\AuthenticateSession` присутствует и не закомментирован в вашей группе посредников `web` класса `App\Http\Kernel`:
+Before getting started, you should make sure that the `Illuminate\Session\Middleware\AuthenticateSession` middleware is included on the routes that should receive session authentication. Typically, you should place this middleware on a route group definition so that it can be applied to the majority of your application's routes. By default, the `AuthenticateSession` middleware may be attached to a route using the `auth.session` route middleware key as defined in your application's HTTP kernel:
 
-    'web' => [
-        // ...
-        \Illuminate\Session\Middleware\AuthenticateSession::class,
-        // ...
-    ],
+    Route::middleware(['auth', 'auth.session'])->group(function () {
+        Route::get('/', function () {
+            // ...
+        });
+    });
 
-Затем вы можете использовать метод `logoutOtherDevices` фасада `Auth`. Этот метод требует, чтобы пользователь подтвердил свой текущий пароль, который ваше приложение должно принять через форму ввода:
+Then, you may use the `logoutOtherDevices` method provided by the `Auth` facade. This method requires the user to confirm their current password, which your application should accept through an input form:
 
     use Illuminate\Support\Facades\Auth;
 
     Auth::logoutOtherDevices($currentPassword);
 
-Когда вызывается метод `logoutOtherDevices`, другие сессии пользователя будут полностью аннулированы, то есть он будут «отключен» от всех охранников, которым он ранее был аутентифицированы.
+When the `logoutOtherDevices` method is invoked, the user's other sessions will be invalidated entirely, meaning they will be "logged out" of all guards they were previously authenticated by.
 
 <a name="password-confirmation"></a>
-## Подтверждение пароля
+## Password Confirmation
 
-При создании приложения вы можете потребовать от пользователя подтверждения пароля перед выполнением действия или перед перенаправлением пользователя в конфиденциальный раздел приложения. Laravel содержит встроенный посредник для упрощения этого процесса. Реализация этого функционала потребует от вас определения двух маршрутов: один маршрут для отображения шаблона, предлагающего пользователю подтвердить свой пароль, и другой маршрут для уточнения действительности пароля и дальнейшего перенаправления его к необходимому разделу.
+While building your application, you may occasionally have actions that should require the user to confirm their password before the action is performed or before the user is redirected to a sensitive area of the application. Laravel includes built-in middleware to make this process a breeze. Implementing this feature will require you to define two routes: one route to display a view asking the user to confirm their password and another route to confirm that the password is valid and redirect the user to their intended destination.
 
-> {tip} В следующей документации обсуждается, как напрямую интегрироваться с функционалом подтверждения пароля Laravel; однако, если вы хотите начать работу быстрее, то [стартовые комплекты Laravel](/docs/{{version}}/starter-kits) уже включают поддержку этого функционала!
+> **Note**  
+> The following documentation discusses how to integrate with Laravel's password confirmation features directly; however, if you would like to get started more quickly, the [Laravel application starter kits](/docs/{{version}}/starter-kits) include support for this feature!
 
 <a name="password-confirmation-configuration"></a>
-### Конфигурация подтверждения пароля
+### Configuration
 
-После подтверждения пароля пользователю не будет предлагаться повторно подтвердить пароль в течение трех часов. Однако вы можете настроить время, по истечении которого пользователю будет предложено повторно ввести пароль, изменив значение параметра конфигурации `password_timeout` в файле конфигурации `config/auth.php` вашего приложения.
+After confirming their password, a user will not be asked to confirm their password again for three hours. However, you may configure the length of time before the user is re-prompted for their password by changing the value of the `password_timeout` configuration value within your application's `config/auth.php` configuration file.
 
 <a name="password-confirmation-routing"></a>
-### Маршрутизация подтверждения пароля
+### Routing
 
 <a name="the-password-confirmation-form"></a>
-#### Форма подтверждения пароля
+#### The Password Confirmation Form
 
-Сначала мы определим маршрут для отображения шаблона формы с запросом у пользователя подтверждения своего пароля:
+First, we will define a route to display a view that requests the user to confirm their password:
 
     Route::get('/confirm-password', function () {
         return view('auth.confirm-password');
     })->middleware('auth')->name('password.confirm');
 
-Как и следовало ожидать, шаблон, возвращаемый этим маршрутом, должен иметь форму, содержащую поле `password`. Кроме того, добавьте текст, который объясняет, что пользователь входит в защищенный раздел приложения и должен подтвердить свой пароль.
+As you might expect, the view that is returned by this route should have a form containing a `password` field. In addition, feel free to include text within the view that explains that the user is entering a protected area of the application and must confirm their password.
 
 <a name="confirming-the-password"></a>
-#### Процесс подтверждения пароля
+#### Confirming The Password
 
-Затем мы определим маршрут, который будет обрабатывать запрос формы из шаблона «подтвердить пароль». Этот маршрут будет отвечать за проверку пароля и перенаправление пользователя к месту назначения:
+Next, we will define a route that will handle the form request from the "confirm password" view. This route will be responsible for validating the password and redirecting the user to their intended destination:
 
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Hash;
@@ -487,14 +510,14 @@ Laravel также предлагает механизм для «выхода»
         $request->session()->passwordConfirmed();
 
         return redirect()->intended();
-    })->middleware(['auth', 'throttle:6,1'])->name('password.confirm');
+    })->middleware(['auth', 'throttle:6,1']);
 
-Прежде чем двигаться дальше, давайте рассмотрим этот маршрут более подробно. Во-первых, определяется, что поле `password` запроса действительно соответствует паролю аутентифицированного пользователя. Если пароль действителен, то нам нужно сообщить сессии Laravel, что пользователь подтвердил свой пароль. Метод `passwordConfirmed` устанавливает временную метку в сессии пользователя, которую Laravel может использовать, чтобы определить, когда пользователь последний раз подтвердил свой пароль. Наконец, мы можем перенаправить пользователя по назначению.
+Before moving on, let's examine this route in more detail. First, the request's `password` field is determined to actually match the authenticated user's password. If the password is valid, we need to inform Laravel's session that the user has confirmed their password. The `passwordConfirmed` method will set a timestamp in the user's session that Laravel can use to determine when the user last confirmed their password. Finally, we can redirect the user to their intended destination.
 
 <a name="password-confirmation-protecting-routes"></a>
-### Защита маршрутов
+### Protecting Routes
 
-Вы должны убедиться, что любому маршруту, связанному с подтверждением пароля, назначен посредник `password.confirm`. Этот посредник входит в стандартную установку Laravel и автоматически сохраняет предполагаемое место назначения пользователя в сессии, чтобы пользователя можно было перенаправить в это место после подтверждения своего пароля. После сохранения предполагаемого пункта назначения пользователя в сессии посредник перенаправит пользователя на [именованный маршрут](/docs/{{version}}/routing#named-routes) `password.confirm`:
+You should ensure that any route that performs an action which requires recent password confirmation is assigned the `password.confirm` middleware. This middleware is included with the default installation of Laravel and will automatically store the user's intended destination in the session so that the user may be redirected to that location after confirming their password. After storing the user's intended destination in the session, the middleware will redirect the user to the `password.confirm` [named route](/docs/{{version}}/routing#named-routes):
 
     Route::get('/settings', function () {
         // ...
@@ -505,9 +528,9 @@ Laravel также предлагает механизм для «выхода»
     })->middleware(['password.confirm']);
 
 <a name="adding-custom-guards"></a>
-## Добавление своих охранников аутентификации
+## Adding Custom Guards
 
-Вы можете определить своих собственных охранников аутентификации, используя метод `extend` фасада `Auth`. Вы должны разместить свой вызов метода `extend` внутри [поставщика служб](/docs/{{version}}/providers). Поскольку Laravel уже содержит `AuthServiceProvider`, мы можем разместить код в этом поставщике:
+You may define your own authentication guards using the `extend` method on the `Auth` facade. You should place your call to the `extend` method within a [service provider](/docs/{{version}}/providers). Since Laravel already ships with an `AuthServiceProvider`, we can place the code in that provider:
 
     <?php
 
@@ -520,7 +543,7 @@ Laravel также предлагает механизм для «выхода»
     class AuthServiceProvider extends ServiceProvider
     {
         /**
-         * Регистрация любых служб аутентификации / авторизации.
+         * Register any application authentication / authorization services.
          *
          * @return void
          */
@@ -529,14 +552,14 @@ Laravel также предлагает механизм для «выхода»
             $this->registerPolicies();
 
             Auth::extend('jwt', function ($app, $name, array $config) {
-                // Возвращаем экземпляр `Illuminate\Contracts\Auth\Guard` ...
+                // Return an instance of Illuminate\Contracts\Auth\Guard...
 
                 return new JwtGuard(Auth::createUserProvider($config['provider']));
             });
         }
     }
 
-Как вы можете видеть в приведенном выше примере, замыкание, переданное методу `extend`, должно возвращать реализацию `Illuminate\Contracts\Auth\Guard`. Этот интерфейс содержит несколько методов, которые вам необходимо реализовать для определения своего охранника. После того как ваш охранник был определен, вы можете ссылаться на него в конфигурации `guards` конфигурационного файла `config/auth.php`:
+As you can see in the example above, the callback passed to the `extend` method should return an implementation of `Illuminate\Contracts\Auth\Guard`. This interface contains a few methods you will need to implement to define a custom guard. Once your custom guard has been defined, you may reference the guard in the `guards` configuration of your `auth.php` configuration file:
 
     'guards' => [
         'api' => [
@@ -546,18 +569,18 @@ Laravel также предлагает механизм для «выхода»
     ],
 
 <a name="closure-request-guards"></a>
-### Анонимные охранники аутентификации на базе HTTP-запросов
+### Closure Request Guards
 
-Самый простой способ реализовать собственную систему аутентификации на базе HTTP-запросов – использовать метод `Auth::viaRequest`. Этот метод позволяет быстро определить процесс аутентификации с помощью одного замыкания.
+The simplest way to implement a custom, HTTP request based authentication system is by using the `Auth::viaRequest` method. This method allows you to quickly define your authentication process using a single closure.
 
-Для начала вызовите метод `Auth::viaRequest` в методе `boot` вашего `AuthServiceProvider`. Метод `viaRequest` принимает имя драйвера аутентификации в качестве своего первого аргумента. Это имя может быть любой строкой, описывающей вашего охранника. Второй аргумент, передаваемый методу, должно быть замыкание, которое принимает входящий HTTP-запрос и возвращает экземпляр пользователя или, если аутентификация не удалась, то `null`:
+To get started, call the `Auth::viaRequest` method within the `boot` method of your `AuthServiceProvider`. The `viaRequest` method accepts an authentication driver name as its first argument. This name can be any string that describes your custom guard. The second argument passed to the method should be a closure that receives the incoming HTTP request and returns a user instance or, if authentication fails, `null`:
 
     use App\Models\User;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Auth;
 
     /**
-     * Регистрация любых служб аутентификации / авторизации.
+     * Register any application authentication / authorization services.
      *
      * @return void
      */
@@ -570,7 +593,7 @@ Laravel также предлагает механизм для «выхода»
         });
     }
 
-После того как ваш драйвер аутентификации был определен, вы можете настроить его как драйвер в конфигурации `guards` конфигурационного файла `config/auth.php`:
+Once your custom authentication driver has been defined, you may configure it as a driver within the `guards` configuration of your `auth.php` configuration file:
 
     'guards' => [
         'api' => [
@@ -579,9 +602,9 @@ Laravel также предлагает механизм для «выхода»
     ],
 
 <a name="adding-custom-user-providers"></a>
-## Добавление своих провайдеров пользователей
+## Adding Custom User Providers
 
-Если вы не используете традиционную реляционную базу данных для хранения своих пользователей, то вам нужно будет расширить Laravel своим собственным провайдером аутентификации пользователей. Мы будем использовать метод `provider` фасада `Auth` для определения собственного провайдера пользователей. Провайдер пользователей должен вернуть реализацию `Illuminate\Contracts\Auth\UserProvider`:
+If you are not using a traditional relational database to store your users, you will need to extend Laravel with your own authentication user provider. We will use the `provider` method on the `Auth` facade to define a custom user provider. The user provider resolver should return an implementation of `Illuminate\Contracts\Auth\UserProvider`:
 
     <?php
 
@@ -594,7 +617,7 @@ Laravel также предлагает механизм для «выхода»
     class AuthServiceProvider extends ServiceProvider
     {
         /**
-         * Регистрация любых служб аутентификации / авторизации.
+         * Register any application authentication / authorization services.
          *
          * @return void
          */
@@ -603,14 +626,14 @@ Laravel также предлагает механизм для «выхода»
             $this->registerPolicies();
 
             Auth::provider('mongo', function ($app, array $config) {
-                // Возвращаем экземпляр `Illuminate\Contracts\Auth\UserProvider` ...
+                // Return an instance of Illuminate\Contracts\Auth\UserProvider...
 
                 return new MongoUserProvider($app->make('mongo.connection'));
             });
         }
     }
 
-После того как вы зарегистрировали провайдера с помощью метода `provider`, вы можете переключиться на нового провайдера пользователей в конфигурационном файле `config/auth.php`. Сначала определите провайдера, который использует ваш новый драйвер:
+After you have registered the provider using the `provider` method, you may switch to the new user provider in your `auth.php` configuration file. First, define a `provider` that uses your new driver:
 
     'providers' => [
         'users' => [
@@ -618,7 +641,7 @@ Laravel также предлагает механизм для «выхода»
         ],
     ],
 
-Наконец, вы можете указать этого провайдера в своей конфигурации `guards`:
+Finally, you may reference this provider in your `guards` configuration:
 
     'guards' => [
         'web' => [
@@ -628,11 +651,11 @@ Laravel также предлагает механизм для «выхода»
     ],
 
 <a name="the-user-provider-contract"></a>
-### Контракт `UserProvider`
+### The User Provider Contract
 
-Реализации `Illuminate\Contracts\Auth\UserProvider` отвечают за получение реализации `Illuminate\Contracts\Auth\Authenticatable` из системы постоянного хранения, такой как MySQL, MongoDB и т. д. Эти два интерфейса позволяют механизмам аутентификации Laravel продолжать функционировать независимо от того, как хранятся пользовательские данные или какой тип класса используется для представления аутентифицированного пользователя.
+`Illuminate\Contracts\Auth\UserProvider` implementations are responsible for fetching an `Illuminate\Contracts\Auth\Authenticatable` implementation out of a persistent storage system, such as MySQL, MongoDB, etc. These two interfaces allow the Laravel authentication mechanisms to continue functioning regardless of how the user data is stored or what type of class is used to represent the authenticated user:
 
-Давайте посмотрим на контракт `Illuminate\Contracts\Auth\UserProvider`:
+Let's take a look at the `Illuminate\Contracts\Auth\UserProvider` contract:
 
     <?php
 
@@ -647,20 +670,20 @@ Laravel также предлагает механизм для «выхода»
         public function validateCredentials(Authenticatable $user, array $credentials);
     }
 
-- Метод `retrieveById` обычно принимает ключ, представляющий пользователя, такой как автоинкрементный идентификатор из базы данных MySQL. Реализация `Authenticatable`, соответствующая идентификатору, должна быть получена и возвращена методом.
+The `retrieveById` function typically receives a key representing the user, such as an auto-incrementing ID from a MySQL database. The `Authenticatable` implementation matching the ID should be retrieved and returned by the method.
 
-- Метод `retrieveByToken` извлекает пользователя по его уникальному идентификатору `$identifier` и `$token`, обычно хранящимся в столбце `remember_token` базы данных. Как и в предыдущем методе, этот метод должен вернуть реализацию `Authenticatable` соответствующую значению токена.
+The `retrieveByToken` function retrieves a user by their unique `$identifier` and "remember me" `$token`, typically stored in a database column like `remember_token`. As with the previous method, the `Authenticatable` implementation with a matching token value should be returned by this method.
 
-- Метод `updateRememberToken` обновляет `remember_token` экземпляра `$user` новым `$token`. Новый токен назначается пользователям при успешной попытке аутентификации с отмеченным флажком «Запомнить меня» или когда пользователь выходит из системы.
+The `updateRememberToken` method updates the `$user` instance's `remember_token` with the new `$token`. A fresh token is assigned to users on a successful "remember me" authentication attempt or when the user is logging out.
 
-- Метод `retrieveByCredentials` принимает массив учетных данных, переданный методу `Auth::attempt` при попытке аутентификации в приложении. Затем метод должен «запросить» у постоянного хранилища пользователя, соответствующего этим учетным данным. Как правило, этот метод запускает запрос с условием `WHERE`, который ищет запись пользователя с «именем пользователя», равнозначным `$credentials['имя пользователя']`. Метод должен возвращать реализацию `Authenticatable`. **Этот метод не должен пытаться выполнить проверку пароля или аутентификацию.**
+The `retrieveByCredentials` method receives the array of credentials passed to the `Auth::attempt` method when attempting to authenticate with an application. The method should then "query" the underlying persistent storage for the user matching those credentials. Typically, this method will run a query with a "where" condition that searches for a user record with a "username" matching the value of `$credentials['username']`. The method should return an implementation of `Authenticatable`. **This method should not attempt to do any password validation or authentication.**
 
-- Метод validateCredentials должен сравнивать переданный `$user` с `$credentials` для аутентификации пользователя. Например, этот метод обычно использует метод `Hash::check` для сравнения значения `$user->getAuthPassword()` со значением `$credentials['password']`. Этот метод должен возвращать `true` или `false`, указывая, действителен ли пароль.
+The `validateCredentials` method should compare the given `$user` with the `$credentials` to authenticate the user. For example, this method will typically use the `Hash::check` method to compare the value of `$user->getAuthPassword()` to the value of `$credentials['password']`. This method should return `true` or `false` indicating whether the password is valid.
 
 <a name="the-authenticatable-contract"></a>
-### Контракт `Authenticatable`
+### The Authenticatable Contract
 
-Теперь, когда мы изучили каждый из методов `UserProvider`, давайте взглянем на контракт `Authenticatable`. Помните, что провайдеры пользователей должны возвращать реализации этого интерфейса из методов `retrieveById`, `retrieveByToken`, и `retrieveByCredentials`:
+Now that we have explored each of the methods on the `UserProvider`, let's take a look at the `Authenticatable` contract. Remember, user providers should return implementations of this interface from the `retrieveById`, `retrieveByToken`, and `retrieveByCredentials` methods:
 
     <?php
 
@@ -676,17 +699,17 @@ Laravel также предлагает механизм для «выхода»
         public function getRememberTokenName();
     }
 
-Этот интерфейс прост. Метод `getAuthIdentifierName` должен возвращать имя поля «первичного ключа» пользователя, а метод `getAuthIdentifier` должен возвращать «первичный ключ» пользователя. При использовании серверной части MySQL это, вероятно, будет автоинкрементный первичный ключ, присваиваемый записи пользователя. Метод `getAuthPassword` должен возвращать хешированный пароль пользователя.
+This interface is simple. The `getAuthIdentifierName` method should return the name of the "primary key" field of the user and the `getAuthIdentifier` method should return the "primary key" of the user. When using a MySQL back-end, this would likely be the auto-incrementing primary key assigned to the user record. The `getAuthPassword` method should return the user's hashed password.
 
-Этот интерфейс позволяет системе аутентификации работать с любым классом `User`, независимо от того, какой ORM или уровень абстракции хранилища вы используете. По умолчанию Laravel включает класс `App\Models\User` в каталог `app/Models`, который реализует этот интерфейс.
+This interface allows the authentication system to work with any "user" class, regardless of what ORM or storage abstraction layer you are using. By default, Laravel includes a `App\Models\User` class in the `app/Models` directory which implements this interface.
 
 <a name="events"></a>
-## События
+## Events
 
-Laravel отправляет множество [событий](/docs/{{version}}/events) в процессе аутентификации. Вы можете назначить слушателей к этим событиям в своем `EventServiceProvider`:
+Laravel dispatches a variety of [events](/docs/{{version}}/events) during the authentication process. You may attach listeners to these events in your `EventServiceProvider`:
 
     /**
-     * Карта слушателей событий приложения.
+     * The event listener mappings for the application.
      *
      * @var array
      */
