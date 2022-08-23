@@ -1,106 +1,105 @@
-git 0564e04eba72e1358998969f0c4dbcab5b3dbb72
+# Laravel Fortify
 
----
-
-# Пакет Laravel Fortify
-
-- [Введение](#introduction)
-    - [Что такое Fortify?](#what-is-fortify)
-    - [Когда я должен использовать Fortify?](#when-should-i-use-fortify)
-- [Установка](#installation)
-    - [Поставщик службы Fortify](#the-fortify-service-provider)
-    - [Функционал Fortify](#fortify-features)
-    - [Отключение маршрутов, возвращающих шаблоны](#disabling-views)
-- [Аутентификация](#authentication)
-    - [Настройка аутентификации пользователя](#customizing-user-authentication)
-- [Двухфакторная аутентификация](#two-factor-authentication)
-    - [Включение двухфакторной аутентификации](#enabling-two-factor-authentication)
-    - [Использование двухфакторной аутентификации](#authenticating-with-two-factor-authentication)
-    - [Отключение двухфакторной аутентификации](#disabling-two-factor-authentication)
-- [Регистрация](#registration)
-    - [Настройка регистрации](#customizing-registration)
-- [Сброс пароля](#password-reset)
-    - [Запрос ссылки для сброса пароля](#requesting-a-password-reset-link)
-    - [Отображение страницы сброса пароля](#resetting-the-password)
-    - [Настройка сброса пароля](#customizing-password-resets)
-- [Подтверждение адреса электронной почты](#email-verification)
-    - [Защита маршрутов](#protecting-routes)
-- [Подтверждение пароля](#password-confirmation)
+- [Introduction](#introduction)
+    - [What Is Fortify?](#what-is-fortify)
+    - [When Should I Use Fortify?](#when-should-i-use-fortify)
+- [Installation](#installation)
+    - [The Fortify Service Provider](#the-fortify-service-provider)
+    - [Fortify Features](#fortify-features)
+    - [Disabling Views](#disabling-views)
+- [Authentication](#authentication)
+    - [Customizing User Authentication](#customizing-user-authentication)
+    - [Customizing The Authentication Pipeline](#customizing-the-authentication-pipeline)
+    - [Customizing Redirects](#customizing-authentication-redirects)
+- [Two Factor Authentication](#two-factor-authentication)
+    - [Enabling Two Factor Authentication](#enabling-two-factor-authentication)
+    - [Authenticating With Two Factor Authentication](#authenticating-with-two-factor-authentication)
+    - [Disabling Two Factor Authentication](#disabling-two-factor-authentication)
+- [Registration](#registration)
+    - [Customizing Registration](#customizing-registration)
+- [Password Reset](#password-reset)
+    - [Requesting A Password Reset Link](#requesting-a-password-reset-link)
+    - [Resetting The Password](#resetting-the-password)
+    - [Customizing Password Resets](#customizing-password-resets)
+- [Email Verification](#email-verification)
+    - [Protecting Routes](#protecting-routes)
+- [Password Confirmation](#password-confirmation)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-**Laravel Fortify** – это независимая от внешнего интерфейса серверная реализация аутентификации для Laravel. Fortify регистрирует маршруты и контроллеры, необходимые для реализации всего функционала аутентификации Laravel, включая вход в систему, регистрацию, сброс пароля, подтверждение электронной почты и многое другое. После установки Fortify вы можете запустить команду `route:list` Artisan, чтобы просмотреть маршруты, зарегистрированные Fortify.
+[Laravel Fortify](https://github.com/laravel/fortify) is a frontend agnostic authentication backend implementation for Laravel. Fortify registers the routes and controllers needed to implement all of Laravel's authentication features, including login, registration, password reset, email verification, and more. After installing Fortify, you may run the `route:list` Artisan command to see the routes that Fortify has registered.
 
-Поскольку Fortify не обеспечен собственным пользовательским интерфейсом, он предназначен для работы в паре с вашим собственным пользовательским интерфейсом, который отправляет запросы на регистрируемые им маршруты. Мы обсудим, как именно делать запросы к этим маршрутам, в оставшейся части этой документации.
+Since Fortify does not provide its own user interface, it is meant to be paired with your own user interface which makes requests to the routes it registers. We will discuss exactly how to make requests to these routes in the remainder of this documentation.
 
-> {tip} Помните, что Fortify – это пакет, который поможет вам начать реализацию функционала аутентификации Laravel. **Вы не обязаны его использовать.** Вы всегда можете вручную взаимодействовать со службами аутентификации Laravel, следуя документации: [аутентификация](authentication), [сброс пароля](/docs/{{version}}/passwords), и [подтверждение по электронной почте](/docs/{{version}}/verification).
+> **Note**  
+> Remember, Fortify is a package that is meant to give you a head start implementing Laravel's authentication features. **You are not required to use it.** You are always free to manually interact with Laravel's authentication services by following the documentation available in the [authentication](/docs/{{version}}/authentication), [password reset](/docs/{{version}}/passwords), and [email verification](/docs/{{version}}/verification) documentation.
 
 <a name="what-is-fortify"></a>
-### Что такое Fortify?
+### What Is Fortify?
 
-Как упоминалось ранее, Laravel Fortify – это независимая от внешнего интерфейса серверная реализация аутентификации для Laravel. Fortify регистрирует маршруты и контроллеры, необходимые для реализации всего функционала аутентификации Laravel, включая вход в систему, регистрацию, сброс пароля, подтверждение электронной почты и многое другое.
+As mentioned previously, Laravel Fortify is a frontend agnostic authentication backend implementation for Laravel. Fortify registers the routes and controllers needed to implement all of Laravel's authentication features, including login, registration, password reset, email verification, and more.
 
-**Вам не обязательно использовать Fortify, чтобы использовать функционал аутентификации Laravel.** Вы всегда можете вручную взаимодействовать со службами аутентификации Laravel, следуя документации: [аутентификация](authentication), [сброс пароля](/docs/{{version}}/passwords), и [подтверждение по электронной почте](/docs/{{version}}/verification).
+**You are not required to use Fortify in order to use Laravel's authentication features.** You are always free to manually interact with Laravel's authentication services by following the documentation available in the [authentication](/docs/{{version}}/authentication), [password reset](/docs/{{version}}/passwords), and [email verification](/docs/{{version}}/verification) documentation.
 
-Если вы новичок в Laravel, вы можете изучить стартовый комплект приложения [Laravel Breeze](starter-kits), прежде чем пытаться использовать Laravel Fortify. Laravel Breeze предлагает каркас аутентификации для вашего приложения, который включает пользовательский интерфейс, созданный с помощью [Tailwind CSS](https://tailwindcss.com). В отличие от Fortify, Breeze публикует свои маршруты и контроллеры прямо в вашем приложении. Это позволяет вам изучить и освоиться с функционалом аутентификации Laravel, прежде чем позволить Laravel Fortify реализовать этот функционал для вас.
+If you are new to Laravel, you may wish to explore the [Laravel Breeze](/docs/{{version}}/starter-kits) application starter kit before attempting to use Laravel Fortify. Laravel Breeze provides an authentication scaffolding for your application that includes a user interface built with [Tailwind CSS](https://tailwindcss.com). Unlike Fortify, Breeze publishes its routes and controllers directly into your application. This allows you to study and get comfortable with Laravel's authentication features before allowing Laravel Fortify to implement these features for you.
 
-Laravel Fortify по сути берет маршруты и контроллеры Laravel Breeze и предлагает их как пакет, не включающий пользовательский интерфейс. Это позволяет вам по-прежнему быстро строить бэкэнд-реализацию слоя аутентификации вашего приложения, не привязываясь к каким-либо конкретным предпочтениям фронтенда.
+Laravel Fortify essentially takes the routes and controllers of Laravel Breeze and offers them as a package that does not include a user interface. This allows you to still quickly scaffold the backend implementation of your application's authentication layer without being tied to any particular frontend opinions.
 
 <a name="when-should-i-use-fortify"></a>
-### Когда я должен использовать Fortify?
+### When Should I Use Fortify?
 
-Вам может быть интересно, когда уместно использовать Laravel Fortify. Во-первых, если вы используете один из [стартовых комплектов](starter-kits) Laravel, вам не нужно устанавливать Laravel Fortify, поскольку все стартовые комплекты приложений Laravel уже обеспечивают полную реализацию аутентификации.
+You may be wondering when it is appropriate to use Laravel Fortify. First, if you are using one of Laravel's [application starter kits](/docs/{{version}}/starter-kits), you do not need to install Laravel Fortify since all of Laravel's application starter kits already provide a full authentication implementation.
 
-Если вы не используете стартовый комплект приложения и вашему приложению требуются функционал аутентификации, у вас есть два варианта: самостоятельно реализовать функционал аутентификации вашего приложения или использовать Laravel Fortify для обеспечения серверной реализации этого функционала.
+If you are not using an application starter kit and your application needs authentication features, you have two options: manually implement your application's authentication features or use Laravel Fortify to provide the backend implementation of these features.
 
-Если вы выберете установку Fortify, ваш пользовательский интерфейс будет делать запросы к маршрутам аутентификации Fortify, которые подробно описаны в этой документации, для аутентификации и регистрации пользователей.
+If you choose to install Fortify, your user interface will make requests to Fortify's authentication routes that are detailed in this documentation in order to authenticate and register users.
 
-Если вы решите самостоятельно взаимодействовать со службами аутентификации Laravel вместо использования Fortify, вы можете сделать это, следуя документации: [аутентификация](authentication), [сброс пароля](/docs/{{version}}/passwords), и [подтверждение по электронной почте](/docs/{{version}}/verification).
+If you choose to manually interact with Laravel's authentication services instead of using Fortify, you may do so by following the documentation available in the [authentication](/docs/{{version}}/authentication), [password reset](/docs/{{version}}/passwords), and [email verification](/docs/{{version}}/verification) documentation.
 
 <a name="laravel-fortify-and-laravel-sanctum"></a>
-#### Laravel Fortify и Laravel Sanctum
+#### Laravel Fortify & Laravel Sanctum
 
-Некоторых разработчиков смущает разница между [Laravel Sanctum](/docs/{{version}}/sanctum) и Laravel Fortify. Поскольку эти два пакета решают две разные, но связанные проблемы, Laravel Fortify и Laravel Sanctum не являются взаимоисключающими или конкурирующими пакетами.
+Some developers become confused regarding the difference between [Laravel Sanctum](/docs/{{version}}/sanctum) and Laravel Fortify. Because the two packages solve two different but related problems, Laravel Fortify and Laravel Sanctum are not mutually exclusive or competing packages.
 
-Laravel Sanctum занимается только управлением токенами API и аутентификацией существующих пользователей с помощью файлов Cookies сессии или токенов. Sanctum не содержит никаких маршрутов для регистрации пользователей, сброса пароля и т. д.
+Laravel Sanctum is only concerned with managing API tokens and authenticating existing users using session cookies or tokens. Sanctum does not provide any routes that handle user registration, password reset, etc.
 
-Если вы пытаетесь самостоятельно создать слой аутентификации для приложения, которое предлагает API или служит серверной частью для одностраничного приложения, вполне возможно, что вы будете использовать оба пакета: Laravel Fortify (для регистрации пользователя, сброса пароля и т. д.) и Laravel Sanctum (управление токенами API, аутентификация сессии).
+If you are attempting to manually build the authentication layer for an application that offers an API or serves as the backend for a single-page application, it is entirely possible that you will utilize both Laravel Fortify (for user registration, password reset, etc.) and Laravel Sanctum (API token management, session authentication).
 
 <a name="installation"></a>
-## Установка
+## Installation
 
-Для начала установите Fortify с помощью менеджера пакетов Composer в свой проект:
+To get started, install Fortify using the Composer package manager:
 
-```nothing
+```shell
 composer require laravel/fortify
 ```
 
-Затем, опубликуйте ресурсы Fortify с помощью команды `vendor:publish`:
+Next, publish Fortify's resources using the `vendor:publish` command:
 
-```bash
+```shell
 php artisan vendor:publish --provider="Laravel\Fortify\FortifyServiceProvider"
 ```
 
-Эта команда опубликует действия Fortify в вашем каталоге `app/Actions`, который будет создан, если он не существует. Кроме того, будет опубликован конфигурационный файл и миграции.
+This command will publish Fortify's actions to your `app/Actions` directory, which will be created if it does not exist. In addition, the `FortifyServiceProvider`, configuration file, and all necessary database migrations will be published.
 
-Затем, вы должны применить миграции вашей базу данных:
+Next, you should migrate your database:
 
-```bash
+```shell
 php artisan migrate
 ```
 
 <a name="the-fortify-service-provider"></a>
-### Поставщик службы Fortify
+### The Fortify Service Provider
 
-Обсуждаемая выше команда `vendor:publish` также опубликует класс `App\Providers\FortifyServiceProvider`. Вы должны убедиться, что этот класс зарегистрирован в массиве поставщиков файла конфигурации `config/app.php` вашего приложения.
+The `vendor:publish` command discussed above will also publish the `App\Providers\FortifyServiceProvider` class. You should ensure this class is registered within the `providers` array of your application's `config/app.php` configuration file.
 
-Поставщик службы Fortify регистрирует действия, которые публикуются Fortify, и инструктирует Fortify использовать их, когда соответствующие задачи выполняются Fortify.
+The Fortify service provider registers the actions that Fortify published and instructs Fortify to use them when their respective tasks are executed by Fortify.
 
 <a name="fortify-features"></a>
-### Функционал Fortify
+### Fortify Features
 
-Файл конфигурации `fortify` содержит массив конфигурации `features`. Этот массив определяет, какие серверные маршруты / функционал будет предоставлять Fortify по умолчанию. Если вы не используете Fortify в сочетании с [Laravel Jetstream](https://jetstream.laravel.com), то мы рекомендуем вам включить только основной функционал аутентификации, и предоставляемый большинством приложений Laravel:
+The `fortify` configuration file contains a `features` configuration array. This array defines which backend routes / features Fortify will expose by default. If you are not using Fortify in combination with [Laravel Jetstream](https://jetstream.laravel.com), we recommend that you only enable the following features, which are the basic authentication features provided by most Laravel applications:
 
 ```php
 'features' => [
@@ -111,31 +110,30 @@ php artisan migrate
 ```
 
 <a name="disabling-views"></a>
-### Отключение маршрутов, возвращающих шаблоны
+### Disabling Views
 
-По умолчанию Fortify определяет маршруты, которые предназначены для возврата шаблонов, таких как экран входа в систему или экран регистрации. Однако, если вы создаете одностраничное приложение на основе JavaScript, эти маршруты могут не понадобиться. По этой причине вы можете полностью отключить эти маршруты, установив значение конфигурации `views` в файле конфигурации `config/fortify.php` вашего приложения – `false`:
+By default, Fortify defines routes that are intended to return views, such as a login screen or registration screen. However, if you are building a JavaScript driven single-page application, you may not need these routes. For that reason, you may disable these routes entirely by setting the `views` configuration value within your application's `config/fortify.php` configuration file to `false`:
 
 ```php
 'views' => false,
 ```
 
 <a name="disabling-views-and-password-reset"></a>
-#### Отключение маршрутов, возвращающих шаблоны и сброс пароля
+#### Disabling Views & Password Reset
 
-Если вы решите отключить маршруты Fortify, возвращающие шаблоны и будете реализовывать функционал сброса пароля для своего приложения, то вы все равно должны определить маршрут с именем `password.reset`, который отвечает за отображение шаблона «сброса пароля» вашего приложения. Это необходимо, потому что уведомление Laravel `Illuminate\Auth\Notifications\ResetPassword` генерирует URL для сброса пароля через именованный маршрут `password.reset`.
+If you choose to disable Fortify's views and you will be implementing password reset features for your application, you should still define a route named `password.reset` that is responsible for displaying your application's "reset password" view. This is necessary because Laravel's `Illuminate\Auth\Notifications\ResetPassword` notification will generate the password reset URL via the `password.reset` named route.
 
 <a name="authentication"></a>
-## Аутентификация
+## Authentication
 
-Для начала нам нужно указать Fortify, как вернуть наш шаблон «входа в систему». Помните, что Fortify – это безголовая библиотека аутентификации. Если вам нужна внешняя реализация функционала аутентификации Laravel, которая уже создана для вас, то вам следует использовать [стартовый комплект приложения](starter-kits).
+To get started, we need to instruct Fortify how to return our "login" view. Remember, Fortify is a headless authentication library. If you would like a frontend implementation of Laravel's authentication features that are already completed for you, you should use an [application starter kit](/docs/{{version}}/starter-kits).
 
-Вся логика отрисовки шаблонов аутентификации может быть настроена с использованием соответствующих методов, доступных через класс `Laravel\Fortify\Fortify`. Как правило, вызов этого метода осуществляется в методе `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения. Fortify позаботится об определении маршрута `/login`, который возвращает этот шаблон:
+All of the authentication view's rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your application's `App\Providers\FortifyServiceProvider` class. Fortify will take care of defining the `/login` route that returns this view:
 
-```php
     use Laravel\Fortify\Fortify;
 
     /**
-     * Загрузка любых служб приложения.
+     * Bootstrap any application services.
      *
      * @return void
      */
@@ -147,20 +145,19 @@ php artisan migrate
 
         // ...
     }
-```
 
-Ваш шаблон входа в систему должен включать форму, которая отправляет POST-запрос в `/login`. Конечная точка `/login` ожидает строковые поля `email` / `username` и `password`. Имя поля `email` / `username` должно соответствовать значению `username` в конфигурационном файле `config/fortify.php`. Кроме того, может быть предусмотрено логическое поле «Запомнить меня», чтобы указать, что пользователь хотел бы использовать функционал «Запомнить меня», предоставляемый Laravel.
+Your login template should include a form that makes a POST request to `/login`. The `/login` endpoint expects a string `email` / `username` and a `password`. The name of the email / username field should match the `username` value within the `config/fortify.php` configuration file. In addition, a boolean `remember` field may be provided to indicate that the user would like to use the "remember me" functionality provided by Laravel.
 
-Если попытка входа в систему будет успешной, то Fortify перенаправит вас на URI, настроенный с помощью параметра конфигурации `home` в файле конфигурации `fortify` вашего приложения. Если запрос на вход был запросом XHR (аякс-запросом), будет возвращен `200` HTTP-ответ.
+If the login attempt is successful, Fortify will redirect you to the URI configured via the `home` configuration option within your application's `fortify` configuration file. If the login request was an XHR request, a 200 HTTP response will be returned.
 
-Если запрос не был успешным, пользователь будет перенаправлен обратно к экрану входа в систему, и ошибки валидации будут доступны вам через общедоступную [переменную `$errors` шаблонов Blade](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Или, в случае запроса XHR, ошибки валидации будут возвращены с `422` HTTP-ответом.
+If the request was not successful, the user will be redirected back to the login screen and the validation errors will be available to you via the shared `$errors` [Blade template variable](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Or, in the case of an XHR request, the validation errors will be returned with the 422 HTTP response.
 
 <a name="customizing-user-authentication"></a>
-### Настройка аутентификации пользователя
+### Customizing User Authentication
 
-Fortify автоматически извлечет и аутентифицирует пользователя на основе предоставленных учетных данных и охранника аутентификации, настроенного в вашем приложении. Однако иногда требуется полная настройка того, как аутентифицируются учетные данные для входа и извлекаются пользователи. К счастью, Fortify позволяет легко добиться этого с помощью метода `Fortify::authenticateUsing`.
+Fortify will automatically retrieve and authenticate the user based on the provided credentials and the authentication guard that is configured for your application. However, you may sometimes wish to have full customization over how login credentials are authenticated and users are retrieved. Thankfully, Fortify allows you to easily accomplish this using the `Fortify::authenticateUsing` method.
 
-Этот метод принимает замыкание, которое получает входящий HTTP-запрос. Замыкание отвечает за проверку учетных данных для входа, прикрепленных к запросу, и за возврат связанного экземпляра пользователя. Если учетные данные недействительны или пользователь не может быть найден, замыкание должно вернуть `null` или `false`. Обычно этот метод следует вызывать из метода `boot` вашего `FortifyServiceProvider`:
+This method accepts a closure which receives the incoming HTTP request. The closure is responsible for validating the login credentials attached to the request and returning the associated user instance. If the credentials are invalid or no user can be found, `null` or `false` should be returned by the closure. Typically, this method should be called from the `boot` method of your `FortifyServiceProvider`:
 
 ```php
 use App\Models\User;
@@ -169,7 +166,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
@@ -189,16 +186,69 @@ public function boot()
 ```
 
 <a name="authentication-guard"></a>
-#### Охранник аутентификации
+#### Authentication Guard
 
-Вы можете указать охранника аутентификации, используемую Fortify, в файле конфигурации вашего приложения `fortify`. Однако, вы должны убедиться, что предоставленный охранник является реализацией `Illuminate\Contracts\Auth\StatefulGuard`. Если вы пытаетесь использовать Laravel Fortify для аутентификации SPA, то вам следует использовать стандартного охранника `web` Laravel в сочетании с [Laravel Sanctum](/docs/{{version}}/sanctum).
+You may customize the authentication guard used by Fortify within your application's `fortify` configuration file. However, you should ensure that the configured guard is an implementation of `Illuminate\Contracts\Auth\StatefulGuard`. If you are attempting to use Laravel Fortify to authenticate an SPA, you should use Laravel's default `web` guard in combination with [Laravel Sanctum](https://laravel.com/docs/sanctum).
+
+<a name="customizing-the-authentication-pipeline"></a>
+### Customizing The Authentication Pipeline
+
+Laravel Fortify authenticates login requests through a pipeline of invokable classes. If you would like, you may define a custom pipeline of classes that login requests should be piped through. Each class should have an `__invoke` method which receives the incoming `Illuminate\Http\Request` instance and, like [middleware](/docs/{{version}}/middleware), a `$next` variable that is invoked in order to pass the request to the next class in the pipeline.
+
+To define your custom pipeline, you may use the `Fortify::authenticateThrough` method. This method accepts a closure which should return the array of classes to pipe the login request through. Typically, this method should be called from the `boot` method of your `App\Providers\FortifyServiceProvider` class.
+
+The example below contains the default pipeline definition that you may use as a starting point when making your own modifications:
+
+```php
+use Laravel\Fortify\Actions\AttemptToAuthenticate;
+use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
+use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Fortify;
+use Illuminate\Http\Request;
+
+Fortify::authenticateThrough(function (Request $request) {
+    return array_filter([
+            config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
+            Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+            AttemptToAuthenticate::class,
+            PrepareAuthenticatedSession::class,
+    ]);
+});
+```
+
+<a name="customizing-authentication-redirects"></a>
+### Customizing Redirects
+
+If the login attempt is successful, Fortify will redirect you to the URI configured via the `home` configuration option within your application's `fortify` configuration file. If the login request was an XHR request, a 200 HTTP response will be returned. After a user logs out of the application, the user will be redirected to the `/` URI.
+
+If you need advanced customization of this behavior, you may bind implementations of the `LoginResponse` and `LogoutResponse` contracts into the Laravel [service container](/docs/{{version}}/container). Typically, this should be done within the `register` method of your application's `App\Providers\FortifyServiceProvider` class:
+
+```php
+use Laravel\Fortify\Contracts\LogoutResponse;
+
+/**
+ * Register any application services.
+ *
+ * @return void
+ */
+public function register()
+{
+    $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
+        public function toResponse($request)
+        {
+            return redirect('/');
+        }
+    });
+}
+```
 
 <a name="two-factor-authentication"></a>
-## Двухфакторная аутентификация
+## Two Factor Authentication
 
-Когда функционал двухфакторной аутентификации Fortify включен, тогда пользователь должен ввести шестизначный цифровой токен в процессе аутентификации. Этот токен создается с [использованием одноразового пароля (TOTP)](https://ru.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm), который может быть получен из любого TOTP-совместимого мобильного приложения для аутентификации, например Google Authenticator.
+When Fortify's two factor authentication feature is enabled, the user is required to input a six digit numeric token during the authentication process. This token is generated using a time-based one-time password (TOTP) that can be retrieved from any TOTP compatible mobile authentication application such as Google Authenticator.
 
-Перед началом работы вы должны убедиться, что модель `App\Models\User` вашего приложения использует трейт `Laravel\Fortify\TwoFactorAuthenticatable`:
+Before getting started, you should first ensure that your application's `App\Models\User` model uses the `Laravel\Fortify\TwoFactorAuthenticatable` trait:
 
 ```php
 <?php
@@ -213,58 +263,77 @@ class User extends Authenticatable
 {
     use Notifiable, TwoFactorAuthenticatable;
 }
-```
+ ```
 
-Затем, вы должны создать экран в своем приложении, где пользователи могут управлять своими настройками двухфакторной аутентификации. Этот экран должен позволить пользователю включать и отключать двухфакторную аутентификацию, а также повторно создавать коды восстановления двухфакторной аутентификации.
+Next, you should build a screen within your application where users can manage their two factor authentication settings. This screen should allow the user to enable and disable two factor authentication, as well as regenerate their two factor authentication recovery codes.
 
-> {note} По умолчанию массив `features` конфигурационного файла `config/fortify.php` указывает настройкам двухфакторной аутентификации Fortify требовать подтверждения пароля перед изменением. Поэтому, прежде чем продолжить, ваше приложение должно реализовать функционал [подтверждение пароля](#password-confirmation) Fortify.
+> By default, the `features` array of the `fortify` configuration file instructs Fortify's two factor authentication settings to require password confirmation before modification. Therefore, your application should implement Fortify's [password confirmation](#password-confirmation) feature before continuing.
 
 <a name="enabling-two-factor-authentication"></a>
-### Включение двухфакторной аутентификации
+### Enabling Two Factor Authentication
 
-Чтобы включить двухфакторную аутентификацию, ваше приложение должно сделать POST-запрос к урлу `/user/two-factor-authentication`, определенному Fortify. Если запрос будет успешным, то пользователь будет перенаправлен обратно на предыдущий URL-адрес, а для переменной `status` сессии будет установлено значение `two-factor-authentication-enabled`. Вы можете использовать эту переменную `status` сессии в своих шаблонах, чтобы отобразить соответствующее сообщение об успешном выполнении. Если запрос был запросом XHR (аякс-запросом), будет возвращен `200` HTTP-ответ:
+To begin enabling two factor authentication, your application should make a POST request to the `/user/two-factor-authentication` endpoint defined by Fortify. If the request is successful, the user will be redirected back to the previous URL and the `status` session variable will be set to `two-factor-authentication-enabled`. You may detect this `status` session variable within your templates to display the appropriate success message. If the request was an XHR request, `200` HTTP response will be returned.
+
+After choosing to enable two factor authentication, the user must still "confirm" their two factor authentication configuration by providing a valid two factor authentication code. So, your "success" message should instruct the user that two factor authentication confirmation is still required:
 
 ```html
 @if (session('status') == 'two-factor-authentication-enabled')
-    <div class="mb-4 font-medium text-sm text-green-600">
-        Включена двухфакторная аутентификация.
+    <div class="mb-4 font-medium text-sm">
+        Please finish configuring two factor authentication below.
     </div>
 @endif
 ```
 
-Затем, вы должны отобразить QR-код двухфакторной аутентификации, чтобы пользователь мог сканировать его своим приложением для аутентификации. Если вы используете Blade для отрисовки интерфейса вашего приложения, то вы можете получить SVG с QR-кодом, используя метод `twoFactorQrCodeSvg` экземпляра пользователя:
+Next, you should display the two factor authentication QR code for the user to scan into their authenticator application. If you are using Blade to render your application's frontend, you may retrieve the QR code SVG using the `twoFactorQrCodeSvg` method available on the user instance:
 
 ```php
 $request->user()->twoFactorQrCodeSvg();
 ```
 
-Если вы создаете интерфейс на основе JavaScript, то вы можете сделать XHR GET-запрос (аякс-запрос) к урлу `/user/two-factor-qr-code`, чтобы получить QR-код для двухфакторной аутентификации пользователя. Этот эндпоинт вернет объект JSON, содержащий ключ `svg`.
+If you are building a JavaScript powered frontend, you may make an XHR GET request to the `/user/two-factor-qr-code` endpoint to retrieve the user's two factor authentication QR code. This endpoint will return a JSON object containing an `svg` key.
+
+<a name="confirming-two-factor-authentication"></a>
+#### Confirming Two Factor Authentication
+
+In addition to displaying the user's two factor authentication QR code, you should provide a text input where the user can supply a valid authentication code to "confirm" their two factor authentication configuration. This code should be provided to the Laravel application via a POST request to the `/user/confirmed-two-factor-authentication` endpoint defined by Fortify.
+
+If the request is successful, the user will be redirected back to the previous URL and the `status` session variable will be set to `two-factor-authentication-confirmed`:
+
+```html
+@if (session('status') == 'two-factor-authentication-confirmed')
+    <div class="mb-4 font-medium text-sm">
+        Two factor authentication confirmed and enabled successfully.
+    </div>
+@endif
+```
+
+If the request to the two factor authentication confirmation endpoint was made via an XHR request, a `200` HTTP response will be returned.
 
 <a name="displaying-the-recovery-codes"></a>
-#### Отображение кодов восстановления
+#### Displaying The Recovery Codes
 
-Вы также должны отобразить коды двухфакторного восстановления пользователя. Эти коды восстановления позволяют пользователю пройти аутентификацию, если он потеряет доступ к своему мобильному устройству. Если вы используете Blade для отрисовки внешнего интерфейса вашего приложения, то вы можете получить доступ к кодам восстановления через экземпляр аутентифицированного пользователя:
+You should also display the user's two factor recovery codes. These recovery codes allow the user to authenticate if they lose access to their mobile device. If you are using Blade to render your application's frontend, you may access the recovery codes via the authenticated user instance:
 
 ```php
 (array) $request->user()->recoveryCodes()
 ```
 
-Если вы создаете интерфейс на основе JavaScript, то вы можете сделать XHR GET-запрос (аякс-запрос) к урлу `/user/two-factor-recovery-codes`. Этот эндпоинт вернет массив JSON, содержащий коды восстановления пользователя.
+If you are building a JavaScript powered frontend, you may make an XHR GET request to the `/user/two-factor-recovery-codes` endpoint. This endpoint will return a JSON array containing the user's recovery codes.
 
-Чтобы повторно сгенерировать коды восстановления пользователя, ваше приложение должно сделать POST-запрос к урлу `/user/two-factor-recovery-codes`.
+To regenerate the user's recovery codes, your application should make a POST request to the `/user/two-factor-recovery-codes` endpoint.
 
 <a name="authenticating-with-two-factor-authentication"></a>
-### Использование двухфакторной аутентификации
+### Authenticating With Two Factor Authentication
 
-В процессе аутентификации Fortify автоматически перенаправляет пользователя на экран запроса двухфакторной аутентификации приложения. Однако, если ваше приложение выполняет запрос XHR (аякс-запрос) для входа в систему, то ответ JSON, возвращаемый после успешной попытки аутентификации, будет содержать объект JSON, содержащий логическое свойство `two_factor`. Необходимо проверить это значение, чтобы узнать, следует ли перенаправлять на экран запроса двухфакторной аутентификации приложения.
+During the authentication process, Fortify will automatically redirect the user to your application's two factor authentication challenge screen. However, if your application is making an XHR login request, the JSON response returned after a successful authentication attempt will contain a JSON object that has a `two_factor` boolean property. You should inspect this value to know whether you should redirect to your application's two factor authentication challenge screen.
 
-Чтобы начать реализацию функционала двухфакторной аутентификации, нам нужно указать Fortify, как вернуть наш шаблон `two-factor-challenge`. Вся логика визуализации шаблона `two-factor-challenge` Fortify может быть определена с помощью метода `twoFactorChallengeView` класса `Laravel\Fortify\Fortify`. Обычно этот метод следует вызывать из метода `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения:
+To begin implementing two factor authentication functionality, we need to instruct Fortify how to return our two factor authentication challenge view. All of Fortify's authentication view rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your application's `App\Providers\FortifyServiceProvider` class:
 
 ```php
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
@@ -278,70 +347,70 @@ public function boot()
 }
 ```
 
-Fortify позаботится об определении маршрута `/two-factor-challenge`, который возвращает этот шаблон. Ваш шаблон `two-factor-challenge` должен включать форму, которая делает POST-запрос к урлу `/two-factor-challenge`. Действие `/two-factor-challenge` ожидает поле `code`, которое содержит действительный TOTP-токен, или поле `recovery_code`, которое содержит один из кодов восстановления пользователя.
+Fortify will take care of defining the `/two-factor-challenge` route that returns this view. Your `two-factor-challenge` template should include a form that makes a POST request to the `/two-factor-challenge` endpoint. The `/two-factor-challenge` action expects a `code` field that contains a valid TOTP token or a `recovery_code` field that contains one of the user's recovery codes.
 
-Если попытка входа окажется успешной, то Fortify перенаправит пользователя на URI, указанный в параметре конфигурации `home` файле конфигурации `fortify` вашего приложения. Если запрос на вход был запросом XHR, будет возвращен `204` HTTP-ответ.
+If the login attempt is successful, Fortify will redirect the user to the URI configured via the `home` configuration option within your application's `fortify` configuration file. If the login request was an XHR request, a 204 HTTP response will be returned.
 
-Если запрос не был успешным, пользователь будет перенаправлен обратно к экрану входа в систему, и ошибки валидации будут доступны вам через общедоступную [переменную `$errors` шаблонов Blade](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Или, в случае запроса XHR, ошибки валидации будут возвращены с `422` HTTP-ответом.
+If the request was not successful, the user will be redirected back to the two factor challenge screen and the validation errors will be available to you via the shared `$errors` [Blade template variable](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Or, in the case of an XHR request, the validation errors will be returned with a 422 HTTP response.
 
 <a name="disabling-two-factor-authentication"></a>
-### Отключение двухфакторной аутентификации
+### Disabling Two Factor Authentication
 
-Чтобы отключить двухфакторную аутентификацию, ваше приложение должно сделать DELETE-запрос к урлу `/user/two-factor-authentication`. Помните, что эндпоинтам двухфакторной аутентификации Fortify перед вызовом требуется [подтверждение пароля](#password-confirmation).
+To disable two factor authentication, your application should make a DELETE request to the `/user/two-factor-authentication` endpoint. Remember, Fortify's two factor authentication endpoints require [password confirmation](#password-confirmation) prior to being called.
 
 <a name="registration"></a>
-## Регистрация
+## Registration
 
-Чтобы начать реализацию функционала регистрации, вам нужно указать Fortify, как вернуть шаблон `register`. Помните, что Fortify – это безголовая библиотека аутентификации. Если вам нужна внешняя реализация функционала аутентификации Laravel, которая уже создана для вас, то вам следует использовать [стартовый комплект приложения](starter-kits).
+To begin implementing our application's registration functionality, we need to instruct Fortify how to return our "register" view. Remember, Fortify is a headless authentication library. If you would like a frontend implementation of Laravel's authentication features that are already completed for you, you should use an [application starter kit](/docs/{{version}}/starter-kits).
 
-Вся логика визуализации шаблона `register` Fortify может быть определена с помощью метода `registerView` класса `Laravel\Fortify\Fortify`. Обычно этот метод следует вызывать из метода `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения:
+All of the Fortify's view rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your `App\Providers\FortifyServiceProvider` class:
 
 ```php
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
 public function boot()
 {
     Fortify::registerView(function () {
-        return view('auth.register'); 
+        return view('auth.register');
     });
 
     // ...
 }
 ```
 
-Fortify позаботится об определении маршрута `/register`, который возвращает этот шаблон. Ваш шаблон `register` должен включать форму, которая выполняет POST-запрос к урлу `/register`, определенному в Fortify.
+Fortify will take care of defining the `/register` route that returns this view. Your `register` template should include a form that makes a POST request to the `/register` endpoint defined by Fortify.
 
-Обработчик запроса к `/register` ожидает строковые поля `name`, `email` / `username`, `password` и `password_confirmation`. Имя поля `email` / `username` должно соответствовать значению конфигурации `username`, определенному в файле конфигурации `fortify` вашего приложения.
+The `/register` endpoint expects a string `name`, string email address / username, `password`, and `password_confirmation` fields. The name of the email / username field should match the `username` configuration value defined within your application's `fortify` configuration file.
 
-Если попытка регистрации будет успешной, то Fortify перенаправит вас на URI, настроенный с помощью параметра конфигурации `home` в файле конфигурации `fortify` вашего приложения. Если запрос на вход был запросом XHR (аякс-запросом), будет возвращен `200` HTTP-ответ.
+If the registration attempt is successful, Fortify will redirect the user to the URI configured via the `home` configuration option within your application's `fortify` configuration file. If the login request was an XHR request, a 200 HTTP response will be returned.
 
-Если запрос не был успешным, пользователь будет перенаправлен обратно к экрану регистрации, и ошибки валидации будут доступны вам через общедоступную [переменную `$errors` шаблонов Blade](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Или, в случае запроса XHR, ошибки валидации будут возвращены с `422` HTTP-ответом.
+If the request was not successful, the user will be redirected back to the registration screen and the validation errors will be available to you via the shared `$errors` [Blade template variable](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Or, in the case of an XHR request, the validation errors will be returned with a 422 HTTP response.
 
 <a name="customizing-registration"></a>
-### Настройка регистрации
+### Customizing Registration
 
-Процесс валидации и создания пользователя можно настроить, изменив действие `App\Actions\Fortify\CreateNewUser`, которое было создано при установке Laravel Fortify.
+The user validation and creation process may be customized by modifying the `App\Actions\Fortify\CreateNewUser` action that was generated when you installed Laravel Fortify.
 
 <a name="password-reset"></a>
-## Сброс пароля
+## Password Reset
 
 <a name="requesting-a-password-reset-link"></a>
-### Запрос ссылки для сброса пароля
+### Requesting A Password Reset Link
 
-Чтобы начать реализацию функционала сброса пароля, вам нужно указать Fortify, как вернуть шаблон `forgot-password`. Помните, что Fortify – это безголовая библиотека аутентификации. Если вам нужна внешняя реализация функционала аутентификации Laravel, которая уже создана для вас, то вам следует использовать [стартовый комплект приложения](starter-kits).
+To begin implementing our application's password reset functionality, we need to instruct Fortify how to return our "forgot password" view. Remember, Fortify is a headless authentication library. If you would like a frontend implementation of Laravel's authentication features that are already completed for you, you should use an [application starter kit](/docs/{{version}}/starter-kits).
 
-Вся логика визуализации шаблона `forgot-password` Fortify может быть определена с помощью метода `requestPasswordResetLinkView` класса `Laravel\Fortify\Fortify`. Обычно этот метод следует вызывать из метода `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения:
+All of Fortify's view rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your application's `App\Providers\FortifyServiceProvider` class:
 
 ```php
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
@@ -355,16 +424,16 @@ public function boot()
 }
 ```
 
-Fortify позаботится об определении маршрута `/forgot-password`, который возвращает этот шаблон. Ваш шаблон `forgot-password` должен включать форму, которая выполняет POST-запрос к урлу `/forgot-password`, определенному в Fortify.
+Fortify will take care of defining the `/forgot-password` endpoint that returns this view. Your `forgot-password` template should include a form that makes a POST request to the `/forgot-password` endpoint.
 
-Обработчик запроса к `/forgot-password` ожидает строковое поле `email`. Имя этого поля / столбца базы данных должно соответствовать значению конфигурации `email`, определенному в файле конфигурации `fortify` вашего приложения.
+The `/forgot-password` endpoint expects a string `email` field. The name of this field / database column should match the `email` configuration value within your application's `fortify` configuration file.
 
 <a name="handling-the-password-reset-link-request-response"></a>
-#### Обработка ответа на запрос ссылки для сброса пароля
+#### Handling The Password Reset Link Request Response
 
-Если запрос ссылки для сброса пароля был успешным, то Fortify перенаправит пользователя обратно на конечную точку `/forgot-password` и отправит пользователю электронное письмо с защищенной ссылкой, которую он может использовать для сброса своего пароля. Если запрос был запросом XHR (аякс-запросом), будет возвращен `200` HTTP-ответ.
+If the password reset link request was successful, Fortify will redirect the user back to the `/forgot-password` endpoint and send an email to the user with a secure link they can use to reset their password. If the request was an XHR request, a 200 HTTP response will be returned.
 
-После перенаправления обратно к урлу `/forgot-password` после успешного запроса переменная сессии `status` может использоваться для отображения состояния попытки запроса ссылки для сброса пароля. Значение этой переменной сессии будет соответствовать одной из строк перевода, определенных в [языковом файле](/docs/{{version}}/localization) `passwords` вашего приложения:
+After being redirected back to the `/forgot-password` endpoint after a successful request, the `status` session variable may be used to display the status of the password reset link request attempt. The value of this session variable will match one of the translation strings defined within your application's `passwords` [language file](/docs/{{version}}/localization):
 
 ```html
 @if (session('status'))
@@ -374,20 +443,20 @@ Fortify позаботится об определении маршрута `/fo
 @endif
 ```
 
-Если запрос не был успешным, пользователь будет перенаправлен обратно к экрану запроса ссылки для сброса пароля, и ошибки валидации будут доступны вам через общедоступную [переменную `$errors` шаблонов Blade](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Или, в случае запроса XHR, ошибки валидации будут возвращены с `422` HTTP-ответом.
+If the request was not successful, the user will be redirected back to the request password reset link screen and the validation errors will be available to you via the shared `$errors` [Blade template variable](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Or, in the case of an XHR request, the validation errors will be returned with a 422 HTTP response.
 
 <a name="resetting-the-password"></a>
-### Отображение страницы сброса пароля
+### Resetting The Password
 
-Чтобы завершить реализацию функционала сброса пароля вашего приложения, вам нужно указать Fortify, как вернуть шаблон `reset-password`.
+To finish implementing our application's password reset functionality, we need to instruct Fortify how to return our "reset password" view.
 
-Вся логика визуализации шаблона `reset-password` Fortify может быть определена с помощью метода `resetPasswordView` класса `Laravel\Fortify\Fortify`. Обычно этот метод следует вызывать из метода `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения:
+All of Fortify's view rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your application's `App\Providers\FortifyServiceProvider` class:
 
 ```php
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
@@ -401,16 +470,16 @@ public function boot()
 }
 ```
 
-Fortify позаботится об определении маршрута `/reset-password`, который возвращает этот шаблон. Ваш шаблон `reset-password` должен включать форму, которая выполняет POST-запрос к урлу `/reset-password`, определенноому в Fortify.
+Fortify will take care of defining the route to display this view. Your `reset-password` template should include a form that makes a POST request to `/reset-password`.
 
-Обработчик запроса к `/reset-password` ожидает строковые поля `email`, `password`, `password_confirmation` и скрытое поле с именем `token`, которое содержит значение `request()->route('token')`. Имя поля / столбца базы данных `email` должно соответствовать значению конфигурации `email`, определенному в файле конфигурации `fortify` вашего приложения.
+The `/reset-password` endpoint expects a string `email` field, a `password` field, a `password_confirmation` field, and a hidden field named `token` that contains the value of `request()->route('token')`. The name of the "email" field / database column should match the `email` configuration value defined within your application's `fortify` configuration file.
 
 <a name="handling-the-password-reset-response"></a>
-#### Обработка ответа на сброс пароля
+#### Handling The Password Reset Response
 
-Если запрос на сброс пароля был успешным, то Fortify перенаправит пользователя обратно на маршрут `/login`, чтобы пользователь мог войти со своим новым паролем. Кроме того, будет установлена переменная сессии `status`, чтобы вы могли отобразить успешный статус сброса пароля на экране входа в систему:
+If the password reset request was successful, Fortify will redirect back to the `/login` route so that the user can log in with their new password. In addition, a `status` session variable will be set so that you may display the successful status of the reset on your login screen:
 
-```html
+```blade
 @if (session('status'))
     <div class="mb-4 font-medium text-sm text-green-600">
         {{ session('status') }}
@@ -418,29 +487,29 @@ Fortify позаботится об определении маршрута `/re
 @endif
 ```
 
-Если запрос был запросом XHR (аякс-запросом), будет возвращен `200` HTTP-ответ.
+If the request was an XHR request, a 200 HTTP response will be returned.
 
-Если запрос не был успешным, пользователь будет перенаправлен обратно к экрану сброса пароля, и ошибки валидации будут доступны вам через общедоступную [переменную `$errors` шаблонов Blade](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Или, в случае запроса XHR, ошибки валидации будут возвращены с `422` HTTP-ответом.
+If the request was not successful, the user will be redirected back to the reset password screen and the validation errors will be available to you via the shared `$errors` [Blade template variable](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Or, in the case of an XHR request, the validation errors will be returned with a 422 HTTP response.
 
 <a name="customizing-password-resets"></a>
-### Настройка сброса пароля
+### Customizing Password Resets
 
-Процесс сброса пароля можно настроить, изменив действие `App\Actions\ResetUserPassword`, которое было создано при установке Laravel Fortify.
+The password reset process may be customized by modifying the `App\Actions\ResetUserPassword` action that was generated when you installed Laravel Fortify.
 
 <a name="email-verification"></a>
-## Подтверждение адреса электронной почты
+## Email Verification
 
-После регистрации вы можете пожелать, чтобы пользователь подтвердил свой адрес электронной почты, прежде чем он продолжит взаимодействие с вашим приложением. Для начала убедитесь, что функционал `emailVerification` включен в массиве `features` вашего файла конфигурации `fortify`. Затем вы должны убедиться, что ваш класс `App\Models\User` реализует интерфейс `Illuminate\Contracts\Auth\MustVerifyEmail`.
+After registration, you may wish for users to verify their email address before they continue accessing your application. To get started, ensure the `emailVerification` feature is enabled in your `fortify` configuration file's `features` array. Next, you should ensure that your `App\Models\User` class implements the `Illuminate\Contracts\Auth\MustVerifyEmail` interface.
 
-После завершения этих двух шагов настройки вновь зарегистрированные пользователи получат электронное письмо с предложением подтвердить свой адрес электронной почты. Однако, мы должны сообщить Fortify, как отображать экран подтверждения электронной почты, который информирует пользователя о том, что им нужно перейти по ссылке для подтверждения в электронном письме.
+Once these two setup steps have been completed, newly registered users will receive an email prompting them to verify their email address ownership. However, we need to inform Fortify how to display the email verification screen which informs the user that they need to go click the verification link in the email.
 
-Вся логика визуализации шаблона `verify-email` Fortify может быть определена с помощью метода `verifyEmailView` класса `Laravel\Fortify\Fortify`. Обычно этот метод следует вызывать из метода `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения:
+All of Fortify's view's rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your application's `App\Providers\FortifyServiceProvider` class:
 
 ```php
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
@@ -454,29 +523,29 @@ public function boot()
 }
 ```
 
-Fortify позаботится об определении маршрута, который отображает этот шаблон, когда пользователь перенаправляется на урл `/email/verify` встроенным в Laravel посредником `verified`.
+Fortify will take care of defining the route that displays this view when a user is redirected to the `/email/verify` endpoint by Laravel's built-in `verified` middleware.
 
-Ваш шаблон `verify-email` должен включать информационное сообщение, предлагающее пользователю щелкнуть ссылку для подтверждения электронной почты, которая была отправлена на его адрес электронной почты.
+Your `verify-email` template should include an informational message instructing the user to click the email verification link that was sent to their email address.
 
 <a name="resending-email-verification-links"></a>
-#### Повторная отправка ссылок для подтверждения электронной почты
+#### Resending Email Verification Links
 
-При желании вы можете добавить в шаблон вашего приложения `verify-email` кнопку, которая запускает POST-запрос к урлу `/email/verification-notification`. Когда этот эндпоинт получает запрос, пользователю будет отправлена новая ссылка для подтверждения электронной почты, позволяющая пользователю получить новую ссылку для подтверждения, если предыдущая была случайно удалена или утеряна.
+If you wish, you may add a button to your application's `verify-email` template that triggers a POST request to the `/email/verification-notification` endpoint. When this endpoint receives a request, a new verification email link will be emailed to the user, allowing the user to get a new verification link if the previous one was accidentally deleted or lost.
 
-Если запрос на повторную отправку электронного письма со ссылкой для подтверждения был успешным, Fortify перенаправит пользователя обратно на урл `/email/verify` с переменной сессии `status`, что позволит вам отобразить информационное сообщение для пользователя, информирующее его о том, что операция была выполнена. успешно. Если запрос был запросом XHR (аякс-запросом), будет возвращен `202` HTTP-ответ.
+If the request to resend the verification link email was successful, Fortify will redirect the user back to the `/email/verify` endpoint with a `status` session variable, allowing you to display an informational message to the user informing them the operation was successful. If the request was an XHR request, a 202 HTTP response will be returned:
 
-```html
+```blade
 @if (session('status') == 'verification-link-sent')
     <div class="mb-4 font-medium text-sm text-green-600">
-        Вам отправлена новая ссылка для подтверждения адреса электронной почты!
+        A new email verification link has been emailed to you!
     </div>
 @endif
 ```
 
 <a name="protecting-routes"></a>
-### Защита маршрутов
+### Protecting Routes
 
-Чтобы указать, что для маршрута или группы маршрутов требуется, чтобы пользователь подтвердил свой адрес электронной почты, то вы должны назначить маршруту встроенным в Laravel посредника `verify`. Этот посредник зарегистрирован в классе вашего приложения `App\Http\Kernel`:
+To specify that a route or group of routes requires that the user has verified their email address, you should attach Laravel's built-in `verified` middleware to the route. This middleware is registered within your application's `App\Http\Kernel` class:
 
 ```php
 Route::get('/dashboard', function () {
@@ -485,19 +554,19 @@ Route::get('/dashboard', function () {
 ```
 
 <a name="password-confirmation"></a>
-## Подтверждение пароля
+## Password Confirmation
 
-При создании приложения вы можете потребовать от пользователя подтверждения пароля перед выполнением действия. Как правило, эти маршруты защищены встроенным в Laravel посредником `password.confirm`.
+While building your application, you may occasionally have actions that should require the user to confirm their password before the action is performed. Typically, these routes are protected by Laravel's built-in `password.confirm` middleware.
 
-Чтобы начать реализацию функционала подтверждения пароля, вам нужно указать Fortify, как вернуть шаблон `confirm-password`. Помните, что Fortify – это безголовая библиотека аутентификации. Если вам нужна внешняя реализация функционала аутентификации Laravel, которая уже создана для вас, то вам следует использовать [стартовый комплект приложения](starter-kits).
+To begin implementing password confirmation functionality, we need to instruct Fortify how to return our application's "password confirmation" view. Remember, Fortify is a headless authentication library. If you would like a frontend implementation of Laravel's authentication features that are already completed for you, you should use an [application starter kit](/docs/{{version}}/starter-kits).
 
-Вся логика визуализации шаблона `confirm-password` Fortify может быть определена с помощью метода `confirmPasswordView` класса `Laravel\Fortify\Fortify`. Обычно этот метод следует вызывать из метода `boot` класса `App\Providers\FortifyServiceProvider` вашего приложения:
+All of Fortify's view rendering logic may be customized using the appropriate methods available via the `Laravel\Fortify\Fortify` class. Typically, you should call this method from the `boot` method of your application's `App\Providers\FortifyServiceProvider` class:
 
 ```php
 use Laravel\Fortify\Fortify;
 
 /**
- * Загрузка любых служб приложения.
+ * Bootstrap any application services.
  *
  * @return void
  */
@@ -511,8 +580,8 @@ public function boot()
 }
 ```
 
-Этот шаблон выведится при обращении к урлу `/user/confirm-password`. Ваш шаблон `confirm-password` должен включать форму, которая выполняет POST-запрос к урлу `/user/confirm-password`. Обработчик запроса к `/user/confirm-password` ожидает поле `password`, которое содержит текущий пароль пользователя.
+Fortify will take care of defining the `/user/confirm-password` endpoint that returns this view. Your `confirm-password` template should include a form that makes a POST request to the `/user/confirm-password` endpoint. The `/user/confirm-password` endpoint expects a `password` field that contains the user's current password.
 
-Если пароль совпадает с текущим паролем пользователя, Fortify перенаправит пользователя на маршрут, к которому он пытался получить доступ. Если запрос был запросом XHR (аякс-запросом), будет возвращен `201` HTTP-ответ.
+If the password matches the user's current password, Fortify will redirect the user to the route they were attempting to access. If the request was an XHR request, a 201 HTTP response will be returned.
 
-Если запрос не был успешным, пользователь будет перенаправлен обратно к экрану сброса пароля, и ошибки валидации будут доступны вам через общедоступную [переменную `$errors` шаблонов Blade](/docs/{{version}}/validation#quick-displaying-the-validation-errors). Или, в случае запроса XHR, ошибки валидации будут возвращены с `422` HTTP-ответом.
+If the request was not successful, the user will be redirected back to the confirm password screen and the validation errors will be available to you via the shared `$errors` Blade template variable. Or, in the case of an XHR request, the validation errors will be returned with a 422 HTTP response.
