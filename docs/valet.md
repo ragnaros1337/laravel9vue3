@@ -7,6 +7,8 @@
     - [The "Park" Command](#the-park-command)
     - [The "Link" Command](#the-link-command)
     - [Securing Sites With TLS](#securing-sites)
+    - [Serving a Default Site](#serving-a-default-site)
+    - [Per-Site PHP Versions](#per-site-php-versions)
 - [Sharing Sites](#sharing-sites)
     - [Sharing Sites Via Ngrok](#sharing-sites-via-ngrok)
     - [Sharing Sites Via Expose](#sharing-sites-via-expose)
@@ -17,11 +19,12 @@
     - [Local Drivers](#local-drivers)
 - [Other Valet Commands](#other-valet-commands)
 - [Valet Directories & Files](#valet-directories-and-files)
+    - [Disk Access](#disk-access)
 
 <a name="introduction"></a>
 ## Introduction
 
-Valet is a Laravel development environment for macOS minimalists. Laravel Valet configures your Mac to always run [Nginx](https://www.nginx.com/) in the background when your machine starts. Then, using [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq), Valet proxies all requests on the `*.test` domain to point to sites installed on your local machine.
+[Laravel Valet](https://github.com/laravel/valet) is a development environment for macOS minimalists. Laravel Valet configures your Mac to always run [Nginx](https://www.nginx.com/) in the background when your machine starts. Then, using [DnsMasq](https://en.wikipedia.org/wiki/Dnsmasq), Valet proxies all requests on the `*.test` domain to point to sites installed on your local machine.
 
 In other words, Valet is a blazing fast Laravel development environment that uses roughly 7 MB of RAM. Valet isn't a complete replacement for [Sail](/docs/{{version}}/sail) or [Homestead](/docs/{{version}}/homestead), but provides a great alternative if you want flexible basics, prefer extreme speed, or are working on a machine with a limited amount of RAM.
 
@@ -35,8 +38,8 @@ Out of the box, Valet support includes, but is not limited to:
 </style>
 
 <div id="valet-support" markdown="1">
+
 - [Laravel](https://laravel.com)
-- [Lumen](https://lumen.laravel.com)
 - [Bedrock](https://roots.io/bedrock/)
 - [CakePHP 3](https://cakephp.org)
 - [Concrete5](https://www.concrete5.org/)
@@ -57,6 +60,7 @@ Out of the box, Valet support includes, but is not limited to:
 - [Symfony](https://symfony.com)
 - [WordPress](https://wordpress.org)
 - [Zend](https://framework.zend.com)
+
 </div>
 
 However, you may extend Valet with your own [custom drivers](#custom-valet-drivers).
@@ -64,23 +68,32 @@ However, you may extend Valet with your own [custom drivers](#custom-valet-drive
 <a name="installation"></a>
 ## Installation
 
-> {note} Valet requires macOS and [Homebrew](https://brew.sh/). Before installation, you should make sure that no other programs such as Apache or Nginx are binding to your local machine's port 80.
+> **Warning**  
+> Valet requires macOS and [Homebrew](https://brew.sh/). Before installation, you should make sure that no other programs such as Apache or Nginx are binding to your local machine's port 80.
 
 To get started, you first need to ensure that Homebrew is up to date using the `update` command:
 
-    brew update
+```shell
+brew update
+```
 
 Next, you should use Homebrew to install PHP:
 
-    brew install php
+```shell
+brew install php
+```
 
 After installing PHP, you are ready to install the [Composer package manager](https://getcomposer.org). In addition, you should make sure the `~/.composer/vendor/bin` directory is in your system's "PATH". After Composer has been installed, you may install Laravel Valet as a global Composer package:
 
-    composer global require laravel/valet
+```shell
+composer global require laravel/valet
+```
 
 Finally, you may execute Valet's `install` command. This will configure and install Valet and DnsMasq. In addition, the daemons Valet depends on will be configured to launch when your system starts:
 
-    valet install
+```shell
+valet install
+```
 
 Once Valet is installed, try pinging any `*.test` domain on your terminal using a command such as `ping foobar.test`. If Valet is installed correctly you should see this domain responding on `127.0.0.1`.
 
@@ -91,11 +104,22 @@ Valet will automatically start its required services each time your machine boot
 
 Valet allows you to switch PHP versions using the `valet use php@version` command. Valet will install the specified PHP version via Homebrew if it is not already installed:
 
-    valet use php@7.2
+```shell
+valet use php@7.2
 
-    valet use php
+valet use php
+```
 
-> {note} Valet only serves one PHP version at a time, even if you have multiple PHP versions installed.
+You may also create a `.valetphprc` file in the root of your project. The `.valetphprc` file should contain the PHP version the site should use:
+
+```shell
+php@7.2
+```
+
+Once this file has been created, you may simply execute the `valet use` command and the command will determine the site's preferred PHP version by reading the file.
+
+> **Warning**  
+> Valet only serves one PHP version at a time, even if you have multiple PHP versions installed.
 
 <a name="database"></a>
 #### Database
@@ -122,9 +146,11 @@ Once Valet is installed, you're ready to start serving your Laravel applications
 
 The `park` command registers a directory on your machine that contains your applications. Once the directory has been "parked" with Valet, all of the directories within that directory will be accessible in your web browser at `http://<directory-name>.test`:
 
-    cd ~/Sites
+```shell
+cd ~/Sites
 
-    valet park
+valet park
+```
 
 That's all there is to it. Now, any application you create within your "parked" directory will automatically be served using the `http://<directory-name>.test` convention. So, if your parked directory contains a directory named "laravel", the application within that directory will be accessible at `http://laravel.test`. In addition, Valet automatically allows you to access the site using wildcard subdomains (`http://foo.laravel.test`).
 
@@ -133,38 +159,100 @@ That's all there is to it. Now, any application you create within your "parked" 
 
 The `link` command can also be used to serve your Laravel applications. This command is useful if you want to serve a single site in a directory and not the entire directory:
 
-    cd ~/Sites/laravel
+```shell
+cd ~/Sites/laravel
 
-    valet link
+valet link
+```
 
 Once an application has been linked to Valet using the `link` command, you may access the application using its directory name. So, the site that was linked in the example above may be accessed at `http://laravel.test`. In addition, Valet automatically allows you to access the site using wildcard sub-domains (`http://foo.laravel.test`).
 
 If you would like to serve the application at a different hostname, you may pass the hostname to the `link` command. For example, you may run the following command to make an application available at `http://application.test`:
 
-    cd ~/Sites/laravel
+```shell
+cd ~/Sites/laravel
 
-    valet link application
+valet link application
+```
+
+Of course, you may also serve applications on subdomains using the `link` command:
+
+```shell
+valet link api.application
+```
 
 You may execute the `links` command to display a list of all of your linked directories:
 
-    valet links
+```shell
+valet links
+```
 
 The `unlink` command may be used to destroy the symbolic link for a site:
 
-    cd ~/Sites/laravel
+```shell
+cd ~/Sites/laravel
 
-    valet unlink
+valet unlink
+```
 
 <a name="securing-sites"></a>
 ### Securing Sites With TLS
 
 By default, Valet serves sites over HTTP. However, if you would like to serve a site over encrypted TLS using HTTP/2, you may use the `secure` command. For example, if your site is being served by Valet on the `laravel.test` domain, you should run the following command to secure it:
 
-    valet secure laravel
+```shell
+valet secure laravel
+```
 
 To "unsecure" a site and revert back to serving its traffic over plain HTTP, use the `unsecure` command. Like the `secure` command, this command accepts the hostname that you wish to unsecure:
 
-    valet unsecure laravel
+```shell
+valet unsecure laravel
+```
+
+<a name="serving-a-default-site"></a>
+### Serving A Default Site
+
+Sometimes, you may wish to configure Valet to serve a "default" site instead of a `404` when visiting an unknown `test` domain. To accomplish this, you may add a `default` option to your `~/.config/valet/config.json` configuration file containing the path to the site that should serve as your default site:
+
+    "default": "/Users/Sally/Sites/example-site",
+
+<a name="per-site-php-versions"></a>
+### Per-Site PHP Versions
+
+By default, Valet uses your global PHP installation to serve your sites. However, if you need to support multiple PHP versions across various sites, you may use the `isolate` command to specify which PHP version a particular site should use. The `isolate` command configures Valet to use the specified PHP version for the site located in your current working directory:
+
+```shell
+cd ~/Sites/example-site
+
+valet isolate php@8.0
+```
+
+If your site name does not match the name of the directory that contains it, you may specify the site name using the `--site` option:
+
+```shell
+valet isolate php@8.0 --site="site-name"
+```
+
+For convenience, you may use the `valet php`, `composer`, and `which-php` commands to proxy calls to the appropriate PHP CLI or tool based on the site's configured PHP version:
+
+```shell
+valet php
+valet composer
+valet which-php
+```
+
+You may execute the `isolated` command to display a list of all of your isolated sites and their PHP versions:
+
+```shell
+valet isolated
+```
+
+To revert a site back to Valet's globally installed PHP version, you may invoke the `unisolate` command from the site's root directory:
+
+```shell
+valet unisolate
+```
 
 <a name="sharing-sites"></a>
 ## Sharing Sites
@@ -176,22 +264,27 @@ Valet even includes a command to share your local sites with the world, providin
 
 To share a site, navigate to the site's directory in your terminal and run Valet's `share` command. A publicly accessible URL will be inserted into your clipboard and is ready to paste directly into your browser or share with your team:
 
-    cd ~/Sites/laravel
+```shell
+cd ~/Sites/laravel
 
-    valet share
+valet share
+```
 
-To stop sharing your site, you may press `Control + C`.
+To stop sharing your site, you may press `Control + C`. Sharing your site using Ngrok requires you to [create an Ngrok account](https://dashboard.ngrok.com/signup) and [setup an authentication token](https://dashboard.ngrok.com/get-started/your-authtoken).
 
-> {tip} You may pass additional Ngrok parameters to the share command, such as `valet share --region=eu`. For more information, consult the [ngrok documentation](https://ngrok.com/docs).
+> **Note**  
+> You may pass additional Ngrok parameters to the share command, such as `valet share --region=eu`. For more information, consult the [ngrok documentation](https://ngrok.com/docs).
 
 <a name="sharing-sites-via-expose"></a>
 ### Sharing Sites Via Expose
 
-If you have [Expose](https://beyondco.de/docs/expose) installed, you can share your site by navigating to the site's directory in your terminal and running the `expose` command. Consult the [Expose documentation](https://beyondco.de/docs/expose/introduction) for information regarding the additional command-line parameters it supports. After sharing the site, Expose will display the sharable URL that you may use on your other devices or amongst team members:
+If you have [Expose](https://expose.dev) installed, you can share your site by navigating to the site's directory in your terminal and running the `expose` command. Consult the [Expose documentation](https://expose.dev/docs) for information regarding the additional command-line parameters it supports. After sharing the site, Expose will display the sharable URL that you may use on your other devices or amongst team members:
 
-    cd ~/Sites/laravel
+```shell
+cd ~/Sites/laravel
 
-    expose
+expose
+```
 
 To stop sharing your site, you may press `Control + C`.
 
@@ -232,17 +325,25 @@ Sometimes you may wish to proxy a Valet domain to another service on your local 
 
 To solve this, you may use the `proxy` command to generate a proxy. For example, you may proxy all traffic from `http://elasticsearch.test` to `http://127.0.0.1:9200`:
 
-```bash
+```shell
+# Proxy over HTTP...
 valet proxy elasticsearch http://127.0.0.1:9200
+
+# Proxy over TLS + HTTP/2...
+valet proxy elasticsearch http://127.0.0.1:9200 --secure
 ```
 
 You may remove a proxy using the `unproxy` command:
 
-    valet unproxy elasticsearch
+```shell
+valet unproxy elasticsearch
+```
 
 You may use the `proxies` command to list all site configurations that are proxied:
 
-    valet proxies
+```shell
+valet proxies
+```
 
 <a name="custom-valet-drivers"></a>
 ## Custom Valet Drivers
@@ -297,7 +398,8 @@ The `isStaticFile` should determine if the incoming request is for a file that i
         return false;
     }
 
-> {note} The `isStaticFile` method will only be called if the `serves` method returns `true` for the incoming request and the request URI is not `/`.
+> **Warning**  
+> The `isStaticFile` method will only be called if the `serves` method returns `true` for the incoming request and the request URI is not `/`.
 
 <a name="the-frontcontrollerpath-method"></a>
 #### The `frontControllerPath` Method
@@ -388,7 +490,7 @@ This directory contains custom Valet extensions / commands.
 
 #### `~/.config/valet/Nginx/`
 
-This directory contains all of Valet's Nginx site configurations. These files are rebuilt when running the `install`, `secure`, and `tld` commands.
+This directory contains all of Valet's Nginx site configurations. These files are rebuilt when running the `install` and `secure` commands.
 
 #### `~/.config/valet/Sites/`
 
@@ -429,3 +531,10 @@ This file is the PHP-FPM pool configuration file.
 #### `~/.composer/vendor/laravel/valet/cli/stubs/secure.valet.conf`
 
 This file is the default Nginx configuration used for building SSL certificates for your sites.
+
+<a name="disk-access"></a>
+### Disk Access
+
+Since macOS 10.14, [access to some files and directories is restricted by default](https://manuals.info.apple.com/MANUALS/1000/MA1902/en_US/apple-platform-security-guide.pdf). These restrictions include the Desktop, Documents, and Downloads directories. In addition, network volume and removable volume access is restricted. Therefore, Valet recommends your site folders are located outside of these protected locations.
+
+However, if you wish to serve sites from within one of those locations, you will need to give Nginx "Full Disk Access". Otherwise, you may encounter server errors or other unpredictable behavior from Nginx, especially when serving static assets. Typically, macOS will automatically prompt you to grant Nginx full access to these locations. Or, you may do so manually via `System Preferences` > `Security & Privacy` > `Privacy` and selecting `Full Disk Access`. Next, enable any `nginx` entries in the main window pane.
