@@ -1,34 +1,32 @@
-git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
+# Middleware
 
----
-
-# Посредники (middleware)
-
-- [Введение](#introduction)
-- [Определение посредника](#defining-middleware)
-- [Регистрация посредника](#registering-middleware)
-    - [Глобальный стек HTTP-посредников](#global-middleware)
-    - [Назначение посредников маршрутам](#assigning-middleware-to-routes)
-    - [Группы посредников](#middleware-groups)
-    - [Сортировка посредников](#sorting-middleware)
-- [Параметры посредника](#middleware-parameters)
-- [Завершающий посредник](#terminable-middleware)
+- [Introduction](#introduction)
+- [Defining Middleware](#defining-middleware)
+- [Registering Middleware](#registering-middleware)
+    - [Global Middleware](#global-middleware)
+    - [Assigning Middleware To Routes](#assigning-middleware-to-routes)
+    - [Middleware Groups](#middleware-groups)
+    - [Sorting Middleware](#sorting-middleware)
+- [Middleware Parameters](#middleware-parameters)
+- [Terminable Middleware](#terminable-middleware)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Посредник обеспечивает удобный механизм для проверки и фильтрации HTTP-запросов, поступающих в ваше приложение. Например, в Laravel уже содержится посредник, проверяющий аутентификацию пользователя вашего приложения. Если пользователь не аутентифицирован, то посредник перенаправит пользователя на экран входа в ваше приложение. Однако, если пользователь аутентифицирован, то посредник позволит запросу продолжить работу в приложении.
+Middleware provide a convenient mechanism for inspecting and filtering HTTP requests entering your application. For example, Laravel includes a middleware that verifies the user of your application is authenticated. If the user is not authenticated, the middleware will redirect the user to your application's login screen. However, if the user is authenticated, the middleware will allow the request to proceed further into the application.
 
-Посредник может быть написан для выполнения различных задач помимо аутентификации. Например, посредник для ведения журнала может регистрировать все входящие запросы вашего приложения. В состав фреймворка Laravel уже входят несколько посредников, включая посредник для аутентификации и посредник для защиты от CSRF. Все эти посредники находится в каталоге `app/Http/Middleware`.
+Additional middleware can be written to perform a variety of tasks besides authentication. For example, a logging middleware might log all incoming requests to your application. There are several middleware included in the Laravel framework, including middleware for authentication and CSRF protection. All of these middleware are located in the `app/Http/Middleware` directory.
 
 <a name="defining-middleware"></a>
-## Определение посредника
+## Defining Middleware
 
-Чтобы создать нового посредника, используйте команду `make:middleware` [Artisan](artisan):
+To create a new middleware, use the `make:middleware` Artisan command:
 
-    php artisan make:middleware EnsureTokenIsValid
+```shell
+php artisan make:middleware EnsureTokenIsValid
+```
 
-Эта команда поместит новый класс посредника в каталог `app/Http/Middleware` вашего приложения. В этом посреднике мы будем разрешать доступ к маршруту только в том случае, если значение входящего `token` соответствует указанному. В противном случае мы перенаправим пользователя по маршруту `home`:
+This command will place a new `EnsureTokenIsValid` class within your `app/Http/Middleware` directory. In this middleware, we will only allow access to the route if the supplied `token` input matches a specified value. Otherwise, we will redirect the users back to the `home` URI:
 
     <?php
 
@@ -39,7 +37,7 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
     class EnsureTokenIsValid
     {
         /**
-         * Обработка входящего запроса.
+         * Handle an incoming request.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  \Closure  $next
@@ -55,17 +53,18 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         }
     }
 
-Как видите, если переданный `token` не совпадает с нашим секретным токеном, то посредник вернет клиенту HTTP-перенаправление; в противном случае запрос будет передан в приложение. Чтобы передать запрос дальше в приложение (позволяя «пройти» посредника), вы должны вызвать замыкание `$next` с параметром `$request`.
+As you can see, if the given `token` does not match our secret token, the middleware will return an HTTP redirect to the client; otherwise, the request will be passed further into the application. To pass the request deeper into the application (allowing the middleware to "pass"), you should call the `$next` callback with the `$request`.
 
-Лучше всего представить себе посредников как серию «слоев» для HTTP-запроса, которые необходимо пройти, прежде чем запрос попадет в ваше приложение. Каждый слой может рассмотреть запрос и даже полностью отклонить его.
+It's best to envision middleware as a series of "layers" HTTP requests must pass through before they hit your application. Each layer can examine the request and even reject it entirely.
 
-> {tip} Все посредники извлекаются из [контейнера служб](/docs/{{version}}/container), поэтому вы можете объявить необходимые вам зависимости в конструкторе посредника.
+> **Note**  
+> All middleware are resolved via the [service container](/docs/{{version}}/container), so you may type-hint any dependencies you need within a middleware's constructor.
 
 <a name="before-after-middleware"></a>
 <a name="middleware-and-responses"></a>
-#### Посредники и ответы
+#### Middleware & Responses
 
-Конечно, посредник может выполнять задачи до или после передачи запроса в приложение. Например, следующий посредник будет выполнять некоторую задачу **до** того, как запрос будет обработан приложением:
+Of course, a middleware can perform tasks before or after passing the request deeper into the application. For example, the following middleware would perform some task **before** the request is handled by the application:
 
     <?php
 
@@ -77,13 +76,13 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
     {
         public function handle($request, Closure $next)
         {
-            // Выполнить действие
+            // Perform action
 
             return $next($request);
         }
     }
 
-Однако, этот посредник будет выполнять свою задачу **после** обработки входящего запроса приложением:
+However, this middleware would perform its task **after** the request is handled by the application:
 
     <?php
 
@@ -97,26 +96,26 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         {
             $response = $next($request);
 
-            // Выполнить действие
+            // Perform action
 
             return $response;
         }
     }
 
 <a name="registering-middleware"></a>
-## Регистрация посредника
+## Registering Middleware
 
 <a name="global-middleware"></a>
-### Глобальный стек HTTP-посредников
+### Global Middleware
 
-Если вы хотите, чтобы посредник запускался во время каждого HTTP-запроса к вашему приложению, то укажите класс посредника в свойстве `$middleware` вашего класса `app/Http/Kernel.php`.
+If you want a middleware to run during every HTTP request to your application, list the middleware class in the `$middleware` property of your `app/Http/Kernel.php` class.
 
 <a name="assigning-middleware-to-routes"></a>
-### Назначение посредников маршрутам
+### Assigning Middleware To Routes
 
-Если вы хотите назначить посредника определенным маршрутам, то вам следует сначала зарегистрировать ключ посредника в файле `app/Http/Kernel.php` вашего приложения. По умолчанию свойство `$routeMiddleware` этого класса содержит записи для посредников, уже включенных в состав Laravel. Вы можете добавить свой собственный посредник в этот список, и назначить ему ключ по вашему выбору:
+If you would like to assign middleware to specific routes, you should first assign the middleware a key in your application's `app/Http/Kernel.php` file. By default, the `$routeMiddleware` property of this class contains entries for the middleware included with Laravel. You may add your own middleware to this list and assign it a key of your choosing:
 
-    // Внутри класса App\Http\Kernel ...
+    // Within App\Http\Kernel class...
 
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
@@ -130,19 +129,19 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 
-После того, как посредник был определен в HTTP-ядре, вы можете использовать метод `middleware` для назначения посредника маршруту:
+Once the middleware has been defined in the HTTP kernel, you may use the `middleware` method to assign middleware to a route:
 
     Route::get('/profile', function () {
         //
     })->middleware('auth');
 
-Вы можете назначить несколько посредников маршруту, передав массив имен посредников методу `middleware`:
+You may assign multiple middleware to the route by passing an array of middleware names to the `middleware` method:
 
     Route::get('/', function () {
         //
     })->middleware(['first', 'second']);
 
-Вы можете назначить посредника, передав полное имя класса:
+When assigning middleware, you may also pass the fully qualified class name:
 
     use App\Http\Middleware\EnsureTokenIsValid;
 
@@ -150,7 +149,10 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         //
     })->middleware(EnsureTokenIsValid::class);
 
-При назначении посредника группе маршрутов, иногда может потребоваться запретить применение посредника к одному из маршрутов в группе. Вы можете сделать это с помощью метода `withoutMiddleware`:
+<a name="excluding-middleware"></a>
+#### Excluding Middleware
+
+When assigning middleware to a group of routes, you may occasionally need to prevent the middleware from being applied to an individual route within the group. You may accomplish this using the `withoutMiddleware` method:
 
     use App\Http\Middleware\EnsureTokenIsValid;
 
@@ -164,17 +166,27 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         })->withoutMiddleware([EnsureTokenIsValid::class]);
     });
 
-Метод `withoutMiddleware` удаляет только посредника маршрутизации и не применим к [глобальному посреднику](#global-middleware).
+You may also exclude a given set of middleware from an entire [group](/docs/{{version}}/routing#route-groups) of route definitions:
+
+    use App\Http\Middleware\EnsureTokenIsValid;
+
+    Route::withoutMiddleware([EnsureTokenIsValid::class])->group(function () {
+        Route::get('/profile', function () {
+            //
+        });
+    });
+
+The `withoutMiddleware` method can only remove route middleware and does not apply to [global middleware](#global-middleware).
 
 <a name="middleware-groups"></a>
-### Группы посредников
+### Middleware Groups
 
-По желанию можно сгруппировать несколько посредников под одним ключом, чтобы упростить их назначение маршрутам. Вы можете сделать это, используя свойство `$middlewareGroups` вашего HTTP-ядра.
+Sometimes you may want to group several middleware under a single key to make them easier to assign to routes. You may accomplish this using the `$middlewareGroups` property of your HTTP kernel.
 
-По умолчанию Laravel поставляется с группами посредников `web` и `api`, которые содержат основных посредников, которые вы, возможно, захотите применить к своим веб- и  API-маршрутам. Помните, что эти группы посредников автоматически применяются поставщиком служб `App\Providers\RouteServiceProvider` вашего приложения к маршрутам, определенным в файлах маршрутов `web` и `api`, соответственно:
+Out of the box, Laravel comes with `web` and `api` middleware groups that contain common middleware you may want to apply to your web and API routes. Remember, these middleware groups are automatically applied by your application's `App\Providers\RouteServiceProvider` service provider to routes within your corresponding `web` and `api` route files:
 
     /**
-     * Группы посредников маршрутов приложения.
+     * The application's route middleware groups.
      *
      * @var array
      */
@@ -183,7 +195,6 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
-            // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -195,7 +206,7 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         ],
     ];
 
-Группы посредников могут быть назначены маршрутам и действиям контроллера с использованием того же синтаксиса, что и для отдельных посредников. Опять же, группы посредников делают более удобным одновременное назначение нескольких посредников для маршрута:
+Middleware groups may be assigned to routes and controller actions using the same syntax as individual middleware. Again, middleware groups make it more convenient to assign many middleware to a route at once:
 
     Route::get('/', function () {
         //
@@ -205,19 +216,20 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         //
     });
 
-> {tip} Из коробки группы посредников `web` и `api` автоматически применяются к соответствующим файлам вашего приложения `routes/web.php` и `routes/api.php` с помощью `App\Providers\RouteServiceProvider`.
+> **Note**  
+> Out of the box, the `web` and `api` middleware groups are automatically applied to your application's corresponding `routes/web.php` and `routes/api.php` files by the `App\Providers\RouteServiceProvider`.
 
 <a name="sorting-middleware"></a>
-### Сортировка посредников
+### Sorting Middleware
 
-В редких случаях, может понадобиться, чтобы посредники выполнялись в определенном порядке, но вы не можете контролировать их порядок, когда они назначены маршруту. В этом случае вы можете указать приоритет посредников, используя свойство `$middlewarePriority` вашего файла `app/Http/Kernel.php`. Это свойство может отсутствовать в вашем HTTP-ядре по умолчанию. Если оно не существует, то вы можете скопировать его определение по умолчанию ниже:
+Rarely, you may need your middleware to execute in a specific order but not have control over their order when they are assigned to the route. In this case, you may specify your middleware priority using the `$middlewarePriority` property of your `app/Http/Kernel.php` file. This property may not exist in your HTTP kernel by default. If it does not exist, you may copy its default definition below:
 
     /**
-     * Список посредников, отсортированный по приоритетности.
+     * The priority-sorted list of middleware.
      *
-     * Заставит неглобальных посредников всегда быть в заданном порядке.
+     * This forces non-global middleware to always be in the given order.
      *
-     * @var array
+     * @var string[]
      */
     protected $middlewarePriority = [
         \Illuminate\Cookie\Middleware\EncryptCookies::class,
@@ -225,17 +237,18 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
         \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
+        \Illuminate\Contracts\Session\Middleware\AuthenticatesSessions::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
     ];
 
 <a name="middleware-parameters"></a>
-## Параметры посредника
+## Middleware Parameters
 
-Посредник также может получать дополнительные параметры. Например, если вашему приложению необходимо проверить, что аутентифицированный пользователь имеет конкретную «роль» перед выполнением им конкретного действия, то вы можете создать посредника, например, `EnsureUserHasRole`, который получит имя роли в качестве дополнительного аргумента.
+Middleware can also receive additional parameters. For example, if your application needs to verify that the authenticated user has a given "role" before performing a given action, you could create an `EnsureUserHasRole` middleware that receives a role name as an additional argument.
 
-Дополнительные параметры посредника будут переданы после аргумента `$next`:
+Additional middleware parameters will be passed to the middleware after the `$next` argument:
 
     <?php
 
@@ -246,7 +259,7 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
     class EnsureUserHasRole
     {
         /**
-         * Обработка входящего запроса.
+         * Handle the incoming request.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  \Closure  $next
@@ -256,7 +269,7 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         public function handle($request, Closure $next, $role)
         {
             if (! $request->user()->hasRole($role)) {
-                // Перенаправление ...
+                // Redirect...
             }
 
             return $next($request);
@@ -264,16 +277,16 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
 
     }
 
-Параметры посредника можно указать при определении маршрута, разделив имя посредника и параметры символом `:`. Несколько параметров следует разделять запятыми:
+Middleware parameters may be specified when defining the route by separating the middleware name and parameters with a `:`. Multiple parameters should be delimited by commas:
 
     Route::put('/post/{id}', function ($id) {
         //
     })->middleware('role:editor');
 
 <a name="terminable-middleware"></a>
-## Завершающий посредник
+## Terminable Middleware
 
-Иногда посреднику может потребоваться выполнить некоторую работу после отправки HTTP-ответа в браузер. Если вы определите метод `terminate` в своем посреднике и при условии, что ваш веб-сервер использует FastCGI, то метод `terminate` будет автоматически вызван после отправки ответа в браузер:
+Sometimes a middleware may need to do some work after the HTTP response has been sent to the browser. If you define a `terminate` method on your middleware and your web server is using FastCGI, the `terminate` method will automatically be called after the response is sent to the browser:
 
     <?php
 
@@ -284,7 +297,7 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
     class TerminatingMiddleware
     {
         /**
-         * Обработка входящего запроса.
+         * Handle an incoming request.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  \Closure  $next
@@ -296,7 +309,7 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         }
 
         /**
-         * Обработать задачи после отправки ответа в браузер.
+         * Handle tasks after the response has been sent to the browser.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  \Illuminate\Http\Response  $response
@@ -308,14 +321,14 @@ git 3661bb0b61fd44cdb0d3b537df1cabf892ff99ac
         }
     }
 
-Метод `terminate` должен получать и запрос, и ответ. После того, как вы определили завершающий посредник, вы должны добавить его в список маршрутов или глобальный стек посредников в файле `app/Http/Kernel.php`.
+The `terminate` method should receive both the request and the response. Once you have defined a terminable middleware, you should add it to the list of routes or global middleware in the `app/Http/Kernel.php` file.
 
-При вызове метода `terminate` посредника, Laravel извлечет новый экземпляр посредника из [контейнера служб](/docs/{{version}}/container). Если вы хотите использовать один и тот же экземпляр посредника при вызове методов `handle` и `terminate`, то зарегистрируйте посредника в контейнере, используя метод контейнера `singleton`. Обычно это должно быть сделано в методе `register` вашего `AppServiceProvider`:
+When calling the `terminate` method on your middleware, Laravel will resolve a fresh instance of the middleware from the [service container](/docs/{{version}}/container). If you would like to use the same middleware instance when the `handle` and `terminate` methods are called, register the middleware with the container using the container's `singleton` method. Typically this should be done in the `register` method of your `AppServiceProvider`:
 
     use App\Http\Middleware\TerminatingMiddleware;
 
     /**
-     * Регистрация любых служб приложения.
+     * Register any application services.
      *
      * @return void
      */

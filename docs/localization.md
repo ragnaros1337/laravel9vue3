@@ -1,48 +1,43 @@
-git 534aaa9e4789f0a6f5d55bc797f6a765f131cc63
+# Localization
 
----
-
-# Локализация интерфейса
-
-- [Введение](#introduction)
-    - [Конфигурирование языка по умолчанию](#configuring-the-locale)
-- [Определение строк перевода](#defining-translation-strings)
-    - [Использование коротких ключей](#using-short-keys)
-    - [Использование строк перевода в качестве ключей](#using-translation-strings-as-keys)
-- [Получение строк перевода](#retrieving-translation-strings)
-    - [Замена параметров в строках перевода](#replacing-parameters-in-translation-strings)
-    - [Плюрализация](#pluralization)
-- [Переопределение языковых файлов пакета](#overriding-package-language-files)
+- [Introduction](#introduction)
+    - [Configuring The Locale](#configuring-the-locale)
+    - [Pluralization Language](#pluralization-language)
+- [Defining Translation Strings](#defining-translation-strings)
+    - [Using Short Keys](#using-short-keys)
+    - [Using Translation Strings As Keys](#using-translation-strings-as-keys)
+- [Retrieving Translation Strings](#retrieving-translation-strings)
+    - [Replacing Parameters In Translation Strings](#replacing-parameters-in-translation-strings)
+    - [Pluralization](#pluralization)
+- [Overriding Package Language Files](#overriding-package-language-files)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Функционал локализации Laravel предоставляют удобный способ извлечения строк разных языков, что позволяет легко поддерживать мультиязычность интерфейса вашего приложения.
+Laravel's localization features provide a convenient way to retrieve strings in various languages, allowing you to easily support multiple languages within your application.
 
-Laravel предлагает два способа управления строками перевода. Во-первых, языковые строки могут храниться в файлах в каталоге `resources/lang`. В этом каталоге могут быть подкаталоги для каждого языка, поддерживаемого приложением. Это подход, который Laravel использует для управления строками перевода собственного функционала, например сообщений об ошибках валидации:
+Laravel provides two ways to manage translation strings. First, language strings may be stored in files within the `lang` directory. Within this directory, there may be subdirectories for each language supported by the application. This is the approach Laravel uses to manage translation strings for built-in Laravel features such as validation error messages:
 
-    /resources
-        /lang
-            /en
-                messages.php
-            /es
-                messages.php
+    /lang
+        /en
+            messages.php
+        /es
+            messages.php
 
-Или строки перевода могут быть определены в файлах JSON, которые помещаются в каталог `resources/lang`. При таком подходе каждый язык, поддерживаемый вашим приложением, будет иметь соответствующий файл JSON в этом каталоге. Этот подход рекомендуется для приложений с большим количеством переводимых строк:
+Or, translation strings may be defined within JSON files that are placed within the `lang` directory. When taking this approach, each language supported by your application would have a corresponding JSON file within this directory. This approach is recommended for applications that have a large number of translatable strings:
 
-    /resources
-        /lang
-            en.json
-            es.json
+    /lang
+        en.json
+        es.json
 
-Мы обсудим каждый подход по управлению строками перевода в этой документации.
+We'll discuss each approach to managing translation strings within this documentation.
 
 <a name="configuring-the-locale"></a>
-### Конфигурирование языка по умолчанию
+### Configuring The Locale
 
-Язык по умолчанию для вашего приложения хранится в параметре `locale` конфигурационного файла `config/app.php`. Вы можете изменить это значение в соответствии с потребностями вашего приложения.
+The default language for your application is stored in the `config/app.php` configuration file's `locale` configuration option. You are free to modify this value to suit the needs of your application.
 
-Вы можете изменить язык по умолчанию для одного HTTP-запроса во время выполнения, используя метод `setLocale` фасада `App`:
+You may modify the default language for a single HTTP request at runtime using the `setLocale` method provided by the `App` facade:
 
     use Illuminate\Support\Facades\App;
 
@@ -56,14 +51,14 @@ Laravel предлагает два способа управления стро
         //
     });
 
-Вы можете указать «резервный язык», который будет использоваться, когда активный язык не содержит конкретной строки перевода. Как и язык по умолчанию, резервный язык также задается в конфигурационном файле `config/app.php`:
+You may configure a "fallback language", which will be used when the active language does not contain a given translation string. Like the default language, the fallback language is also configured in the `config/app.php` configuration file:
 
     'fallback_locale' => 'en',
 
 <a name="determining-the-current-locale"></a>
-#### Определение текущего языка
+#### Determining The Current Locale
 
-Вы можете использовать методы `currentLocale` и `isLocale` фасада `App`, чтобы определить текущий язык или проверить соответствие указанного языка:
+You may use the `currentLocale` and `isLocale` methods on the `App` facade to determine the current locale or check if the locale is a given value:
 
     use Illuminate\Support\Facades\App;
 
@@ -73,121 +68,143 @@ Laravel предлагает два способа управления стро
         //
     }
 
+<a name="pluralization-language"></a>
+### Pluralization Language
+
+You may instruct Laravel's "pluralizer", which is used by Eloquent and other portions of the framework to convert singular strings to plural strings, to use a language other than English. This may be accomplished by invoking the `useLanguage` method within the `boot` method of one of your application's service providers. The pluralizer's currently supported languages are: `french`, `norwegian-bokmal`, `portuguese`, `spanish`, and `turkish`:
+
+    use Illuminate\Support\Pluralizer;
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Pluralizer::useLanguage('spanish');     
+
+        // ...     
+    }
+
+> **Warning**  
+> If you customize the pluralizer's language, you should explicitly define your Eloquent model's [table names](/docs/{{version}}/eloquent#table-names).
+
 <a name="defining-translation-strings"></a>
-## Определение строк перевода
+## Defining Translation Strings
 
 <a name="using-short-keys"></a>
-### Использование коротких ключей
+### Using Short Keys
 
-Обычно строки перевода хранятся в файлах в каталоге `resources/lang`. В этом каталоге должен быть подкаталог для каждого языка, поддерживаемого вашим приложением. Это подход, который Laravel использует для управления строками перевода собственного функционала, например сообщений об ошибках валидации:
+Typically, translation strings are stored in files within the `lang` directory. Within this directory, there should be a subdirectory for each language supported by your application. This is the approach Laravel uses to manage translation strings for built-in Laravel features such as validation error messages:
 
-    /resources
-        /lang
-            /en
-                messages.php
-            /es
-                messages.php
+    /lang
+        /en
+            messages.php
+        /es
+            messages.php
 
-Все языковые файлы возвращают массив строк с ключами. Например:
+All language files return an array of keyed strings. For example:
 
     <?php
 
-    // resources/lang/en/messages.php
+    // lang/en/messages.php
 
     return [
         'welcome' => 'Welcome to our application!',
     ];
 
-> {note} Для языков, отличающихся территориально, вы должны назвать языковые каталоги в соответствии со стандартом ISO 15897. Например, для британского английского следует использовать «en_GB», а не «en-gb».
+> **Warning**  
+> For languages that differ by territory, you should name the language directories according to the ISO 15897. For example, "en_GB" should be used for British English rather than "en-gb".
 
 <a name="using-translation-strings-as-keys"></a>
-### Использование строк перевода в качестве ключей
+### Using Translation Strings As Keys
 
-Для приложений с большим количеством переводимых строк определение каждой строки с помощью «короткого ключа» может сбивать с толку при обращении к ключам в ваших шаблонах, и постоянно изобретать ключи для каждой строки перевода, поддерживаемой вашим приложением, затруднительно.
+For applications with a large number of translatable strings, defining every string with a "short key" can become confusing when referencing the keys in your views and it is cumbersome to continually invent keys for every translation string supported by your application.
 
-По этой причине Laravel предлагает определение строк перевода с использованием переводимой строки в качестве ключа «по умолчанию». Файлы перевода, которые используют строки перевода в качестве ключей, хранятся как файлы JSON в каталоге `resources/lang`. Например, если ваше приложение имеет испанский перевод, то вы должны создать файл `resources/lang/es.json`:
+For this reason, Laravel also provides support for defining translation strings using the "default" translation of the string as the key. Translation files that use translation strings as keys are stored as JSON files in the `lang` directory. For example, if your application has a Spanish translation, you should create a `lang/es.json` file:
 
-```js
+```json
 {
     "I love programming.": "Me encanta programar."
 }
 ```
 
-#### Конфликты ключей и имен файлов
+#### Key / File Conflicts
 
-Вы не должны определять строковые ключи перевода, которые конфликтуют с именами файлов перевода. Например, перевод `__('Action')` для языка `NL` при условии существования файла `nl/action.php` и отсутствии файла `nl.json` приведет к тому, что переводчик Laravel вернет содержимое всего файла `nl/action.php`.
+You should not define translation string keys that conflict with other translation filenames. For example, translating `__('Action')` for the "NL" locale while a `nl/action.php` file exists but a `nl.json` file does not exist will result in the translator returning the contents of `nl/action.php`.
 
 <a name="retrieving-translation-strings"></a>
-## Получение строк перевода
+## Retrieving Translation Strings
 
-Вы можете получить строки перевода из ваших языковых файлов с помощью глобального помощника `__`. Если вы используете «короткие ключи» для определения ваших строк перевода, то вы должны передать файл, содержащий ключ, и сам ключ в функцию `__`, используя «точечную нотацию». Например, давайте извлечем строку перевода `welcome` из языкового файла `resources/lang/en/messages.php`:
+You may retrieve translation strings from your language files using the `__` helper function. If you are using "short keys" to define your translation strings, you should pass the file that contains the key and the key itself to the `__` function using "dot" syntax. For example, let's retrieve the `welcome` translation string from the `lang/en/messages.php` language file:
 
     echo __('messages.welcome');
 
-Если указанная строка перевода не существует, то функция `__` вернет ключ строки перевода. Итак, используя приведенный выше пример, функция `__` вернет `messages.welcome`, если строка перевода не существует.
+If the specified translation string does not exist, the `__` function will return the translation string key. So, using the example above, the `__` function would return `messages.welcome` if the translation string does not exist.
 
-Если вы используете свои [строки перевода в качестве ключей перевода](#using-translation-strings-as-keys), то вы должны передать перевод вашей строки по умолчанию в функцию `__`:
+ If you are using your [default translation strings as your translation keys](#using-translation-strings-as-keys), you should pass the default translation of your string to the `__` function;
 
     echo __('I love programming.');
 
-Опять же, если строка перевода не существует, то функция `__` вернет ключ строки перевода, который ей был передан.
+Again, if the translation string does not exist, the `__` function will return the translation string key that it was given.
 
-Если вы используете [шаблонизатор Blade](/docs/{{version}}/blade), то вы можете использовать синтаксис `{{}}` для вывода строки перевода:
+If you are using the [Blade templating engine](/docs/{{version}}/blade), you may use the `{{ }}` echo syntax to display the translation string:
 
     {{ __('messages.welcome') }}
 
 <a name="replacing-parameters-in-translation-strings"></a>
-### Замена параметров в строках перевода
+### Replacing Parameters In Translation Strings
 
-При желании вы можете определить метку-заполнитель в строках перевода. Все заполнители имеют префикс `:`. Например, вы можете определить приветственное сообщение с именем-заполнителем:
+If you wish, you may define placeholders in your translation strings. All placeholders are prefixed with a `:`. For example, you may define a welcome message with a placeholder name:
 
     'welcome' => 'Welcome, :name',
 
-Чтобы заменить заполнители при получении строки перевода, вы можете передать массив для замены в качестве второго аргумента функции `__`:
+To replace the placeholders when retrieving a translation string, you may pass an array of replacements as the second argument to the `__` function:
 
     echo __('messages.welcome', ['name' => 'dayle']);
 
-Если все буквы заполнителя заглавные или заполнитель имеет только первую заглавную букву, то переведенное значение будет с соответствующим регистром:
+If your placeholder contains all capital letters, or only has its first letter capitalized, the translated value will be capitalized accordingly:
 
     'welcome' => 'Welcome, :NAME', // Welcome, DAYLE
     'goodbye' => 'Goodbye, :Name', // Goodbye, Dayle
 
 <a name="pluralization"></a>
-### Плюрализация
+### Pluralization
 
-Плюрализация – сложная задача, поскольку разные языки имеют множество сложных правил плюрализации; однако Laravel может помочь вам переводить строки по-разному в зависимости от правил множественного числа, которые вы определяете. Используя мета-символ `|`, вы можете различать формы единственного и множественного числа строки:
+Pluralization is a complex problem, as different languages have a variety of complex rules for pluralization; however, Laravel can help you translate strings differently based on pluralization rules that you define. Using a `|` character, you may distinguish singular and plural forms of a string:
 
     'apples' => 'There is one apple|There are many apples',
 
-Конечно, множественное число также поддерживается при использовании [строк перевода в качестве ключей](#using-translation-strings-as-keys):
+Of course, pluralization is also supported when using [translation strings as keys](#using-translation-strings-as-keys):
 
-```js
+```json
 {
     "There is one apple|There are many apples": "Hay una manzana|Hay muchas manzanas"
 }
 ```
 
-Вы даже можете создать более сложные правила множественного числа, которые определяют строки перевода для нескольких диапазонов значений:
+You may even create more complex pluralization rules which specify translation strings for multiple ranges of values:
 
     'apples' => '{0} There are none|[1,19] There are some|[20,*] There are many',
 
-После определения строки перевода, которая имеет параметры множественного числа, вы можете использовать функцию `trans_choice` для извлечения строки соответствующую указанному «количеству». В этом примере, поскольку количество больше единицы, возвращается форма множественного числа строки перевода:
+After defining a translation string that has pluralization options, you may use the `trans_choice` function to retrieve the line for a given "count". In this example, since the count is greater than one, the plural form of the translation string is returned:
 
     echo trans_choice('messages.apples', 10);
 
-Вы также можете определить метку-заполнитель в строках множественного числа. Эти заполнители могут быть заменены передачей массива в качестве третьего аргумента функции `trans_choice`:
+You may also define placeholder attributes in pluralization strings. These placeholders may be replaced by passing an array as the third argument to the `trans_choice` function:
 
     'minutes_ago' => '{1} :value minute ago|[2,*] :value minutes ago',
 
     echo trans_choice('time.minutes_ago', 5, ['value' => 5]);
 
-Если вы хотите отобразить целочисленное значение, переданное в функцию `trans_choice`, то вы можете использовать встроенный заполнитель `:count`:
+If you would like to display the integer value that was passed to the `trans_choice` function, you may use the built-in `:count` placeholder:
 
     'apples' => '{0} There are none|{1} There is one|[2,*] There are :count',
 
 <a name="overriding-package-language-files"></a>
-## Переопределение языковых файлов пакета
+## Overriding Package Language Files
 
-Некоторые пакеты могут содержать собственные языковые файлы. Вместо того, чтобы изменять строки файлов пакета, вы можете переопределить их, поместив файлы в каталог `resources/lang/vendor/{package}/{locale}`.
+Some packages may ship with their own language files. Instead of changing the package's core files to tweak these lines, you may override them by placing files in the `lang/vendor/{package}/{locale}` directory.
 
-Так, например, если вам нужно переопределить строки перевода на английский в `messages.php` для пакета с именем `skyrim/hearthfire`, вы должны поместить языковой файл в каталог: `resources/lang/vendor/hearthfire/en/messages.php`. В этом файле вы должны определять только те строки перевода, которые хотите переопределить. Любые строки перевода, которые вы не меняете, все равно будут загружены из исходных языковых файлов пакета.
+So, for example, if you need to override the English translation strings in `messages.php` for a package named `skyrim/hearthfire`, you should place a language file at: `lang/vendor/hearthfire/en/messages.php`. Within this file, you should only define the translation strings you wish to override. Any translation strings you don't override will still be loaded from the package's original language files.
