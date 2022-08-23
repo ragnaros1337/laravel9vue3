@@ -1,41 +1,38 @@
-git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
+# HTTP Requests
 
----
-
-# HTTP-запросы
-
-- [Введение](#introduction)
-- [Взаимодействие с запросом](#interacting-with-the-request)
-    - [Доступ к запросу](#accessing-the-request)
-    - [Путь и метод запроса](#request-path-and-method)
-    - [Заголовки запроса](#request-headers)
-    - [IP-адрес запроса](#request-ip-address)
-    - [Согласование содержимого](#content-negotiation)
-    - [Запросы стандарта PSR-7](#psr7-requests)
-- [Данные полей ввода](#input)
-    - [Получение данных полей ввода](#retrieving-input)
-    - [Определение наличия требуемых данных](#determining-if-input-is-present)
-    - [Данные прошлого запроса](#old-input)
-    - [Файлы Cookies](#cookies)
-    - [Обрезание и нормализация значений полей ввода](#input-trimming-and-normalization)
-- [Файлы](#files)
-    - [Получение загруженных файлов](#retrieving-uploaded-files)
-    - [Сохранение загруженных файлов](#storing-uploaded-files)
-- [Конфигурирование доверенных прокси](#configuring-trusted-proxies)
-- [Конфигурирование доверенных хостов](#configuring-trusted-hosts)
+- [Introduction](#introduction)
+- [Interacting With The Request](#interacting-with-the-request)
+    - [Accessing The Request](#accessing-the-request)
+    - [Request Path, Host, & Method](#request-path-and-method)
+    - [Request Headers](#request-headers)
+    - [Request IP Address](#request-ip-address)
+    - [Content Negotiation](#content-negotiation)
+    - [PSR-7 Requests](#psr7-requests)
+- [Input](#input)
+    - [Retrieving Input](#retrieving-input)
+    - [Determining If Input Is Present](#determining-if-input-is-present)
+    - [Merging Additional Input](#merging-additional-input)
+    - [Old Input](#old-input)
+    - [Cookies](#cookies)
+    - [Input Trimming & Normalization](#input-trimming-and-normalization)
+- [Files](#files)
+    - [Retrieving Uploaded Files](#retrieving-uploaded-files)
+    - [Storing Uploaded Files](#storing-uploaded-files)
+- [Configuring Trusted Proxies](#configuring-trusted-proxies)
+- [Configuring Trusted Hosts](#configuring-trusted-hosts)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Класс `Illuminate\Http\Request` Laravel предлагает объектно-ориентированный способ взаимодействия с текущим HTTP-запросом, обрабатываемым вашим приложением, а также извлечение входных данных, файлов Cookies и файлов, отправленных вместе с запросом.
+Laravel's `Illuminate\Http\Request` class provides an object-oriented way to interact with the current HTTP request being handled by your application as well as retrieve the input, cookies, and files that were submitted with the request.
 
 <a name="interacting-with-the-request"></a>
-## Взаимодействие с запросом
+## Interacting With The Request
 
 <a name="accessing-the-request"></a>
-### Доступ к запросу
+### Accessing The Request
 
-Чтобы получить экземпляр текущего HTTP-запроса через внедрение зависимостей, вы должны объявить класс `Illuminate\Http\Request` в методе контроллера. Экземпляр входящего запроса будет автоматически внедрен [контейнером служб](/docs/{{version}}/container) Laravel:
+To obtain an instance of the current HTTP request via dependency injection, you should type-hint the `Illuminate\Http\Request` class on your route closure or controller method. The incoming request instance will automatically be injected by the Laravel [service container](/docs/{{version}}/container):
 
     <?php
 
@@ -46,7 +43,7 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     class UserController extends Controller
     {
         /**
-         * Сохранить нового пользователя.
+         * Store a new user.
          *
          * @param  \Illuminate\Http\Request  $request
          * @return \Illuminate\Http\Response
@@ -59,7 +56,7 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
         }
     }
 
-Вы также можете объявить класс `Illuminate\Http\Request` в замыкании маршрута. Контейнер служб автоматически внедрит входящий запрос в замыкание при его выполнении:
+As mentioned, you may also type-hint the `Illuminate\Http\Request` class on a route closure. The service container will automatically inject the incoming request into the closure when it is executed:
 
     use Illuminate\Http\Request;
 
@@ -68,15 +65,15 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     });
 
 <a name="dependency-injection-route-parameters"></a>
-#### Внедрение зависимостей и параметры маршрута
+#### Dependency Injection & Route Parameters
 
-Если ваш метод контроллера также ожидает входных данных от параметра маршрута, вы должны указать параметры маршрута после других зависимостей. Например, если ваш маршрут определен так:
+If your controller method is also expecting input from a route parameter you should list your route parameters after your other dependencies. For example, if your route is defined like so:
 
     use App\Http\Controllers\UserController;
 
     Route::put('/user/{id}', [UserController::class, 'update']);
 
-Вы по-прежнему можете объявить `Illuminate\Http\Request` и получить доступ к параметру `id` маршрута, определив метод контроллера так:
+You may still type-hint the `Illuminate\Http\Request` and access your `id` route parameter by defining your controller method as follows:
 
     <?php
 
@@ -87,7 +84,7 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     class UserController extends Controller
     {
         /**
-         * Обновить конкретного пользователя.
+         * Update the specified user.
          *
          * @param  \Illuminate\Http\Request  $request
          * @param  string  $id
@@ -100,49 +97,58 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     }
 
 <a name="request-path-and-method"></a>
-### Путь и метод запроса
+### Request Path, Host, & Method
 
-Экземпляр `Illuminate\Http\Request` содержит множество методов для интерпретации входящего HTTP-запроса и расширяет класс `Symfony\Component\HttpFoundation\Request`. Ниже мы обсудим несколько наиболее важных методов.
+The `Illuminate\Http\Request` instance provides a variety of methods for examining the incoming HTTP request and extends the `Symfony\Component\HttpFoundation\Request` class. We will discuss a few of the most important methods below.
 
 <a name="retrieving-the-request-path"></a>
-#### Получение пути запроса
+#### Retrieving The Request Path
 
-Метод `path` возвращает информацию о пути запроса. Итак, если целевой входящий запрос `http://example.com/foo/bar`, то метод `path` вернет `foo/bar`:
+The `path` method returns the request's path information. So, if the incoming request is targeted at `http://example.com/foo/bar`, the `path` method will return `foo/bar`:
 
     $uri = $request->path();
 
 <a name="inspecting-the-request-path"></a>
-#### Проверка пути / маршрута запроса
+#### Inspecting The Request Path / Route
 
-Метод `is` проверит, соответствует ли путь входящего запроса шаблону. Допускается использование метасимвола подстановки `*`:
+The `is` method allows you to verify that the incoming request path matches a given pattern. You may use the `*` character as a wildcard when utilizing this method:
 
     if ($request->is('admin/*')) {
         //
     }
 
-Используя метод `routeIs`, вы можете определить, соответствует ли входящий запрос [именованному маршруту](/docs/{{version}}/routing#named-routes):
+Using the `routeIs` method, you may determine if the incoming request has matched a [named route](/docs/{{version}}/routing#named-routes):
 
     if ($request->routeIs('admin.*')) {
         //
     }
 
 <a name="retrieving-the-request-url"></a>
-#### Получение URL-адреса запроса
+#### Retrieving The Request URL
 
-Чтобы получить полный URL для входящего запроса, вы можете использовать методы `url` или `fullUrl`. Метод `url` вернет URL без строки запроса, а метод `fullUrl`, включая строку запроса:
+To retrieve the full URL for the incoming request you may use the `url` or `fullUrl` methods. The `url` method will return the URL without the query string, while the `fullUrl` method includes the query string:
 
     $url = $request->url();
 
     $urlWithQueryString = $request->fullUrl();
 
-Если вы хотите добавить данные строки запроса к текущему URL, то вы можете вызвать метод `fullUrlWithQuery`. Этот метод объединяет переданный массив переменных строки запроса с текущей строкой запроса:
+If you would like to append query string data to the current URL, you may call the `fullUrlWithQuery` method. This method merges the given array of query string variables with the current query string:
 
     $request->fullUrlWithQuery(['type' => 'phone']);
 
-<a name="retrieving-the-request-method"></a>
-#### Получение метода запроса
+<a name="retrieving-the-request-host"></a>
+#### Retrieving The Request Host
 
-Метод `method` вернет HTTP-метод для запроса. Вы можете использовать метод `isMethod` для проверки соответствия HTTP-метода указанной строке:
+You may retrieve the "host" of the incoming request via the `host`, `httpHost`, and `schemeAndHttpHost` methods:
+
+    $request->host();
+    $request->httpHost();
+    $request->schemeAndHttpHost();
+
+<a name="retrieving-the-request-method"></a>
+#### Retrieving The Request Method
+
+The `method` method will return the HTTP verb for the request. You may use the `isMethod` method to verify that the HTTP verb matches a given string:
 
     $method = $request->method();
 
@@ -151,63 +157,65 @@ git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
     }
 
 <a name="request-headers"></a>
-### Заголовки запроса
+### Request Headers
 
-Вы можете получить заголовок запроса из экземпляра `Illuminate\Http\Request` с помощью метода `header`. Если заголовок отсутствует в запросе, то будет возвращено значение `null`. Однако, метод `header` принимает необязательный второй аргумент, который будет возвращен, если заголовок отсутствует в запросе:
+You may retrieve a request header from the `Illuminate\Http\Request` instance using the `header` method. If the header is not present on the request, `null` will be returned. However, the `header` method accepts an optional second argument that will be returned if the header is not present on the request:
 
     $value = $request->header('X-Header-Name');
 
     $value = $request->header('X-Header-Name', 'default');
 
-Метод `hasHeader` используется, чтобы определить, содержит ли запрос указанный заголовок:
+The `hasHeader` method may be used to determine if the request contains a given header:
 
     if ($request->hasHeader('X-Header-Name')) {
         //
     }
 
-Для удобства `bearerToken` используется для получения токена из заголовка `Authorization`. Если такого заголовка нет, то будет возвращена пустая строка:
+For convenience, the `bearerToken` method may be used to retrieve a bearer token from the `Authorization` header. If no such header is present, an empty string will be returned:
 
     $token = $request->bearerToken();
 
 <a name="request-ip-address"></a>
-### IP-адрес запроса
+### Request IP Address
 
-Метод `ip` используется для получения IP-адреса клиента, который сделал запрос к вашему приложению:
+The `ip` method may be used to retrieve the IP address of the client that made the request to your application:
 
     $ipAddress = $request->ip();
 
 <a name="content-negotiation"></a>
-### Согласование содержимого
+### Content Negotiation
 
-Laravel содержит несколько методов для проверки типов запрошенного содержимого входящего запроса через заголовок `Accept`. Во-первых, метод `getAcceptableContentTypes` вернет массив, содержащий все типы контента, принятые запросом:
+Laravel provides several methods for inspecting the incoming request's requested content types via the `Accept` header. First, the `getAcceptableContentTypes` method will return an array containing all of the content types accepted by the request:
 
     $contentTypes = $request->getAcceptableContentTypes();
 
-Метод `accepts` принимает массив типов контента и возвращает `true`, если какой-либо из типов контента принят запросом. В противном случае будет возвращено `false`:
+The `accepts` method accepts an array of content types and returns `true` if any of the content types are accepted by the request. Otherwise, `false` will be returned:
 
     if ($request->accepts(['text/html', 'application/json'])) {
         // ...
     }
 
-Вы можете использовать метод `prefers`, чтобы определить, какой тип контента, из указанного в массиве типов контента, является наиболее предпочтительным для запроса. Если ни один из предоставленных типов контента не будет принят запросом, будет возвращено значение `null`:
+You may use the `prefers` method to determine which content type out of a given array of content types is most preferred by the request. If none of the provided content types are accepted by the request, `null` will be returned:
 
     $preferred = $request->prefers(['text/html', 'application/json']);
 
-Поскольку многие приложения обслуживают только HTML или JSON, вы можете использовать метод `expectsJson`, чтобы быстро определить, ожидает ли входящий запрос JSON-ответа:
+Since many applications only serve HTML or JSON, you may use the `expectsJson` method to quickly determine if the incoming request expects a JSON response:
 
     if ($request->expectsJson()) {
         // ...
     }
 
 <a name="psr7-requests"></a>
-### Запросы стандарта PSR-7
+### PSR-7 Requests
 
-[Стандарт PSR-7](https://www.php-fig.org/psr/psr-7/) определяет интерфейсы для сообщений HTTP, включая запросы и ответы. Если вы хотите получить экземпляр запроса PSR-7 вместо запроса Laravel, вам сначала необходимо установить несколько библиотек. Laravel использует компонент *Symfony HTTP Message Bridge* для преобразования типичных запросов и ответов Laravel в реализации, совместимой с PSR-7:
+The [PSR-7 standard](https://www.php-fig.org/psr/psr-7/) specifies interfaces for HTTP messages, including requests and responses. If you would like to obtain an instance of a PSR-7 request instead of a Laravel request, you will first need to install a few libraries. Laravel uses the *Symfony HTTP Message Bridge* component to convert typical Laravel requests and responses into PSR-7 compatible implementations:
 
-    composer require symfony/psr-http-message-bridge
-    composer require nyholm/psr7
+```shell
+composer require symfony/psr-http-message-bridge
+composer require nyholm/psr7
+```
 
-После того, как вы установили эти библиотеки, вы можете получить запрос PSR-7, объявив тип интерфейса запроса для замыкания вашего маршрута или контроллера:
+Once you have installed these libraries, you may obtain a PSR-7 request by type-hinting the request interface on your route closure or controller method:
 
     use Psr\Http\Message\ServerRequestInterface;
 
@@ -215,84 +223,124 @@ Laravel содержит несколько методов для проверк
         //
     });
 
-> {tip} Если вы вернете экземпляр ответа PSR-7 из маршрута или контроллера, он будет автоматически преобразован обратно в экземпляр ответа Laravel и отобразится фреймворком.
+> **Note**  
+> If you return a PSR-7 response instance from a route or controller, it will automatically be converted back to a Laravel response instance and be displayed by the framework.
 
 <a name="input"></a>
-## Данные полей ввода
+## Input
 
 <a name="retrieving-input"></a>
-### Получение данных полей ввода
+### Retrieving Input
 
 <a name="retrieving-all-input-data"></a>
-#### Получение данных всех полей ввода
+#### Retrieving All Input Data
 
-Вы можете получить все данные входящего запроса в виде массива, используя метод `all`. Этот метод можно использовать независимо от того, поступает ли входящий запрос из HTML-формы или является запросом XHR:
+You may retrieve all of the incoming request's input data as an `array` using the `all` method. This method may be used regardless of whether the incoming request is from an HTML form or is an XHR request:
 
     $input = $request->all();
 
-<a name="retrieving-an-input-value"></a>
-#### Получение значения конкретного поля ввода
+Using the `collect` method, you may retrieve all of the incoming request's input data as a [collection](/docs/{{version}}/collections):
 
-Используя несколько простых методов, вы можете получить доступ ко всем поступившим от пользователя данным, используя экземпляр `Illuminate\Http\Request`, не беспокоясь о том, какой HTTP-метод использовался для запроса. Независимо от HTTP-метода, для получения этих данных может использоваться метод `input`:
+    $input = $request->collect();
+
+The `collect` method also allows you to retrieve a subset of the incoming request input as a collection:
+
+    $request->collect('users')->each(function ($user) {
+        // ...
+    });
+
+<a name="retrieving-an-input-value"></a>
+#### Retrieving An Input Value
+
+Using a few simple methods, you may access all of the user input from your `Illuminate\Http\Request` instance without worrying about which HTTP verb was used for the request. Regardless of the HTTP verb, the `input` method may be used to retrieve user input:
 
     $name = $request->input('name');
 
-Вы можете передать значение по умолчанию в качестве второго аргумента метода `input`. Это значение будет возвращено, если запрошенное значение отсутствует в запросе:
+You may pass a default value as the second argument to the `input` method. This value will be returned if the requested input value is not present on the request:
 
     $name = $request->input('name', 'Sally');
 
-При работе с формами, содержащими массив входных данных, используйте «точечную» нотацию для доступа к элементам массива:
+When working with forms that contain array inputs, use "dot" notation to access the arrays:
 
     $name = $request->input('products.0.name');
 
     $names = $request->input('products.*.name');
 
-Вы можете вызвать метод `input` без аргументов, чтобы получить все значения входных данных в виде ассоциативного массива:
+You may call the `input` method without any arguments in order to retrieve all of the input values as an associative array:
 
     $input = $request->input();
 
 <a name="retrieving-input-from-the-query-string"></a>
-#### Получение данных из строки запроса
+#### Retrieving Input From The Query String
 
-В то время как метод `input` извлекает значения из всей информационной части данных запроса (включая строку запроса), метод `query` извлекает значения только из строки запроса:
+While the `input` method retrieves values from the entire request payload (including the query string), the `query` method will only retrieve values from the query string:
 
     $name = $request->query('name');
 
-Если значение данных из строки запроса отсутствуют, будет возвращен второй аргумент этого метода:
+If the requested query string value data is not present, the second argument to this method will be returned:
 
     $name = $request->query('name', 'Helen');
 
-Вы можете вызвать метод `query` без аргументов, чтобы получить все значения строки запроса в виде ассоциативного массива:
+You may call the `query` method without any arguments in order to retrieve all of the query string values as an associative array:
 
     $query = $request->query();
 
 <a name="retrieving-json-input-values"></a>
-#### Получение значений JSON-содержимого
+#### Retrieving JSON Input Values
 
-При отправке запросов JSON в ваше приложение, вы можете получить доступ к данным JSON с помощью метода `input`, если заголовок запроса `Content-Type` корректно установлен как `application/json`. Вы даже можете использовать «точечную» нотацию для извлечения значений, вложенных в JSON-массивы:
+When sending JSON requests to your application, you may access the JSON data via the `input` method as long as the `Content-Type` header of the request is properly set to `application/json`. You may even use "dot" syntax to retrieve values that are nested within JSON arrays:
 
     $name = $request->input('user.name');
 
-<a name="retrieving-boolean-input-values"></a>
-#### Получение значений логического типа
+<a name="retrieving-stringable-input-values"></a>
+#### Retrieving Stringable Input Values
 
-При работе с элементами HTML, такими как флажки, ваше приложение может получать «логические» значения, которые на самом деле являются строками. Например, строковые «true» или «on». Для удобства вы можете использовать метод `boolean`, чтобы получить эти значения как логические. Метод `boolean` возвращает `true` для `1`, `true`, и строковых «1», «true», «on» и «yes». Все остальные значения вернут `false`:
+Instead of retrieving the request's input data as a primitive `string`, you may use the `string` method to retrieve the request data as an instance of [`Illuminate\Support\Stringable`](/docs/{{version}}/helpers#fluent-strings):
+
+    $name = $request->string('name')->trim();
+
+<a name="retrieving-boolean-input-values"></a>
+#### Retrieving Boolean Input Values
+
+When dealing with HTML elements like checkboxes, your application may receive "truthy" values that are actually strings. For example, "true" or "on". For convenience, you may use the `boolean` method to retrieve these values as booleans. The `boolean` method returns `true` for 1, "1", true, "true", "on", and "yes". All other values will return `false`:
 
     $archived = $request->boolean('archived');
 
-<a name="retrieving-input-via-dynamic-properties"></a>
-#### Получение данных через динамические свойства
+<a name="retrieving-date-input-values"></a>
+#### Retrieving Date Input Values
 
-Вы также можете получить доступ к поступившим от пользователя данным, используя динамические свойства экземпляра `Illuminate\Http\Request`. Например, если одна из форм вашего приложения содержит поле `name`, то вы можете получить доступ к значению поля следующим образом:
+For convenience, input values containing dates / times may be retrieved as Carbon instances using the `date` method. If the request does not contain an input value with the given name, `null` will be returned:
+
+    $birthday = $request->date('birthday');
+
+The second and third arguments accepted by the `date` method may be used to specify the date's format and timezone, respectively:
+
+    $elapsed = $request->date('elapsed', '!H:i', 'Europe/Madrid');
+
+If the input value is present but has an invalid format, an `InvalidArgumentException` will be thrown; therefore, it is recommended that you validate the input before invoking the `date` method.
+
+<a name="retrieving-enum-input-values"></a>
+#### Retrieving Enum Input Values
+
+Input values that correspond to [PHP enums](https://www.php.net/manual/en/language.types.enumerations.php) may also be retrieved from the request. If the request does not contain an input value with the given name or the enum does not have a backing value that matches the input value, `null` will be returned. The `enum` method accepts the name of the input value and the enum class as its first and second arguments:
+
+    use App\Enums\Status;
+
+    $status = $request->enum('status', Status::class);
+
+<a name="retrieving-input-via-dynamic-properties"></a>
+#### Retrieving Input Via Dynamic Properties
+
+You may also access user input using dynamic properties on the `Illuminate\Http\Request` instance. For example, if one of your application's forms contains a `name` field, you may access the value of the field like so:
 
     $name = $request->name;
 
-При использовании динамических свойств Laravel сначала будет искать значение параметра в информационной части данных запроса. Если его нет, Laravel будет искать поле в соответствующих параметрах маршрута.
+When using dynamic properties, Laravel will first look for the parameter's value in the request payload. If it is not present, Laravel will search for the field in the matched route's parameters.
 
 <a name="retrieving-a-portion-of-the-input-data"></a>
-#### Частичное получение данных полей ввода
+#### Retrieving A Portion Of The Input Data
 
-Если вам нужно получить подмножество входных данных, вы можете использовать методы `only` и `except`. Оба эти метода принимают один массив или динамический список аргументов:
+If you need to retrieve a subset of the input data, you may use the `only` and `except` methods. Both of these methods accept a single `array` or a dynamic list of arguments:
 
     $input = $request->only(['username', 'password']);
 
@@ -302,75 +350,103 @@ Laravel содержит несколько методов для проверк
 
     $input = $request->except('credit_card');
 
-> {note} Метод `only` возвращает все пары ключ / значение, которые вы запрашиваете; однако, он не вернет пары ключ / значение, которых нет в запросе.
+> **Warning**  
+> The `only` method returns all of the key / value pairs that you request; however, it will not return key / value pairs that are not present on the request.
 
 <a name="determining-if-input-is-present"></a>
-### Определение наличия требуемых данных
+### Determining If Input Is Present
 
-Вы можете использовать метод `has`, чтобы определить, присутствует ли значение в запросе. Метод `has` возвращает `true`, если значение присутствует в запросе:
+You may use the `has` method to determine if a value is present on the request. The `has` method returns `true` if the value is present on the request:
 
     if ($request->has('name')) {
         //
     }
 
-При передаче массива метод `has` определяет, присутствуют ли все указанные значения:
+When given an array, the `has` method will determine if all of the specified values are present:
 
     if ($request->has(['name', 'email'])) {
         //
     }
 
-Метод `whenHas` выполнит переданное замыкание, если в запросе присутствует значение:
+The `whenHas` method will execute the given closure if a value is present on the request:
 
     $request->whenHas('name', function ($input) {
         //
     });
 
-Метод `hasAny` возвращает `true`, если присутствует какое-либо из указанных значений:
+A second closure may be passed to the `whenHas` method that will be executed if the specified value is not present on the request:
+
+    $request->whenHas('name', function ($input) {
+        // The "name" value is present...
+    }, function () {
+        // The "name" value is not present...
+    });
+
+The `hasAny` method returns `true` if any of the specified values are present:
 
     if ($request->hasAny(['name', 'email'])) {
         //
     }
 
-Если вы хотите определить, присутствует ли значение в запросе и не является ли оно пустым, то вы можете использовать метод `filled`:
+If you would like to determine if a value is present on the request and is not empty, you may use the `filled` method:
 
     if ($request->filled('name')) {
         //
     }
 
-Метод `whenFilled` выполнит указанное замыкание, если значение присутствует в запросе и не является пустым:
+The `whenFilled` method will execute the given closure if a value is present on the request and is not empty:
 
     $request->whenFilled('name', function ($input) {
         //
     });
 
-Чтобы определить, отсутствует ли конкретный ключ в запросе, вы можете использовать метод `missing`:
+A second closure may be passed to the `whenFilled` method that will be executed if the specified value is not "filled":
+
+    $request->whenFilled('name', function ($input) {
+        // The "name" value is filled...
+    }, function () {
+        // The "name" value is not filled...
+    });
+
+To determine if a given key is absent from the request, you may use the `missing` method:
 
     if ($request->missing('name')) {
         //
     }
 
-<a name="old-input"></a>
-### Данные прошлого запроса
+<a name="merging-additional-input"></a>
+### Merging Additional Input
 
-Laravel позволяет вам сохранить входные данные из текущего запроса на время выполнения следующего запроса. Эта функция особенно полезна для повторного заполнения форм после обнаружения ошибок валидации. Однако, если вы используете содержащуюся в Laravel [валидацию](/docs/{{version}}/validation), то, возможно, вам не придется вручную использовать эти методы кратковременного сохранения входных данных в сессии напрямую, так как некоторые встроенные средства валидации Laravel будут вызывать их автоматически.
+Sometimes you may need to manually merge additional input into the request's existing input data. To accomplish this, you may use the `merge` method:
+
+    $request->merge(['votes' => 0]);
+
+The `mergeIfMissing` method may be used to merge input into the request if the corresponding keys do not already exist within the request's input data:
+
+    $request->mergeIfMissing(['votes' => 0]);
+
+<a name="old-input"></a>
+### Old Input
+
+Laravel allows you to keep input from one request during the next request. This feature is particularly useful for re-populating forms after detecting validation errors. However, if you are using Laravel's included [validation features](/docs/{{version}}/validation), it is possible that you will not need to manually use these session input flashing methods directly, as some of Laravel's built-in validation facilities will call them automatically.
 
 <a name="flashing-input-to-the-session"></a>
-#### Кратковременное сохранение входных данных в сессии
+#### Flashing Input To The Session
 
-Метод `flash` класса `Illuminate\Http\Request` будет сохранять входные данные в [сессии](/docs/{{version}}/session), чтобы они были доступны **только** во время следующего запроса пользователя к приложению:
+The `flash` method on the `Illuminate\Http\Request` class will flash the current input to the [session](/docs/{{version}}/session) so that it is available during the user's next request to the application:
 
     $request->flash();
 
-Вы также можете использовать методы `flashOnly` и `flashExcept` для передачи подмножества данных запроса в сессию. Эти методы полезны для скрытия конфиденциальной информации из сессии, например, пароли:
+You may also use the `flashOnly` and `flashExcept` methods to flash a subset of the request data to the session. These methods are useful for keeping sensitive information such as passwords out of the session:
 
     $request->flashOnly(['username', 'email']);
 
     $request->flashExcept('password');
 
 <a name="flashing-input-then-redirecting"></a>
-#### Кратковременное сохранение при перенаправлении
+#### Flashing Input Then Redirecting
 
-Так как вам часто нужно выполнять кратковременное сохранение входных данных в сессии, а затем перенаправлять на предыдущую страницу, вы можете легко связать сохранение данных с перенаправлением, используя метод `withInput`:
+Since you often will want to flash input to the session and then redirect to the previous page, you may easily chain input flashing onto a redirect using the `withInput` method:
 
     return redirect('form')->withInput();
 
@@ -381,113 +457,139 @@ Laravel позволяет вам сохранить входные данные
     );
 
 <a name="retrieving-old-input"></a>
-#### Получение данных прошлого запроса
+#### Retrieving Old Input
 
-Чтобы получить кратковременно сохраненные входные данные из предыдущего запроса, вызовите метод `old` экземпляра `Illuminate\Http\Request`. Метод `old` извлечет ранее записанные входные данные из [сессии](/docs/{{version}}/session):
+To retrieve flashed input from the previous request, invoke the `old` method on an instance of `Illuminate\Http\Request`. The `old` method will pull the previously flashed input data from the [session](/docs/{{version}}/session):
 
     $username = $request->old('username');
 
-Laravel также содержит глобального помощника `old`. Если вы показываете данные из предыдущего запроса в [шаблоне Blade](/docs/{{version}}/blade), удобнее использовать помощник `old` для повторного заполнения формы. Если для поля не были указаны данные в предыдущем запросе, то будет возвращен `null`:
+Laravel also provides a global `old` helper. If you are displaying old input within a [Blade template](/docs/{{version}}/blade), it is more convenient to use the `old` helper to repopulate the form. If no old input exists for the given field, `null` will be returned:
 
     <input type="text" name="username" value="{{ old('username') }}">
 
 <a name="cookies"></a>
-### Файлы Cookies
+### Cookies
 
 <a name="retrieving-cookies-from-requests"></a>
-#### Получение файлов Cookies из запроса
+#### Retrieving Cookies From Requests
 
-Все файлы Cookies, созданные фреймворком Laravel, зашифрованы и подписаны кодом аутентификации, что означает, что они будут считаться недействительными, если они были изменены клиентом. Чтобы получить значение cookie из запроса, используйте метод `cookie` экземпляра `Illuminate\Http\Request`:
+All cookies created by the Laravel framework are encrypted and signed with an authentication code, meaning they will be considered invalid if they have been changed by the client. To retrieve a cookie value from the request, use the `cookie` method on an `Illuminate\Http\Request` instance:
 
     $value = $request->cookie('name');
 
 <a name="input-trimming-and-normalization"></a>
-## Обрезание и нормализация значений полей ввода
+## Input Trimming & Normalization
 
-По умолчанию Laravel содержит посредников `App\Http\Middleware\TrimStrings` и `App\Http\Middleware\ConvertEmptyStringsToNull` в глобальном стеке посредников вашего приложения. Эти посредники перечислены в классе `App\Http\Kernel`. Первый из упомянутых посредников будет автоматически обрезать все входящие строковые поля запроса, а второй – конвертировать любые пустые строковые поля в `null`. Это позволяет вам не беспокоиться об этих проблемах нормализации в ваших маршрутах и контроллерах.
+By default, Laravel includes the `App\Http\Middleware\TrimStrings` and `App\Http\Middleware\ConvertEmptyStringsToNull` middleware in your application's global middleware stack. These middleware are listed in the global middleware stack by the `App\Http\Kernel` class. These middleware will automatically trim all incoming string fields on the request, as well as convert any empty string fields to `null`. This allows you to not have to worry about these normalization concerns in your routes and controllers.
 
-Если вы хотите отключить это поведение, вы можете удалить два посредника из стека посредников вашего приложения, удалив их из свойства `$middleware` вашего класса `App\Http\Kernel`.
+#### Disabling Input Normalization
+
+If you would like to disable this behavior for all requests, you may remove the two middleware from your application's middleware stack by removing them from the `$middleware` property of your `App\Http\Kernel` class.
+
+If you would like to disable string trimming and empty string conversion for a subset of requests to your application, you may use the `skipWhen` method offered by both middleware. This method accepts a closure which should return `true` or `false` to indicate if input normalization should be skipped. Typically, the `skipWhen` method should be invoked in the `boot` method of your application's `AppServiceProvider`.
+
+```php
+use App\Http\Middleware\ConvertEmptyStringsToNull;
+use App\Http\Middleware\TrimStrings;
+
+/**
+ * Bootstrap any application services.
+ *
+ * @return void
+ */
+public function boot()
+{
+    TrimStrings::skipWhen(function ($request) {
+        return $request->is('admin/*');
+    });
+
+    ConvertEmptyStringsToNull::skipWhen(function ($request) {
+        // ...
+    });
+}
+```
 
 <a name="files"></a>
-## Файлы
+## Files
 
 <a name="retrieving-uploaded-files"></a>
-### Получение загруженных файлов
+### Retrieving Uploaded Files
 
-Вы можете получить загруженные файлы из экземпляра `Illuminate\Http\Request`, используя метод `file` или динамические свойства. Метод `file` возвращает экземпляр класса `Illuminate\Http\UploadedFile`, который расширяет класс `SplFileInfo` PHP и содержит различные методы для взаимодействия с файлом:
+You may retrieve uploaded files from an `Illuminate\Http\Request` instance using the `file` method or using dynamic properties. The `file` method returns an instance of the `Illuminate\Http\UploadedFile` class, which extends the PHP `SplFileInfo` class and provides a variety of methods for interacting with the file:
 
     $file = $request->file('photo');
 
     $file = $request->photo;
 
-Вы можете определить, представлен ли файл в запросе, используя метод `hasFile`:
+You may determine if a file is present on the request using the `hasFile` method:
 
     if ($request->hasFile('photo')) {
         //
     }
 
 <a name="validating-successful-uploads"></a>
-#### Валидация загрузки файлов
+#### Validating Successful Uploads
 
-Помимо проверки наличия файла, вы можете убедиться, что не было ли каких-либо проблем с загрузкой файла с помощью метода `isValid`:
+In addition to checking if the file is present, you may verify that there were no problems uploading the file via the `isValid` method:
 
     if ($request->file('photo')->isValid()) {
         //
     }
 
 <a name="file-paths-extensions"></a>
-#### Пути к файлам и расширения
+#### File Paths & Extensions
 
-Класс `UploadedFile` также содержит методы для доступа к полному пути файла и его расширению. Метод `extension` попытается угадать расширение файла на основе его содержимого. Это расширение может отличаться от расширения, предоставленного клиентом:
+The `UploadedFile` class also contains methods for accessing the file's fully-qualified path and its extension. The `extension` method will attempt to guess the file's extension based on its contents. This extension may be different from the extension that was supplied by the client:
 
     $path = $request->photo->path();
 
     $extension = $request->photo->extension();
 
 <a name="other-file-methods"></a>
-#### Другие методы для работы с загружаемыми файлами
+#### Other File Methods
 
-Для экземпляров `UploadedFile` доступно множество других методов. Дополнительные сведения об этих методах смотрите в [документации по API](https://api.symfony.com/master/Symfony/Component/HttpFoundation/File/UploadedFile.html) для этого класса.
+There are a variety of other methods available on `UploadedFile` instances. Check out the [API documentation for the class](https://github.com/symfony/symfony/blob/6.0/src/Symfony/Component/HttpFoundation/File/UploadedFile.php) for more information regarding these methods.
 
 <a name="storing-uploaded-files"></a>
-### Сохранение загруженных файлов
+### Storing Uploaded Files
 
-Чтобы сохранить загруженный файл, вы обычно будете использовать одно из ваших настроенных [файловых хранилищ](/docs/{{version}}/filesystem). Класс `UploadedFile` имеет метод `store`, который перемещает загруженный файл на один из ваших дисков, который может находиться в вашей локальной файловой системе или в облачном хранилище, таком как Amazon S3.
+To store an uploaded file, you will typically use one of your configured [filesystems](/docs/{{version}}/filesystem). The `UploadedFile` class has a `store` method that will move an uploaded file to one of your disks, which may be a location on your local filesystem or a cloud storage location like Amazon S3.
 
-Метод `store` принимает путь, по которому файл должен храниться относительно настроенного корневого каталога файловой системы. Этот путь не должен содержать имени файла, поскольку в качестве имени файла будет автоматически создан уникальный идентификатор.
+The `store` method accepts the path where the file should be stored relative to the filesystem's configured root directory. This path should not contain a filename, since a unique ID will automatically be generated to serve as the filename.
 
-Метод `store` также принимает необязательный второй аргумент для имени диска, который следует использовать для хранения файла. Метод вернет путь к файлу относительно корня диска:
+The `store` method also accepts an optional second argument for the name of the disk that should be used to store the file. The method will return the path of the file relative to the disk's root:
 
     $path = $request->photo->store('images');
 
     $path = $request->photo->store('images', 's3');
 
-Если вы не хотите, чтобы имя файла создавалось автоматически, вы можете использовать метод `storeAs`, который принимает в качестве аргументов путь, имя файла и имя диска:
+If you do not want a filename to be automatically generated, you may use the `storeAs` method, which accepts the path, filename, and disk name as its arguments:
 
     $path = $request->photo->storeAs('images', 'filename.jpg');
 
     $path = $request->photo->storeAs('images', 'filename.jpg', 's3');
 
-> {tip} Для получения дополнительной информации о хранилище файлов в Laravel, ознакомьтесь с полной [документацией по файловому хранилищу](/docs/{{version}}/filesystem).
+> **Note**  
+> For more information about file storage in Laravel, check out the complete [file storage documentation](/docs/{{version}}/filesystem).
 
 <a name="configuring-trusted-proxies"></a>
-## Конфигурирование доверенных прокси
+## Configuring Trusted Proxies
 
-При запуске ваших приложений, использующих балансировщик нагрузки, завершающий сертификаты TLS / SSL, вы можете заметить, что ваше приложение иногда не генерирует ссылки протокола HTTPS при использовании глобального помощника `url`. Обычно это связано с тем, что ваше приложение перенаправляет трафик от вашего балансировщика нагрузки на порт 80 и не знает, что оно должно генерировать безопасные ссылки.
+When running your applications behind a load balancer that terminates TLS / SSL certificates, you may notice your application sometimes does not generate HTTPS links when using the `url` helper. Typically this is because your application is being forwarded traffic from your load balancer on port 80 and does not know it should generate secure links.
 
-Чтобы решить эту проблему, вы можете использовать посредника `App\Http\Middleware\TrustProxies`, который содержится в вашем приложении Laravel, что позволяет вам быстро настраивать балансировщики нагрузки или прокси, которым ваше приложение должно доверять. Ваши доверенные прокси должны быть указаны в виде массива в свойстве `$proxies` этого посредника. В дополнение к настройке доверенных прокси вы можете настроить `$headers` прокси, которым следует доверять:
+To solve this, you may use the `App\Http\Middleware\TrustProxies` middleware that is included in your Laravel application, which allows you to quickly customize the load balancers or proxies that should be trusted by your application. Your trusted proxies should be listed as an array on the `$proxies` property of this middleware. In addition to configuring the trusted proxies, you may configure the proxy `$headers` that should be trusted:
 
     <?php
 
     namespace App\Http\Middleware;
 
-    use Fideloper\Proxy\TrustProxies as Middleware;
+    use Illuminate\Http\Middleware\TrustProxies as Middleware;
     use Illuminate\Http\Request;
 
     class TrustProxies extends Middleware
     {
         /**
-         * Доверенные прокси этого приложения.
+         * The trusted proxies for this application.
          *
          * @var string|array
          */
@@ -497,38 +599,39 @@ Laravel также содержит глобального помощника `o
         ];
 
         /**
-         * Заголовки, используемые для обнаружения прокси.
+         * The headers that should be used to detect proxies.
          *
          * @var int
          */
         protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO;
     }
 
-> {tip} Если вы используете AWS Elastic Load Balancing, значение `$headers` должно быть `Request::HEADER_X_FORWARDED_AWS_ELB`. Для получения дополнительной информации о константах, которые могут использоваться в свойстве `$headers`, ознакомьтесь с документацией Symfony о [доверенных прокси-серверах](https://symfony.com/doc/current/deployment/proxies.html).
+> **Note**  
+> If you are using AWS Elastic Load Balancing, your `$headers` value should be `Request::HEADER_X_FORWARDED_AWS_ELB`. For more information on the constants that may be used in the `$headers` property, check out Symfony's documentation on [trusting proxies](https://symfony.com/doc/current/deployment/proxies.html).
 
 <a name="trusting-all-proxies"></a>
-#### Доверие ко всем прокси
+#### Trusting All Proxies
 
-Если вы используете Amazon AWS или другой поставщик «облачных» балансировщиков нагрузки, то вы можете не знать IP-адреса своих фактических балансировщиков. В этом случае вы можете использовать `*`, чтобы доверять всем прокси:
+If you are using Amazon AWS or another "cloud" load balancer provider, you may not know the IP addresses of your actual balancers. In this case, you may use `*` to trust all proxies:
 
     /**
-     * Доверенные прокси этого приложения.
+     * The trusted proxies for this application.
      *
      * @var string|array
      */
     protected $proxies = '*';
 
 <a name="configuring-trusted-hosts"></a>
-## Конфигурирование доверенных хостов
+## Configuring Trusted Hosts
 
-По умолчанию Laravel будет отвечать на все запросы, которые он получает, независимо от содержимого заголовка `Host` HTTP-запроса. Кроме того, значение заголовка `Host` будет использоваться при генерации абсолютных URL-адресов вашего приложения во время веб-запроса.
+By default, Laravel will respond to all requests it receives regardless of the content of the HTTP request's `Host` header. In addition, the `Host` header's value will be used when generating absolute URLs to your application during a web request.
 
-Как правило, вам следует настроить свой веб-сервер (Nginx или Apache), так, чтобы он обслуживал запросы, соответствующие только указанному имени хоста. Однако, если у вас нет возможности напрямую настроить свой веб-сервер и вам нужно указать Laravel, чтобы он отвечал только на определенные имена хостов, вы можете сделать это, задействовав посредник `App\Http\Middleware\TrustHosts` для вашего приложения.
+Typically, you should configure your web server, such as Nginx or Apache, to only send requests to your application that match a given host name. However, if you do not have the ability to customize your web server directly and need to instruct Laravel to only respond to certain host names, you may do so by enabling the `App\Http\Middleware\TrustHosts` middleware for your application.
 
-Посредник `TrustHosts` уже содержится в стеке `$middleware` вашего приложения; однако вы должны раскомментировать его, чтобы он стал активным. В методе  `hosts` этого посредника вы можете указать имена хостов, на которые ваше приложение должно отвечать. Входящие запросы с другими значениями заголовка `Host` будут отклонены:
+The `TrustHosts` middleware is already included in the `$middleware` stack of your application; however, you should uncomment it so that it becomes active. Within this middleware's `hosts` method, you may specify the host names that your application should respond to. Incoming requests with other `Host` value headers will be rejected:
 
     /**
-     * Получить шаблоны доверенных хостов.
+     * Get the host patterns that should be trusted.
      *
      * @return array
      */
@@ -540,4 +643,4 @@ Laravel также содержит глобального помощника `o
         ];
     }
 
-Метод `allSubdomainsOfApplicationUrl` вернет регулярное выражение, соответствующее всем поддоменам значения `app.url` конфигурации вашего приложения. Этот метод обеспечивает удобный способ разрешить все поддомены вашего приложения при создании приложения, с использованием поддоменов, определяемых метасимволами подстановки.
+The `allSubdomainsOfApplicationUrl` helper method will return a regular expression matching all subdomains of your application's `app.url` configuration value. This helper method provides a convenient way to allow all of your application's subdomains when building an application that utilizes wildcard subdomains.

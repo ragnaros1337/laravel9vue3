@@ -1,383 +1,470 @@
-git 0ab96f0b7c55966f5402b99e37268a0e9dacd03e
+# Release Notes
 
----
-
-# Примечания к релизу
-
-- [Схема версионирования](#versioning-scheme)
-    - [Исключения](#exceptions)
-- [Политика поддержки](#support-policy)
-- [Laravel 8](#laravel-8)
+- [Versioning Scheme](#versioning-scheme)
+- [Support Policy](#support-policy)
+- [Laravel 9](#laravel-9)
 
 <a name="versioning-scheme"></a>
-## Схема версионирования
+## Versioning Scheme
 
-Laravel и другие его собственные пакеты следуют [Семантическому Версионированию](https://semver.org/lang/ru/). Мажорные релизы фреймворка выпускаются каждый год (~сентябрь), тогда как минорные и патч-релизы могут выпускаться каждую неделю. Минорные и патч-релизы **никогда** не должны содержать критических изменений.
+Laravel and its other first-party packages follow [Semantic Versioning](https://semver.org). Major framework releases are released every year (~February), while minor and patch releases may be released as often as every week. Minor and patch releases should **never** contain breaking changes.
 
-Ссылаясь на фреймворк Laravel или его компоненты из вашего приложения или пакета, вы всегда должны использовать ограничение версии `^8.0`, поскольку мажорные релизы Laravel действительно включают критические изменения. Однако мы всегда стремимся к тому, чтобы вы могли выполнить обновление до новой мажорной версии в течение дня или менее.
-
-<a name="exceptions"></a>
-### Исключения
+When referencing the Laravel framework or its components from your application or package, you should always use a version constraint such as `^9.0`, since major releases of Laravel do include breaking changes. However, we strive to always ensure you may update to a new major release in one day or less.
 
 <a name="named-arguments"></a>
-#### Именованные аргументы
+#### Named Arguments
 
-В настоящее время функциональные возможности [именованных аргументов](https://www.php.net/manual/ru/functions.arguments.php#functions.named-arguments) PHP не подпадают под правила обратной совместимости Laravel. При необходимости мы можем переименовать аргументы функции, чтобы улучшить кодовую базу Laravel. Поэтому использовать именованные аргументы при вызове методов Laravel следует осторожно и с пониманием того, что их имена могут измениться в будущем.
+[Named arguments](https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments) are not covered by Laravel's backwards compatibility guidelines. We may choose to rename function arguments when necessary in order to improve the Laravel codebase. Therefore, using named arguments when calling Laravel methods should be done cautiously and with the understanding that the parameter names may change in the future.
 
 <a name="support-policy"></a>
-## Политика поддержки
+## Support Policy
 
-Для релизов LTS, таких как Laravel 6, исправления ошибок предоставляются в течение 2 лет, а исправления безопасности – в течение 3 лет. Эти релизы предоставляют самый продолжительный период поддержки и обслуживания. Для основных релизов, исправления ошибок предоставляются в течение 18 месяцев, а исправления безопасности – в течение 2 лет. Для всех дополнительных библиотек, включая Lumen, только последний релиз получает исправления ошибок. Помимо этого, ознакомьтесь с версиями баз данных, которые [поддерживает Laravel](/docs/{{version}}/database#introduction).
+For all Laravel releases, bug fixes are provided for 18 months and security fixes are provided for 2 years. For all additional libraries, including Lumen, only the latest major release receives bug fixes. In addition, please review the database versions [supported by Laravel](/docs/{{version}}/database#introduction).
 
-| Версия | Дата релиза | Исправление ошибок до | Исправления безопасности до |
-| --- | --- | --- | --- |
-| 6 (LTS) | September 3rd, 2019 | September 7th, 2021 | September 6rd, 2022 |
-| 7 | March 3rd, 2020 | October 6th, 2020 | March 3rd, 2021 |
-| 8 | September 8th, 2020 | April 6th, 2021 | September 8th, 2021 |
+| Version | PHP (*) | Release | Bug Fixes Until | Security Fixes Until |
+| --- | --- | --- | --- | --- |
+| 6 (LTS) | 7.2 - 8.0 | September 3rd, 2019 | January 25th, 2022 | September 6th, 2022 |
+| 7 | 7.2 - 8.0 | March 3rd, 2020 | October 6th, 2020 | March 3rd, 2021 |
+| 8 | 7.3 - 8.1 | September 8th, 2020 | July 26th, 2022 | January 24th, 2023 |
+| 9 | 8.0 - 8.1 | February 8th, 2022 | August 8th, 2023 | February 8th, 2024 |
+| 10 | 8.1 | February 7th, 2023 | August 7th, 2024 | February 7th, 2025 |
 
-<a name="laravel-8"></a>
-## Laravel 8
+<div class="version-colors">
+    <div class="end-of-life">
+        <div class="color-box"></div>
+        <div>End of life</div>
+    </div>
+    <div class="security-fixes">
+        <div class="color-box"></div>
+        <div>Security fixes only</div>
+    </div>
+</div>
 
-Laravel 8 продолжает улучшения, сделанные в Laravel 7.x, представляя Laravel Jetstream, классы фабрики модели, сжатие миграций, пакетную обработку заданий, улучшенное ограничение частоты запросов, улучшения очереди, динамические компоненты Blade, постраничная навигация с использованием Tailwind, помощники по временному тестированию, улучшения в `artisan serve`, улучшения слушателей событий и множество других исправлений ошибок и улучшений юзабилити.
+(*) Supported PHP versions
 
-<a name="laravel-jetstream"></a>
-### Laravel Jetstream
+<a name="laravel-9"></a>
+## Laravel 9
 
-_Laravel Jetstream был написан [Taylor Otwell](https://github.com/taylorotwell)_.
+As you may know, Laravel transitioned to yearly releases with the release of Laravel 8. Previously, major versions were released every 6 months. This transition is intended to ease the maintenance burden on the community and challenge our development team to ship amazing, powerful new features without introducing breaking changes. Therefore, we have shipped a variety of robust features to Laravel 8 without breaking backwards compatibility, such as parallel testing support, improved Breeze starter kits, HTTP client improvements, and even new Eloquent relationship types such as "has one of many".
 
-[Laravel Jetstream](https://jetstream.laravel.com) это красиво оформленный каркас приложений для Laravel. Jetstream обеспечивает идеальную отправную точку для вашего следующего проекта и включает в себя вход в систему, регистрацию, проверку электронной почты, двухфакторную аутентификацию, управление сессией, поддержку API через Laravel Sanctum и дополнительное командное управление. Laravel Jetstream заменяет и улучшает устаревшую структуру пользовательского интерфейса аутентификации, доступную в предыдущих версиях Laravel.
+Therefore, this commitment to ship great new features during the current release will likely lead to future "major" releases being primarily used for "maintenance" tasks such as upgrading upstream dependencies, which can be seen in these release notes.
 
-Jetstream разработан с использованием [Tailwind CSS](https://tailwindcss.com) и предлагает на ваш выбор каркасы [Livewire](https://laravel-livewire.com) или [Inertia](https://inertiajs.com).
+Laravel 9 continues the improvements made in Laravel 8.x by introducing support for Symfony 6.0 components, Symfony Mailer, Flysystem 3.0, improved `route:list` output, a Laravel Scout database driver, new Eloquent accessor / mutator syntax, implicit route bindings via Enums, and a variety of other bug fixes and usability improvements.
 
-<a name="models-directory"></a>
-### Каталог моделей
+<a name="php-8"></a>
+### PHP 8.0
 
-По многочисленным просьбам сообщества каркас приложения Laravel по умолчанию теперь содержит каталог `app/Models`. Надеемся, вам понравится это решение для ваших моделей Eloquent! Все соответствующие команды генератора были обновлены, чтобы предполагать, что модели существуют в каталоге `app/Models`, если он существует. Если каталог не существует, фреймворк предполагает, что ваши модели должны быть помещены в каталог `app`.
+Laravel 9.x requires a minimum PHP version of 8.0.
 
-<a name="model-factory-classes"></a>
-### Классы фабрики модели
+<a name="symfony-mailer"></a>
+### Symfony Mailer
 
-_Автор: [Taylor Otwell](https://github.com/taylorotwell)_.
+_Symfony Mailer support was contributed by [Dries Vints](https://github.com/driesvints)_, [James Brooks](https://github.com/jbrooksuk), and [Julius Kiekbusch](https://github.com/Jubeki).
 
-[Фабрики модели](/docs/{{version}}//docs/database-testing#defining-model-factories) Eloquent были полностью переписаны как фабрики на основе классов и улучшены для обеспечения "first-class" поддержки отношений. Например, `UserFactory`, включенный в Laravel, написан так:
+Previous releases of Laravel utilized the [Swift Mailer](https://swiftmailer.symfony.com/docs/introduction.html) library to send outgoing email. However, that library is no longer maintained and has been succeeded by Symfony Mailer.
 
-    <?php
+Please review the [upgrade guide](/docs/{{version}}/upgrade#symfony-mailer) to learn more about ensuring your application is compatible with Symfony Mailer.
 
-    namespace Database\Factories;
+<a name="flysystem-3"></a>
+### Flysystem 3.x
 
-    use App\Models\User;
-    use Illuminate\Database\Eloquent\Factories\Factory;
-    use Illuminate\Support\Str;
+_Flysystem 3.x support was contributed by [Dries Vints](https://github.com/driesvints)_.
 
-    class UserFactory extends Factory
-    {
-        /**
-         * Название модели соответствующей фабрики.
-         *
-         * @var string
-         */
-        protected $model = User::class;
+Laravel 9.x upgrades our upstream Flysystem dependency to Flysystem 3.x. Flysystem powers all of filesystem interactions offered by the `Storage` facade.
 
-        /**
-         * Определить состояние модели по умолчанию.
-         *
-         * @return array
-         */
-        public function definition()
-        {
-            return [
-                'name' => $this->faker->name,
-                'email' => $this->faker->unique()->safeEmail,
-                'email_verified_at' => now(),
-                'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // пароль
-                'remember_token' => Str::random(10),
-            ];
-        }
-    }
+Please review the [upgrade guide](/docs/{{version}}/upgrade#flysystem-3) to learn more about ensuring your application is compatible with Flysystem 3.x.
 
-Благодаря новому трейту `HasFactory`, доступному для сгенерированных моделей, фабрика модели может использоваться следующим образом:
+<a name="eloquent-accessors-and-mutators"></a>
+### Improved Eloquent Accessors / Mutators
 
-    use App\Models\User;
+_Improved Eloquent accessors / mutators was contributed by [Taylor Otwell](https://github.com/taylorotwell)_.
 
-    User::factory()->count(50)->create();
+Laravel 9.x offers a new way to define Eloquent [accessors and mutators](/docs/{{version}}/eloquent-mutators#accessors-and-mutators). In previous releases of Laravel, the only way to define accessors and mutators was by defining prefixed methods on your model like so:
 
-Поскольку фабрики модели теперь являются простыми классами PHP, преобразования состояний могут быть записаны как методы класса. Кроме того, при необходимости вы можете добавить любые другие вспомогательные классы в фабрику модели Eloquent.
+```php
+public function getNameAttribute($value)
+{
+    return strtoupper($value);
+}
 
-Например, ваша модель `User` может находиться в состоянии `suspended`, которое изменяет одно из значений ее атрибутов по умолчанию. Вы можете определить свои преобразования состояния, используя метод `state` базовой фабрики. Вы можете называть свой метод состояния как угодно. В конце концов, это просто типичный PHP-метод:
+public function setNameAttribute($value)
+{
+    $this->attributes['name'] = $value;
+}
+```
+
+However, in Laravel 9.x you may define an accessor and mutator using a single, non-prefixed method by type-hinting a return type of `Illuminate\Database\Eloquent\Casts\Attribute`:
+
+```php
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+public function name(): Attribute
+{
+    return new Attribute(
+        get: fn ($value) => strtoupper($value),
+        set: fn ($value) => $value,
+    );
+}
+```
+
+In addition, this new approach to defining accessors will cache object values that are returned by the attribute, just like [custom cast classes](/docs/{{version}}/eloquent-mutators#custom-casts):
+
+```php
+use App\Support\Address;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+public function address(): Attribute
+{
+    return new Attribute(
+        get: fn ($value, $attributes) => new Address(
+            $attributes['address_line_one'],
+            $attributes['address_line_two'],
+        ),
+        set: fn (Address $value) => [
+            'address_line_one' => $value->lineOne,
+            'address_line_two' => $value->lineTwo,
+        ],
+    );
+}
+```
+
+<a name="enum-casting"></a>
+### Enum Eloquent Attribute Casting
+
+> **Warning**  
+> Enum casting is only available for PHP 8.1+.
+
+_Enum casting was contributed by [Mohamed Said](https://github.com/themsaid)_.
+
+Eloquent now allows you to cast your attribute values to PHP ["backed" Enums](https://www.php.net/manual/en/language.enumerations.backed.php). To accomplish this, you may specify the attribute and enum you wish to cast in your model's `$casts` property array:
+
+    use App\Enums\ServerStatus;
 
     /**
-     * Указать, что аккаунт пользователя временно приостановлен.
+     * The attributes that should be cast.
      *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @var array
      */
-    public function suspended()
-    {
-        return $this->state([
-            'account_status' => 'suspended',
-        ]);
+    protected $casts = [
+        'status' => ServerStatus::class,
+    ];
+
+Once you have defined the cast on your model, the specified attribute will be automatically cast to and from an enum when you interact with the attribute:
+
+    if ($server->status == ServerStatus::provisioned) {
+        $server->status = ServerStatus::ready;
+
+        $server->save();
     }
 
-После определения метода преобразования состояния мы можем использовать его так:
+<a name="implicit-route-bindings-with-enums"></a>
+### Implicit Route Bindings With Enums
 
+_Implicit Enum bindings was contributed by [Nuno Maduro](https://github.com/nunomaduro)_.
+
+PHP 8.1 introduces support for [Enums](https://www.php.net/manual/en/language.enumerations.backed.php). Laravel 9.x introduces the ability to type-hint an Enum on your route definition and Laravel will only invoke the route if that route segment is a valid Enum value in the URI. Otherwise, an HTTP 404 response will be returned automatically. For example, given the following Enum:
+
+```php
+enum Category: string
+{
+    case Fruits = 'fruits';
+    case People = 'people';
+}
+```
+
+You may define a route that will only be invoked if the `{category}` route segment is `fruits` or `people`. Otherwise, an HTTP 404 response will be returned:
+
+```php
+Route::get('/categories/{category}', function (Category $category) {
+    return $category->value;
+});
+```
+
+<a name="forced-scoping-of-route-bindings"></a>
+### Forced Scoping Of Route Bindings
+
+_Forced scoped bindings was contributed by [Claudio Dekker](https://github.com/claudiodekker)_.
+
+In previous releases of Laravel, you may wish to scope the second Eloquent model in a route definition such that it must be a child of the previous Eloquent model. For example, consider this route definition that retrieves a blog post by slug for a specific user:
+
+    use App\Models\Post;
     use App\Models\User;
 
-    User::factory()->count(5)->suspended()->create();
-
-Как уже упоминалось, фабрики модели Laravel 8 содержат "first-class" поддержку отношений. Итак, предполагая, что наша модель `User` имеет метод-отношение `posts`, мы можем просто запустить следующий код для создания пользователя с тремя постами:
-
-    $users = User::factory()
-                ->hasPosts(3, [
-                    'published' => false,
-                ])
-                ->create();
-
-Чтобы упростить процесс обновления, был выпущен пакет [laravel/legacy-factories](https://github.com/laravel/legacy-factories), обеспечивающий поддержку предыдущей итерации фабрик модели в Laravel 8.x.
-
-Переписанные фабрики Laravel содержат гораздо больше функций, которые, как мы думаем, вам понравятся. Чтобы узнать больше о фабриках моделей, обратитесь к [документации по тестированию баз данных](/docs/{{version}}/database-testing#defining-model-factories).
-
-<a name="migration-squashing"></a>
-### Сжатие миграций
-
-_Автор: [Taylor Otwell](https://github.com/taylorotwell)_.
-
-По мере создания приложения вы можете со временем накапливать все больше и больше миграций. Это может привести к тому, что каталог миграций станет раздутым из-за потенциально сотен миграций. Если вы используете MySQL или PostgreSQL, теперь вы можете «сжать» свои миграции в один файл SQL. Для начала выполните команду `schema:dump`:
-
-    php artisan schema:dump
-
-    // Выгрузить текущую схему БД и удалить все существующие миграции ...
-    php artisan schema:dump --prune
-
-Когда вы выполните эту команду, Laravel запишет файл «схемы» в каталог `database/schema` вашего приложения. Теперь, когда вы попытаетесь перенести свою базу данных, Laravel сначала выполнит SQL-операторы файла схемы, при условии, что никакие другие миграции не выполнялись. После выполнения команд файла схемы, Laravel выполнит все оставшиеся миграции, которые не были включены в дамп схемы БД.
-
-<a name="job-batching"></a>
-### Пакетная обработка заданий
-
-_Авторы: [Taylor Otwell](https://github.com/taylorotwell) и [Mohamed Said](https://github.com/themsaid)_.
-
-Функционал пакетной обработки заданий Laravel позволяет вам легко выполнить пакет заданий, по завершению которого дополнительно совершить определенные действия.
-
-Новый метод `batch` фасада `Bus` используется для отправки пакета заданий. Конечно, это в первую очередь полезно в сочетании с замыканиями по завершению. Итак, вы можете использовать методы `then`, `catch`, и `finally` для определения замыканий пакета заданий. Каждый из этих замыканий получит экземпляр `Illuminate\Bus\Batch` при вызове:
-
-    use App\Jobs\ProcessPodcast;
-    use App\Podcast;
-    use Illuminate\Bus\Batch;
-    use Illuminate\Support\Facades\Bus;
-    use Throwable;
-
-    $batch = Bus::batch([
-        new ProcessPodcast(Podcast::find(1)),
-        new ProcessPodcast(Podcast::find(2)),
-        new ProcessPodcast(Podcast::find(3)),
-        new ProcessPodcast(Podcast::find(4)),
-        new ProcessPodcast(Podcast::find(5)),
-    ])->then(function (Batch $batch) {
-        // Все задания успешно завершены ...
-    })->catch(function (Batch $batch, Throwable $e) {
-        // Обнаружено первое проваленное задание из пакета ...
-    })->finally(function (Batch $batch) {
-        // Завершено выполнение пакета ...
-    })->dispatch();
-
-    return $batch->id;
-
-Чтобы узнать больше о пакетной обработки заданий, обратитесь к [документации по очередям](/docs/{{version}}/queues#job-batching).
-
-<a name="improved-rate-limiting"></a>
-### Улучшенное ограничение частоты запросов
-
-_Автор: [Taylor Otwell](https://github.com/taylorotwell)_.
-
-Функционал ограничения частоты запросов в Laravel был расширен за счет большей гибкости и возможностей, при этом сохранена обратная совместимость с API посредника `throttle` предыдущих релизов.
-
-Ограничители определяются с помощью метода `for` фасада `RateLimiter`. Метод `for` принимает имя ограничителя и замыкание, которое возвращает конфигурацию ограничений, применяемых к назначенным маршрутам:
-
-    use Illuminate\Cache\RateLimiting\Limit;
-    use Illuminate\Support\Facades\RateLimiter;
-
-    RateLimiter::for('global', function (Request $request) {
-        return Limit::perMinute(1000);
+    Route::get('/users/{user}/posts/{post:slug}', function (User $user, Post $post) {
+        return $post;
     });
 
-Поскольку замыкание получает экземпляр входящего HTTP-запроса, вы можете динамически создать ограничение на основе входящего запроса или статуса аутентификации пользователя:
+When using a custom keyed implicit binding as a nested route parameter, Laravel will automatically scope the query to retrieve the nested model by its parent using conventions to guess the relationship name on the parent. However, this behavior was only previously supported by Laravel when a custom key was used for the child route binding.
 
-    RateLimiter::for('uploads', function (Request $request) {
-        return $request->user()->vipCustomer()
-                    ? Limit::none()
-                    : Limit::perMinute(100);
-    });
+However, in Laravel 9.x, you may now instruct Laravel to scope "child" bindings even when a custom key is not provided. To do so, you may invoke the `scopeBindings` method when defining your route:
 
-Иногда может потребоваться сегментация ограничений по некоторым произвольным значениям. Например, вы можете разрешить пользователям получать доступ к указанному маршруту 100 раз в минуту на каждый IP-адрес. Для этого можно использовать метод `by` при построении лимита:
+    use App\Models\Post;
+    use App\Models\User;
 
-    RateLimiter::for('uploads', function (Request $request) {
-        return $request->user()->vipCustomer()
-                    ? Limit::none()
-                    : Limit::perMinute(100)->by($request->ip());
-    });
+    Route::get('/users/{user}/posts/{post}', function (User $user, Post $post) {
+        return $post;
+    })->scopeBindings();
 
-Ограничители могут быть закреплены за маршрутами или группами маршрутов с помощью [посредника](/docs/{{version}}/middleware) `throttle`. Посредник `throttle` принимает имя ограничителя, которое вы хотите назначить маршруту:
+Or, you may instruct an entire group of route definitions to use scoped bindings:
 
-    Route::middleware(['throttle:uploads'])->group(function () {
-        Route::post('/audio', function () {
-            //
-        });
-
-        Route::post('/video', function () {
-            //
+    Route::scopeBindings()->group(function () {
+        Route::get('/users/{user}/posts/{post}', function (User $user, Post $post) {
+            return $post;
         });
     });
 
-Чтобы узнать больше об ограничителях запросов, обратитесь к [документации по маршрутизации](/docs/{{version}}/routing#rate-limiting).
+<a name="controller-route-groups"></a>
+### Controller Route Groups
 
-<a name="improved-maintenance-mode"></a>
-### Улучшенный режим обслуживания
+_Route group improvements were contributed by [Luke Downing](https://github.com/lukeraymonddowning)_.
 
-_Автор: [Taylor Otwell](https://github.com/taylorotwell), вдохновленный [Spatie](https://spatie.be)_.
+You may now use the `controller` method to define the common controller for all of the routes within the group. Then, when defining the routes, you only need to provide the controller method that they invoke:
 
-В предыдущих релизах Laravel функционал режима обслуживания `php artisan down` можно было обойти с помощью «разрешенного списка» IP-адресов, имеющим доступ к приложению. Эта функция была удалена в пользу более простого токен-решения.
+    use App\Http\Controllers\OrderController;
 
-Находясь в режиме обслуживания, вы можете использовать параметр `secret`, чтобы указать токен обхода режима обслуживания:
-
-    php artisan down --secret="1630542a-246b-4b66-afa1-dd72a4c43515"
-
-После перевода приложения в режим обслуживания вы можете перейти по URL-адресу приложения, соответствующему этому токену, и Laravel выдаст вашему браузеру файл cookie обхода режима обслуживания:
-
-    https://example.com/1630542a-246b-4b66-afa1-dd72a4c43515
-
-При доступе к этому скрытому маршруту вы будете перенаправлены на корневой маршрут приложения. Как только cookie будет отправлен вашему браузеру, вы сможете просматривать приложение в обычном режиме, как если бы оно не находилось в режиме обслуживания.
-
-<a name="pre-rendering-the-maintenance-mode-view"></a>
-#### Предварительный рендеринг шаблона режима обслуживания
-
-Если вы используете команду `php artisan down` во время развертывания, ваши пользователи могут иногда сталкиваться с ошибками, если они обращаются к приложению во время обновления ваших зависимостей Composer или других компонентов фреймворка. Это происходит потому, что значительная часть фреймворка Laravel должна загружаться, чтобы определить, находится ли ваше приложение в режиме обслуживания, и отобразить шаблон режима обслуживания с помощью механизма шаблонов.
-
-По этой причине Laravel позволяет предварительно визуализировать шаблон режима обслуживания, который будет возвращен в самом начале цикла запроса. Этот шаблон отображается перед загрузкой любых зависимостей вашего приложения. Вы можете выполнить предварительный рендеринг шаблона по вашему выбору, используя параметр `render` команды `down`:
-
-    php artisan down --render="errors::503"
-
-<a name="closure-dispatch-chain-catch"></a>
-### Выполнение замыканий с использованием цепочки `catch`
-
-_Автор: [Mohamed Said](https://github.com/themsaid)_.
-
-Используя новый метод `catch`, теперь можно определить замыкание, которое должно быть выполнено, если замыкание, указанное в очереди не удалось успешно завершить при исчерпании попыток повтора очереди:
-
-    use Throwable;
-
-    dispatch(function () use ($podcast) {
-        $podcast->publish();
-    })->catch(function (Throwable $e) {
-        // Не удалось выполнить это задание ...
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders/{id}', 'show');
+        Route::post('/orders', 'store');
     });
 
-<a name="dynamic-blade-components"></a>
-### Динамические компоненты Blade
+<a name="full-text"></a>
+### Full Text Indexes / Where Clauses
 
-_Автор: [Taylor Otwell](https://github.com/taylorotwell)_.
+_Full text indexes and "where" clauses were contributed by [Taylor Otwell](https://github.com/taylorotwell) and [Dries Vints](https://github.com/driesvints)_.
 
-Иногда может потребоваться отрисовать компонент, но вы не знаете, какой именно компонент это будет до момента выполнения. В этой ситуации вы можете использовать встроенный в Laravel компонент `dynamic-component` для рендеринга компонента, зависящего от значения или переменной, сформированных во время выполнения приложения:
+When using MySQL or PostgreSQL, the `fullText` method may now be added to column definitions to generate full text indexes:
 
-    <x-dynamic-component :component="$componentName" class="mt-4" />
+    $table->text('bio')->fullText();
 
-Чтобы узнать больше о компонентах Blade, обратитесь к [документации Blade](/docs/{{version}}/blade#components).
+In addition, the `whereFullText` and `orWhereFullText` methods may be used to add full text "where" clauses to a query for columns that have [full text indexes](/docs/{{version}}/migrations#available-index-types). These methods will be transformed into the appropriate SQL for the underlying database system by Laravel. For example, a `MATCH AGAINST` clause will be generated for applications utilizing MySQL:
 
-<a name="event-listener-improvements"></a>
-### Улучшения слушателей событий
+    $users = DB::table('users')
+               ->whereFullText('bio', 'web developer')
+               ->get();
 
-_Автор: [Taylor Otwell](https://github.com/taylorotwell)_.
+<a name="laravel-scout-database-engine"></a>
+### Laravel Scout Database Engine
 
-Слушатели событий, основанные на замыкании, теперь регистрируются только путем передачи замыкания методу `Event::listen`. Laravel проверит замыкание, чтобы определить, какой тип события обрабатывает слушатель:
+_The Laravel Scout database engine was contributed by [Taylor Otwell](https://github.com/taylorotwell) and [Dries Vints](https://github.com/driesvints)_.
 
-    use App\Events\PodcastProcessed;
-    use Illuminate\Support\Facades\Event;
+If your application interacts with small to medium sized databases or has a light workload, you may now use Scout's "database" engine instead of a dedicated search service such as Algolia or MeiliSearch. The database engine will use "where like" clauses and full text indexes when filtering results from your existing database to determine the applicable search results for your query.
 
-    Event::listen(function (PodcastProcessed $event) {
-        //
-    });
+To learn more about the Scout database engine, consult the [Scout documentation](/docs/{{version}}/scout).
 
-Кроме того, анонимные слушатели событий теперь могут быть помечены как доступные для очереди с помощью функции `Illuminate\Events\queueable`:
+<a name="rendering-inline-blade-templates"></a>
+### Rendering Inline Blade Templates
 
-    use App\Events\PodcastProcessed;
-    use function Illuminate\Events\queueable;
-    use Illuminate\Support\Facades\Event;
+_Rendering inline Blade templates was contributed by [Jason Beggs](https://github.com/jasonlbeggs). Rendering inline Blade components was contributed by [Toby Zerner](https://github.com/tobyzerner)_.
 
-    Event::listen(queueable(function (PodcastProcessed $event) {
-        //
-    }));
+Sometimes you may need to transform a raw Blade template string into valid HTML. You may accomplish this using the `render` method provided by the `Blade` facade. The `render` method accepts the Blade template string and an optional array of data to provide to the template:
 
-Как и задания в очереди, вы можете использовать методы `onConnection`, `onQueue`, и `delay` для настройки выполнения слушателя в очереди:
+```php
+use Illuminate\Support\Facades\Blade;
 
-    Event::listen(queueable(function (PodcastProcessed $event) {
-        //
-    })->onConnection('redis')->onQueue('podcasts')->delay(now()->addSeconds(10)));
+return Blade::render('Hello, {{ $name }}', ['name' => 'Julian Bashir']);
+```
 
-Если вы хотите обработать сбои запланированного анонимного слушателя, то предоставьте замыкание методу `catch` при определении `queueable`-слушателя:
+Similarly, the `renderComponent` method may be used to render a given class component by passing the component instance to the method:
 
-    use App\Events\PodcastProcessed;
-    use function Illuminate\Events\queueable;
-    use Illuminate\Support\Facades\Event;
-    use Throwable;
+```php
+use App\View\Components\HelloComponent;
 
-    Event::listen(queueable(function (PodcastProcessed $event) {
-        //
-    })->catch(function (PodcastProcessed $event, Throwable $e) {
-        // Не удалось выполнить запланированного слушателя ...
-    }));
+return Blade::renderComponent(new HelloComponent('Julian Bashir'));
+```
 
-<a name="time-testing-helpers"></a>
-### Помощники по временному тестированию
+<a name="slot-name-shortcut"></a>
+### Slot Name Shortcut
 
-_Автор: [Taylor Otwell](https://github.com/taylorotwell), вдохновленный Ruby on Rails_.
+_Slot name shortcuts were contributed by [Caleb Porzio](https://github.com/calebporzio)._
 
-При тестировании вам может иногда потребоваться изменить время, возвращаемое такими помощниками, как `now` или `Illuminate\Support\Carbon::now()`. Базовый класс тестирования функций Laravel теперь включает помощников, которые позволяют вам управлять текущим временем:
+In previous releases of Laravel, slot names were provided using a `name` attribute on the `x-slot` tag:
 
-    public function testTimeCanBeManipulated()
+```blade
+<x-alert>
+    <x-slot name="title">
+        Server Error
+    </x-slot>
+
+    <strong>Whoops!</strong> Something went wrong!
+</x-alert>
+```
+
+However, beginning in Laravel 9.x, you may specify the slot's name using a convenient, shorter syntax:
+
+```xml
+<x-slot:title>
+    Server Error
+</x-slot>
+```
+
+<a name="checked-selected-blade-directives"></a>
+### Checked / Selected Blade Directives
+
+_Checked and selected Blade directives were contributed by [Ash Allen](https://github.com/ash-jc-allen) and [Taylor Otwell](https://github.com/taylorotwell)_.
+
+For convenience, you may now use the `@checked` directive to easily indicate if a given HTML checkbox input is "checked". This directive will echo `checked` if the provided condition evaluates to `true`:
+
+```blade
+<input type="checkbox"
+        name="active"
+        value="active"
+        @checked(old('active', $user->active)) />
+```
+
+Likewise, the `@selected` directive may be used to indicate if a given select option should be "selected":
+
+```blade
+<select name="version">
+    @foreach ($product->versions as $version)
+        <option value="{{ $version }}" @selected(old('version') == $version)>
+            {{ $version }}
+        </option>
+    @endforeach
+</select>
+```
+
+<a name="bootstrap-5-pagination-views"></a>
+### Bootstrap 5 Pagination Views
+
+_Bootstrap 5 pagination views were contributed by [Jared Lewis](https://github.com/jrd-lewis)_.
+
+Laravel now includes pagination views built using [Bootstrap 5](https://getbootstrap.com/). To use these views instead of the default Tailwind views, you may call the paginator's `useBootstrapFive` method within the `boot` method of your `App\Providers\AppServiceProvider` class:
+
+    use Illuminate\Pagination\Paginator;
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
     {
-        // Путешествие в будущее ...
-        $this->travel(5)->milliseconds();
-        $this->travel(5)->seconds();
-        $this->travel(5)->minutes();
-        $this->travel(5)->hours();
-        $this->travel(5)->days();
-        $this->travel(5)->weeks();
-        $this->travel(5)->years();
-
-        // Путешествие в прошлое ...
-        $this->travel(-5)->hours();
-
-        // Путешествие в определенное время ...
-        $this->travelTo(now()->subHours(6));
-
-        // Вернуться в настоящее время ...
-        $this->travelBack();
+        Paginator::useBootstrapFive();
     }
 
-<a name="artisan-serve-improvements"></a>
-### Улучшения Artisan `serve`
+<a name="improved-validation-of-nested-array-data"></a>
+### Improved Validation Of Nested Array Data
 
-_Автор: [Taylor Otwell](https://github.com/taylorotwell)_.
+_Improved validation of nested array inputs was contributed by [Steve Bauman](https://github.com/stevebauman)_.
 
-Команда `serve` консоли Artisan была улучшена за счет автоматической перезагрузки при обнаружении изменений переменных окружения в вашем локальном файле `.env`. Раньше команду приходилось останавливать и перезапускать вручную.
+Sometimes you may need to access the value for a given nested array element when assigning validation rules to the attribute. You may now accomplish this using the `Rule::forEach` method. The `forEach` method accepts a closure that will be invoked for each iteration of the array attribute under validation and will receive the attribute's value and explicit, fully-expanded attribute name. The closure should return an array of rules to assign to the array element:
 
-<a name="tailwind-pagination-views"></a>
-### Постраничная навигация с использованием Tailwind
+    use App\Rules\HasPermission;
+    use Illuminate\Support\Facades\Validator;
+    use Illuminate\Validation\Rule;
 
-Пагинатор Laravel был обновлен для использования фреймворка [Tailwind CSS](https://tailwindcss.com) по умолчанию. Tailwind CSS – это настраиваемая низкоуровневая структура CSS, которая дает вам все строительные блоки, необходимые для создания нестандартных дизайнов без каких-либо раздражающих самоуверенных стилей, за которые вам придется бороться. Конечно, также остаются доступными шаблоны Bootstrap 3 и 4.
+    $validator = Validator::make($request->all(), [
+        'companies.*.id' => Rule::forEach(function ($value, $attribute) {
+            return [
+                Rule::exists(Company::class, 'id'),
+                new HasPermission('manage-company', $value),
+            ];
+        }),
+    ]);
 
-<a name="routing-namespace-updates"></a>
-### Обновления пространства имен маршрутизации
+<a name="laravel-breeze-api"></a>
+### Laravel Breeze API & Next.js
 
-В предыдущих релизах Laravel `RouteServiceProvider` содержал свойство `$namespace`. Значение этого свойства будет автоматически добавлено к определениям маршрута контроллера и вызовам помощника `action` / метода `URL::action`. В Laravel 8.x это свойство по умолчанию имеет значение `null`. Это означает, что Laravel не будет автоматически подставлять префиксы пространства имен. Поэтому в новых приложениях Laravel 8.x определения маршрутов контроллера должны быть определены с использованием стандартного синтаксиса объявлений зависимостей PHP:
+_The Laravel Breeze API scaffolding and Next.js starter kit was contributed by [Taylor Otwell](https://github.com/taylorotwell) and [Miguel Piedrafita](https://twitter.com/m1guelpf)_.
 
-    use App\Http\Controllers\UserController;
+The [Laravel Breeze](/docs/{{version}}/starter-kits#breeze-and-next) starter kit has received an "API" scaffolding mode and complimentary [Next.js](https://nextjs.org) [frontend implementation](https://github.com/laravel/breeze-next). This starter kit scaffolding may be used to jump start your Laravel applications that are serving as a backend, Laravel Sanctum authenticated API for a JavaScript frontend.
 
-    Route::get('/users', [UserController::class, 'index']);
+<a name="exception-page"></a>
+### Improved Ignition Exception Page
 
-Вызов методов, связанных с `action`, должен использовать тот же синтаксис объявлений:
+_Ignition is developed by [Spatie](https://spatie.be/)._
 
-    action([UserController::class, 'index']);
+Ignition, the open source exception debug page created by Spatie, has been redesigned from the ground up. The new, improved Ignition ships with Laravel 9.x and includes light / dark themes, customizable "open in editor" functionality, and more.
 
-    return Redirect::action([UserController::class, 'index']);
+<p align="center">
+<img width="100%" src="https://user-images.githubusercontent.com/483853/149235404-f7caba56-ebdf-499e-9883-cac5d5610369.png"/>
+</p>
 
-Если вы предпочитаете префиксирование маршрута контроллера в стиле Laravel версии 7.x, вы можете просто добавить свойство `$namespace` в `RouteServiceProvider` вашего приложения.
+<a name="improved-route-list"></a>
+### Improved `route:list` CLI Output
 
-> {note} Это изменение касается только новых приложений Laravel 8.x. Приложения, обновляющиеся с Laravel 7.x, по-прежнему будут иметь свойство `$namespace` в своем `RouteServiceProvider`.
+_Improved `route:list` CLI output was contributed by [Nuno Maduro](https://github.com/nunomaduro)_.
+
+The `route:list` CLI output has been significantly improved for the Laravel 9.x release, offering a beautiful new experience when exploring your route definitions.
+
+<p align="center">
+<img src="https://user-images.githubusercontent.com/5457236/148321982-38c8b869-f188-4f42-a3cc-a03451d5216c.png"/>
+</p>
+
+<a name="test-coverage-support-on-artisan-test-Command"></a>
+### Test Coverage Using Artisan `test` Command
+
+_Test coverage when using the Artisan `test` command was contributed by [Nuno Maduro](https://github.com/nunomaduro)_.
+
+The Artisan `test` command has received a new `--coverage` option that you may use to explore the amount of code coverage your tests are providing to your application:
+
+```shell
+php artisan test --coverage
+```
+
+The test coverage results will be displayed directly within the CLI output.
+
+<p align="center">
+<img width="100%" src="https://user-images.githubusercontent.com/5457236/150133237-440290c2-3538-4d8e-8eac-4fdd5ec7bd9e.png"/>
+</p>
+
+In addition, if you would like to specify a minimum threshold that your test coverage percentage must meet, you may use the `--min` option. The test suite will fail if the given minimum threshold is not met:
+
+```shell
+php artisan test --coverage --min=80.3
+```
+
+<p align="center">
+<img width="100%" src="https://user-images.githubusercontent.com/5457236/149989853-a29a7629-2bfa-4bf3-bbf7-cdba339ec157.png"/>
+</p>
+
+<a name="soketi-echo-server"></a>
+### Soketi Echo Server
+
+_The Soketi Echo server was developed by [Alex Renoki](https://github.com/rennokki)_.
+
+Although not exclusive to Laravel 9.x, Laravel has recently assisted with the documentation of Soketi, a [Laravel Echo](/docs/{{version}}/broadcasting) compatible Web Socket server written for Node.js. Soketi provides a great, open source alternative to Pusher and Ably for those applications that prefer to manage their own Web Socket server.
+
+For more information on using Soketi, please consult the [broadcasting documentation](/docs/{{version}}/broadcasting) and [Soketi documentation](https://docs.soketi.app/).
+
+<a name="improved-collections-ide-support"></a>
+### Improved Collections IDE Support
+
+_Improved collections IDE support was contributed by [Nuno Maduro](https://github.com/nunomaduro)_.
+
+Laravel 9.x adds improved, "generic" style type definitions to the collections component, improving IDE and static analysis support. IDEs such as [PHPStorm](https://blog.jetbrains.com/phpstorm/2021/12/phpstorm-2021-3-release/#support_for_future_laravel_collections) or static analysis tools such as [PHPStan](https://phpstan.org) will now better understand Laravel collections natively.
+
+<p align="center">
+<img width="100%" src="https://user-images.githubusercontent.com/5457236/151783350-ed301660-1e09-44c1-b549-85c6db3f078d.gif"/>
+</p>
+
+<a name="new-helpers"></a>
+### New Helpers
+
+Laravel 9.x introduces two new, convenient helper functions that you may use in your own application.
+
+<a name="new-helpers-str"></a>
+#### `str`
+
+The `str` function returns a new `Illuminate\Support\Stringable` instance for the given string. This function is equivalent to the `Str::of` method:
+
+    $string = str('Taylor')->append(' Otwell');
+
+    // 'Taylor Otwell'
+
+If no argument is provided to the `str` function, the function returns an instance of `Illuminate\Support\Str`:
+
+    $snake = str()->snake('LaravelFramework');
+
+    // 'laravel_framework'
+
+<a name="new-helpers-to-route"></a>
+#### `to_route`
+
+The `to_route` function generates a redirect HTTP response for a given named route, providing an expressive way to redirect to named routes from your routes and controllers:
+
+    return to_route('users.show', ['user' => 1]);
+
+If necessary, you may pass the HTTP status code that should be assigned to the redirect and any additional response headers as the third and fourth arguments to the to_route method:
+
+    return to_route('users.show', ['user' => 1], 302, ['X-Framework' => 'Laravel']);
