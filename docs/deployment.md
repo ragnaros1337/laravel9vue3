@@ -1,145 +1,159 @@
-git 2a3033817f13af34d1a725bc45afba9d3fd481fb
+# Deployment
 
----
-
-# Развертывание
-
-- [Введение](#introduction)
-- [Требования к серверу](#server-requirements)
-- [Конфигурация сервера](#server-configuration)
+- [Introduction](#introduction)
+- [Server Requirements](#server-requirements)
+- [Server Configuration](#server-configuration)
     - [Nginx](#nginx)
-- [Оптимизация](#optimization)
-    - [Оптимизация автозагрузчика](#autoloader-optimization)
-    - [Оптимизация загрузки конфигурации](#optimizing-configuration-loading)
-    - [Оптимизация загрузки маршрута](#optimizing-route-loading)
-    - [Оптимизация загрузки шаблонов](#optimizing-view-loading)
-- [Режим отладки](#debug-mode)
-- [Развертывание с помощью Forge / Vapor](#deploying-with-forge-or-vapor)
+- [Optimization](#optimization)
+    - [Autoloader Optimization](#autoloader-optimization)
+    - [Optimizing Configuration Loading](#optimizing-configuration-loading)
+    - [Optimizing Route Loading](#optimizing-route-loading)
+    - [Optimizing View Loading](#optimizing-view-loading)
+- [Debug Mode](#debug-mode)
+- [Deploying With Forge / Vapor](#deploying-with-forge-or-vapor)
 
 <a name="introduction"></a>
-## Введение
+## Introduction
 
-Когда вы будете готовы развернуть свое приложение Laravel в эксплуатационном окружении, вы должны сделать несколько важных вещей, чтобы убедиться, что ваше приложение работает максимально эффективно. В этой документации мы рассмотрим несколько отличных отправных точек, чтобы убедиться, что ваше приложение Laravel развернуто правильно.
+When you're ready to deploy your Laravel application to production, there are some important things you can do to make sure your application is running as efficiently as possible. In this document, we'll cover some great starting points for making sure your Laravel application is deployed properly.
 
 <a name="server-requirements"></a>
-## Требования к серверу
+## Server Requirements
 
-Фреймворк Laravel имеет несколько системных требований. Вы должны убедиться, что ваш веб-сервер имеет следующую минимальную версию PHP и расширения:
+The Laravel framework has a few system requirements. You should ensure that your web server has the following minimum PHP version and extensions:
 
-<!-- <div class="content-list" markdown="1"> -->
-- PHP >= 7.3
-- Расширение PHP BCMath
-- Расширение PHP Ctype
-- Расширение PHP Fileinfo
-- Расширение PHP JSON
-- Расширение PHP Mbstring
-- Расширение PHP OpenSSL
-- Расширение PHP PDO
-- Расширение PHP Tokenizer
-- Расширение PHP XML
-<!-- </div> -->
+<div class="content-list" markdown="1">
+
+- PHP >= 8.0
+- BCMath PHP Extension
+- Ctype PHP Extension
+- cURL PHP Extension
+- DOM PHP Extension
+- Fileinfo PHP Extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PCRE PHP Extension
+- PDO PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
+
+</div>
 
 <a name="server-configuration"></a>
-## Конфигурация сервера
+## Server Configuration
 
 <a name="nginx"></a>
 ### Nginx
 
-Если вы развертываете свое приложение на сервере, на котором работает Nginx, то вы можете использовать следующий конфигурационный файл в качестве отправной точки для настройки веб-сервера. Скорее всего, этот файл нужно будет настроить в зависимости от конфигурации вашего сервера. **Если вам нужна помощь в управлении вашим сервером, рассмотрите возможность использования собственной службы управления и развертывания серверов Laravel, такой как [Laravel Forge](https://forge.laravel.com).**
+If you are deploying your application to a server that is running Nginx, you may use the following configuration file as a starting point for configuring your web server. Most likely, this file will need to be customized depending on your server's configuration. **If you would like assistance in managing your server, consider using a first-party Laravel server management and deployment service such as [Laravel Forge](https://forge.laravel.com).**
 
-Убедитесь, что, как и в конфигурации ниже, ваш веб-сервер направляет все запросы в файл `public/index.php` вашего приложения. Вы никогда не должны пытаться переместить файл `index.php` в корень вашего проекта, поскольку обслуживание приложения из корня проекта откроет доступ ко многим конфиденциальным файлам конфигурации из общедоступной сети Интернет:
+Please ensure, like the configuration below, your web server directs all requests to your application's `public/index.php` file. You should never attempt to move the `index.php` file to your project's root, as serving the application from the project root will expose many sensitive configuration files to the public Internet:
 
-    server {
-        listen 80;
-        server_name example.com;
-        root /srv/example.com/public;
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name example.com;
+    root /srv/example.com/public;
 
-        add_header X-Frame-Options "SAMEORIGIN";
-        add_header X-Content-Type-Options "nosniff";
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
 
-        index index.php;
+    index index.php;
 
-        charset utf-8;
+    charset utf-8;
 
-        location / {
-            try_files $uri $uri/ /index.php?$query_string;
-        }
-
-        location = /favicon.ico { access_log off; log_not_found off; }
-        location = /robots.txt  { access_log off; log_not_found off; }
-
-        error_page 404 /index.php;
-
-        location ~ \.php$ {
-            fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
-            fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-            include fastcgi_params;
-        }
-
-        location ~ /\.(?!well-known).* {
-            deny all;
-        }
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
     }
 
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.0-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
 <a name="optimization"></a>
-## Оптимизация
+## Optimization
 
 <a name="autoloader-optimization"></a>
-### Оптимизация автозагрузчика
+### Autoloader Optimization
 
-При развертывании в эксплуатационном окружении, убедитесь, что вы оптимизировали файл автозагрузчика классов Composer, чтобы он мог быстро найти нужный файл для загрузки конкретного класса:
+When deploying to production, make sure that you are optimizing Composer's class autoloader map so Composer can quickly find the proper file to load for a given class:
 
-    composer install --optimize-autoloader --no-dev
+```shell
+composer install --optimize-autoloader --no-dev
+```
 
-> {tip} Помимо оптимизации автозагрузчика, вы всегда должны обязательно включать файл `composer.lock` в репозиторий системы управления версиями вашего проекта. Зависимости вашего проекта могут быть установлены намного быстрее, если присутствует файл `composer.lock`.
+> **Note**  
+> In addition to optimizing the autoloader, you should always be sure to include a `composer.lock` file in your project's source control repository. Your project's dependencies can be installed much faster when a `composer.lock` file is present.
 
 <a name="optimizing-configuration-loading"></a>
-### Оптимизация загрузки конфигурации
+### Optimizing Configuration Loading
 
-При развертывании вашего приложения в эксплуатационном окружении, вы должны убедиться, что вы выполнили команду `config:cache` Artisan в процессе развертывания:
+When deploying your application to production, you should make sure that you run the `config:cache` Artisan command during your deployment process:
 
-    php artisan config:cache
+```shell
+php artisan config:cache
+```
 
-Эта команда объединит все файлы конфигурации Laravel в один кешированный файл, что значительно сократит количество обращений, которые фреймворк должен совершить к файловой системе при загрузке значений вашей конфигурации.
+This command will combine all of Laravel's configuration files into a single, cached file, which greatly reduces the number of trips the framework must make to the filesystem when loading your configuration values.
 
-> {note} Если вы выполняете команду `config:cache` в процессе развертывания, вы должны быть уверены, что вызываете функцию `env` только из ваших файлов конфигурации. После кеширования конфигурации файл `.env` не будет загружаться, и все вызовы функции `env` для переменных файла `.env` вернут `null`.
+> **Warning**  
+> If you execute the `config:cache` command during your deployment process, you should be sure that you are only calling the `env` function from within your configuration files. Once the configuration has been cached, the `.env` file will not be loaded and all calls to the `env` function for `.env` variables will return `null`.
 
 <a name="optimizing-route-loading"></a>
-### Оптимизация загрузки маршрута
+### Optimizing Route Loading
 
-Если вы создаете большое приложение с множеством маршрутов, вам следует убедиться, что вы выполнили команду `route:cache` Artisan в процессе развертывания:
+If you are building a large application with many routes, you should make sure that you are running the `route:cache` Artisan command during your deployment process:
 
-    php artisan route:cache
+```shell
+php artisan route:cache
+```
 
-Эта команда сокращает регистрации всех маршрутов до одного вызова метода в кешированном файле, повышая производительность при регистрации сотен маршрутов.
+This command reduces all of your route registrations into a single method call within a cached file, improving the performance of route registration when registering hundreds of routes.
 
 <a name="optimizing-view-loading"></a>
-### Оптимизация загрузки шаблонов
+### Optimizing View Loading
 
-При развертывании вашего приложения в эксплуатационном окружении, вы должны убедиться, что вы выполнили команду `view:cache` Artisan в процессе развертывания:
+When deploying your application to production, you should make sure that you run the `view:cache` Artisan command during your deployment process:
 
-    php artisan view:cache
+```shell
+php artisan view:cache
+```
 
-Эта команда предварительно скомпилирует все ваши шаблоны Blade, чтобы они не компилировались во время запроса, повышая производительность каждого запроса, возвращающего шаблоном.
+This command precompiles all your Blade views so they are not compiled on demand, improving the performance of each request that returns a view.
 
 <a name="debug-mode"></a>
-## Режим отладки
+## Debug Mode
 
-Параметр отладки в файле конфигурации `config/app.php` определяет, сколько информации об ошибке фактически отображается пользователю. По умолчанию для этого параметра задано значение переменной среды `APP_DEBUG`, которая хранится в вашем файле `.env`.
+The debug option in your config/app.php configuration file determines how much information about an error is actually displayed to the user. By default, this option is set to respect the value of the `APP_DEBUG` environment variable, which is stored in your application's `.env` file.
 
-**В вашем эксплуатационном окружении это значение всегда должно быть `false`. Если значение для переменной `APP_DEBUG` установлено как `true`, то вы рискуете раскрыть конфиденциальные значения конфигурации конечным пользователям вашего приложения.**
+**In your production environment, this value should always be `false`. If the `APP_DEBUG` variable is set to `true` in production, you risk exposing sensitive configuration values to your application's end users.**
 
 <a name="deploying-with-forge-or-vapor"></a>
-## Развертывание с помощью Forge / Vapor
+## Deploying With Forge / Vapor
 
 <a name="laravel-forge"></a>
 #### Laravel Forge
 
-Если вы не совсем готовы управлять конфигурацией своего собственного сервера или вам неудобно настраивать все различные службы, необходимые для запуска надежного приложения Laravel, то [Laravel Forge](https://forge.laravel.com) – замечательная альтернатива.
+If you aren't quite ready to manage your own server configuration or aren't comfortable configuring all of the various services needed to run a robust Laravel application, [Laravel Forge](https://forge.laravel.com) is a wonderful alternative.
 
-Laravel Forge может создавать серверы на различных поставщиках инфраструктуры, таких как DigitalOcean, Linode, AWS и других. Кроме того, Forge устанавливает и управляет всеми инструментами, необходимыми для создания надежных приложений Laravel, таких как Nginx, MySQL, Redis, Memcached, Beanstalk и других.
+Laravel Forge can create servers on various infrastructure providers such as DigitalOcean, Linode, AWS, and more. In addition, Forge installs and manages all of the tools needed to build robust Laravel applications, such as Nginx, MySQL, Redis, Memcached, Beanstalk, and more.
 
 <a name="laravel-vapor"></a>
 #### Laravel Vapor
 
-Если вам нужна полностью бессерверная платформа развертывания с автоматическим масштабированием, настроенная для Laravel, ознакомьтесь с [Laravel Vapor](https://vapor.laravel.com). Laravel Vapor – это платформа для бессерверного развертывания Laravel, работающая на AWS. Запустите свою инфраструктуру Laravel на Vapor и влюбитесь в масштабируемую простоту бессерверной архитектуры. Laravel Vapor настроен создателями Laravel для бесперебойной работы с фреймворком, поэтому вы можете продолжать писать свои приложения Laravel точно так, как вы привыкли.
+If you would like a totally serverless, auto-scaling deployment platform tuned for Laravel, check out [Laravel Vapor](https://vapor.laravel.com). Laravel Vapor is a serverless deployment platform for Laravel, powered by AWS. Launch your Laravel infrastructure on Vapor and fall in love with the scalable simplicity of serverless. Laravel Vapor is fine-tuned by Laravel's creators to work seamlessly with the framework so you can keep writing your Laravel applications exactly like you're used to.
