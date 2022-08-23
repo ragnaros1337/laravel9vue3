@@ -96,18 +96,18 @@
                         </svg>
                 </a>
 
-                <button class="kugoo-navbar-toggler" type="button">
-                    <i class="kugoo-navbar-toggler-icon"></i>
-                </button>
+                <label class="kugoo-navbar-toggler" for="toggle-mobile-menu">
+                    <span class="kugoo-navbar-toggler-icon"></span>
+                </label>
                 <x-mobile_menu></x-mobile_menu>
 
             </section>
             <section class="kugoo-navbar-middle hidden">
                 <div class="kugoo-navbar-middle-brand">kugoo</div>
                 <button class="kugoo-navbar-middle-call"></button>
-                <button class="kugoo-navbar-toggler" type="button">
-                    <i class="kugoo-navbar-toggler-icon"></i>
-                </button>
+                <label class="kugoo-navbar-toggler" for="toggle-mobile-menu">
+                    <span class="kugoo-navbar-toggler-icon"></span>
+                </label>
             </section>
             <section class="kugoo-navbar-bottom">
                 <a href="" class="kugoo-navbar-bottom-link">О магазине</a>

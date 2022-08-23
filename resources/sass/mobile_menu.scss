@@ -5,24 +5,56 @@
 }
 
 #toggle:checked {
-    & ~ .toggle-container .button-toggle {
-        box-shadow: 0 0 0 550px rgba(0, 0, 0, 0.1), inset 0 0 0 20px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-            box-shadow: 0 0 0 550px rgba(0, 0, 0, 0.1), inset 0 0 0 20px rgba(0, 0, 0, 0.1), 0 0 0 8px rgba(0, 0, 0, 0.1), inset 0 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
+    & ~ .kugoo-navbar-toggler .kugoo-navbar-toggler-icon{
         &:before {
             transform: translateY(-50%) rotate(45deg) scale(1);
         }
-
         &:after {
             transform: translateY(-50%) rotate(-45deg) scale(1);
         }
     }
 }
 
-
+.kugoo-navbar-toggler{
+    height: 40px;
+    width: 40px;
+    position: relative;
+    border: none;
+    background: none;
+    .kugoo-navbar-toggler-icon{
+        position: absolute;
+        left: calc(50% - 13px);
+        top: calc(50% - 1px);
+        width: 26px;
+        height: 5px;
+        background: $base_violet;
+        border: 1.3px solid $base_violet;
+        border-radius: 2px;
+        &:after{
+            content: "";
+            position: absolute;
+            right: -1px;
+            bottom: -8px;
+            width: 13px;
+            height: 5px;
+            background: $base_violet;
+            border: 1.3px solid $base_violet;
+            border-radius: 2px;
+            transition: $header_transition;
+        }
+        &:before{
+            content: "";
+            position: absolute;
+            left: -1px;
+            top: -8px;
+            width: 26px;
+            height: 5px;
+            background: $base_violet;
+            border: 1.3px solid $base_violet;
+            border-radius: 2px;
+        }
+    }
+}
 .kugoo-mobile-menu{
     background: white;
     position: absolute;

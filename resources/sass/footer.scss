@@ -1,26 +1,3 @@
-$base_violet: #6F73EE;
-$click_violet: #8185F9;
-$base_blue: #F4F7FB;
-$text_color: #5D6C7B;
-$header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-%violet_click{
-    background: $base_violet;
-    color: white;
-    transition: $header_transition;
-    &:active{
-        background: $click_violet;
-    }
-}
-%violet_revert_click{
-    background: white;
-    color: $base_violet;
-    transition: $header_transition;
-    &:active{
-        background: $base_violet;
-        color: white;
-    }
-}
-
 .footer.container-fluid{
     display: flex;
     flex-direction: column-reverse;

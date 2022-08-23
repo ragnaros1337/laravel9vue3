@@ -1,16 +1,3 @@
-$base_violet: #6F73EE;
-$click_violet: #8185F9;
-$base_blue: #F4F7FB;
-$text_color: #5D6C7B;
-$header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-%violet_click{
-	background: $base_violet;
-    color: white;
-    transition: $header_transition;
-    &:active{
-        background: $click_violet;
-    }
-}
 .header.container-fluid{
     padding: 0;
     .kugoo-navbar{
@@ -270,55 +257,6 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
                     }
                     &::placeholder{
                        color: black;
-                    }
-                }
-            }
-
-            .kugoo-navbar-toggler{
-                height: 40px;
-                width: 40px;
-                position: relative;
-                border: none;
-                background: none;
-                &:active{
-                    .navbar-toggler-icon{
-                        &:after{
-                            right: -1px;
-                            width: 26px;
-                        }
-                    }
-                }
-                .kugoo-navbar-toggler-icon{
-                    position: absolute;
-                    left: calc(50% - 13px);
-                    top: calc(50% - 1px);
-                    width: 26px;
-                    height: 5px;
-                    background: $base_violet;
-                    border: 1.3px solid $base_violet;
-                    border-radius: 2px;
-                    &:after{
-                        content: "";
-                        position: absolute;
-                        right: -1px;
-                        bottom: -8px;
-                        width: 13px;
-                        height: 5px;
-                        background: $base_violet;
-                        border: 1.3px solid $base_violet;
-                        border-radius: 2px;
-                        transition: $header_transition;
-                    }
-                    &:before{
-                        content: "";
-                        position: absolute;
-                        left: -1px;
-                        top: -8px;
-                        width: 26px;
-                        height: 5px;
-                        background: $base_violet;
-                        border: 1.3px solid $base_violet;
-                        border-radius: 2px;
                     }
                 }
             }
