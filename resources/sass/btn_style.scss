@@ -1,0 +1,16 @@
+.btn-white-violet{
+    height: 60px;
+    width: 150px;
+    border-radius: 5px;
+    padding: 5px 15px;
+    border: 1.3px solid #6F73EE;
+    @extend %violet_revert_click;
+    font-family: Jost;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 23px;
+    text-align: center;
+
+
+
+}
