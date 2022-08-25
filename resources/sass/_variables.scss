@@ -1,24 +1,47 @@
-$base_violet: #6F73EE;
-$click_violet: #8185F9;
-$base_blue: #F4F7FB;
+$violet_base: #6F73EE;
+$violet_hover: #8185F9;
+$blue_base: #F4F7FB;
+$grey_base: #F4f7fb;
 $text_color: #5D6C7B;
 $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 
-%violet_click{
-    background: $base_violet;
+%violet_white_btn{
+    border-radius: 15px;
+    background: $violet_base;
     color: white;
     transition: $header_transition;
-    &:active{
-        background: $click_violet;
+    &:hover, &:active{
+        background: white;
+        color: $violet_base
     }
 }
 
-%violet_revert_click{
+%white_violet_btn{
+    border-radius: 15px;
     background: white;
-    color: $base_violet;
+    color: $violet_base;
     transition: $header_transition;
-    &:active{
-        background: $base_violet;
+    &:hover, &:active{
+        background: $violet_base;
         color: white;
+    }
+}
+@mixin btn($color, $text-color, $color-click: $text-color){
+    border-radius: 15px;
+    border: 3px solid $color;
+    background: $color;
+    color: $text-color;
+    letter-spacing: 0em;
+    text-align: center;
+    transition: $header_transition;
+    &:hover, &:active{
+        background: $color_click;
+        border: 3px solid $color_click;
+        @if($color-click == $text-color){
+            color: $color;
+        }
+        @else{
+            color: $text-color;
+        }
     }
 }

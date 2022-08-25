@@ -1,16 +1,69 @@
-.btn-white-violet{
-    height: 60px;
-    width: 150px;
-    border-radius: 5px;
-    padding: 5px 15px;
-    border: 1.3px solid #6F73EE;
-    @extend %violet_revert_click;
-    font-family: Jost;
-    font-size: 16px;
+.btn-violet-border{
+    @include btn(white, $violet_base);
+    border: 3px solid #6F73EE;
     font-weight: 400;
+}
+.btn-violet{
+    @include btn($violet_base, white);
+    border: 3px solid $violet_base;
+    font-weight: 400;
+}
+.btn-orange{
+    @include btn(#F3a712, white, #FAB836);
+    font-weight: 400;
+}
+.btn-grey{
+    @include btn($grey_base, black, $violet_base);
+    font-weight: 400;
+    &:hover, &:active{
+        background: white;
+        color: $violet_base;
+    }
+}
+
+.dropdown-grey{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 11px 17px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: black;
+    background: $grey_base;
+    border: none;
+    min-width: 100px;
+    &:after{
+        transition: $header_transition;
+        position: absolute;
+        top: 50%;
+        right: 17px;
+        content: "";
+        width: 0;
+        height: 0;
+        transform: translate(0, -50%);
+        border-top: 5px solid black;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+    }
+    &:hover, &:active{
+        &:after{
+            transform: translate(0, calc(-50%)) rotate(180deg);
+        }
+    }
+}
+
+.small-btn{
+    padding: 7px 17px;
+    font-size: 12px;
+    line-height: 17px;
+}
+.big-btn{
+    padding: 12px 22px;
+    font-size: 16px;
     line-height: 23px;
-    text-align: center;
-
-
-
 }

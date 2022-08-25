@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class BtnSeeAll extends Component
+class DropdownVioletBorder extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class BtnSeeAll extends Component
      */
     public function render()
     {
-        return view('components.btn-see-all');
+        return view('components.dropdown-violet-border');
     }
 }

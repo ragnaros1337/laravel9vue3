@@ -13,11 +13,11 @@
         height: 100%;
         z-index: 1;
         .footer-backgrounds-subscribe{
-            background: $base_violet;
+            background: $violet_base;
             height: 100px;
         }
         .footer-backgrounds-links, .footer-backgrounds-media, .footer-backgrounds-payments{
-            background: $base_blue;
+            background: $blue_base;
         }
     }
     .footer-content{
@@ -63,7 +63,8 @@
                 }
             }
             .footer-feedback-subscribe-btn{
-                @extend %violet_revert_click;
+                //TODO: change this
+                @extend %white_violet_btn;
                 height: 53px;
                 width: 140px;
                 border-radius: 15px;
@@ -122,7 +123,7 @@
                         color: black;
                     }
                     .footer-links-callback{
-                        color: $base_violet;
+                        color: $violet_base;
                     }
                 }
                 .footer-links-contacts-body{

@@ -27,8 +27,8 @@
         top: calc(50% - 1px);
         width: 26px;
         height: 5px;
-        background: $base_violet;
-        border: 1.3px solid $base_violet;
+        background: $violet_base;
+        border: 1.3px solid $violet_base;
         border-radius: 2px;
         &:after{
             content: "";
@@ -37,8 +37,8 @@
             bottom: -8px;
             width: 13px;
             height: 5px;
-            background: $base_violet;
-            border: 1.3px solid $base_violet;
+            background: $violet_base;
+            border: 1.3px solid $violet_base;
             border-radius: 2px;
             transition: $header_transition;
         }
@@ -49,8 +49,8 @@
             top: -8px;
             width: 26px;
             height: 5px;
-            background: $base_violet;
-            border: 1.3px solid $base_violet;
+            background: $violet_base;
+            border: 1.3px solid $violet_base;
             border-radius: 2px;
         }
     }
