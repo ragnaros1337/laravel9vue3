@@ -1,9 +1,13 @@
-<button class="dropdown-violet-border small-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    {{ $slot }}
-</button>
+@props(['list'])
+<div class="dropdown-violet-border">
+    <button class="dropdown-violet-border-btn small-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        {{ $slot }}
+        <mat-icon fontSet="material-symbols-rounded">face</mat-icon>
+    </button>
+    <ul class="dropdown-menu dropdown-violet-border-menu">
+        @foreach($list as $key => $value)
+            <li><a class="dropdown-item dropdown-violet-border-item" href="">{{$value}}</a></li>
+        @endforeach
+    </ul>
+</div>
 
-<button class="kugoo-navbar-middle-search-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Везде</button>
-<ul class="dropdown-menu kugoo-navbar-middle-search-dropdown-menu">
-    <li class="kugoo-navbar-middle-search-dropdown-item"><a class="dropdown-item kugoo-navbar-middle-search-dropdown-item-link" href="">Action</a></li>
-    <li class="kugoo-navbar-middle-search-dropdown-item"><a class="dropdown-item kugoo-navbar-middle-search-dropdown-item-link" href="">Separated link</a></li>
-</ul>

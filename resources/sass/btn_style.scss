@@ -22,37 +22,51 @@
 }
 
 .dropdown-grey{
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 11px 17px;
-    border-radius: 15px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 20px;
-    letter-spacing: 0em;
-    text-align: left;
-    color: black;
-    background: $grey_base;
-    border: none;
-    min-width: 100px;
-    &:after{
-        transition: $header_transition;
-        position: absolute;
-        top: 50%;
-        right: 17px;
-        content: "";
-        width: 0;
-        height: 0;
-        transform: translate(0, -50%);
-        border-top: 5px solid black;
-        border-left: 5px solid transparent;
-        border-right: 5px solid transparent;
-    }
-    &:hover, &:active{
+    .dropdown-grey-btn{
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 11px 17px;
+        border-radius: 15px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        letter-spacing: 0em;
+        text-align: left;
+        color: black;
+        background: $grey_base;
+        border: none;
+        min-width: 100px;
         &:after{
-            transform: translate(0, calc(-50%)) rotate(180deg);
+            transition: $header_transition;
+            position: absolute;
+            top: 50%;
+            right: 17px;
+            content: "";
+            width: 0;
+            height: 0;
+            transform: translate(0, -50%);
+            border-top: 5px solid black;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+        }
+        &:hover, &:active{
+            &:after{
+                transform: translate(0, calc(-50%)) rotate(180deg);
+            }
+        }
+    }
+}
+.dropdown-violet-border{
+    .dropdown-violet-border-btn{
+        @include btn(white, $violet_base);
+        border: 3px solid #6F73EE;
+        font-weight: 400;
+    }
+    .dropdown-violet-border-menu{
+        .dropdown-violet-border-item{
+
         }
     }
 }
