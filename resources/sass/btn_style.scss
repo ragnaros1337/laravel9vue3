@@ -20,55 +20,59 @@
         color: $violet_base;
     }
 }
-
-.dropdown-grey{
-    .dropdown-grey-btn{
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        padding: 11px 17px;
-        border-radius: 15px;
-        font-size: 14px;
+.dropdown{
+    .dropdown-btn{
         font-weight: 400;
         line-height: 20px;
-        letter-spacing: 0em;
         text-align: left;
-        color: black;
-        background: $grey_base;
-        border: none;
+        font-size: 14px;
         min-width: 100px;
-        &:after{
-            transition: $header_transition;
-            position: absolute;
-            top: 50%;
-            right: 17px;
-            content: "";
-            width: 0;
-            height: 0;
-            transform: translate(0, -50%);
-            border-top: 5px solid black;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-        }
-        &:hover, &:active{
-            &:after{
-                transform: translate(0, calc(-50%)) rotate(180deg);
-            }
-        }
+        border-radius: 15px;
+        letter-spacing: 0em;
+    }
+}
+.dropdown-grey{
+    .dropdown-grey-btn{
+        background: $grey_base;
+        color: black;
+        border: none;
+        padding: 11px 17px;
+        //&:after{
+        //    transition: $header_transition;
+        //    position: absolute;
+        //    top: 50%;
+        //    right: 17px;
+        //    content: "";
+        //    width: 0;
+        //    height: 0;
+        //    transform: translate(0, -50%);
+        //    border-top: 5px solid black;
+        //    border-left: 5px solid transparent;
+        //    border-right: 5px solid transparent;
+        //}
+        //&:active{
+        //    &:after{
+        //        transform: translate(0, calc(-50%)) rotate(180deg);
+        //    }
+        //}
     }
 }
 .dropdown-violet-border{
     .dropdown-violet-border-btn{
-        @include btn(white, $violet_base);
-        border: 3px solid #6F73EE;
-        font-weight: 400;
+        background: white;
+        color: $violet_base;
+        border: 3px solid $violet_base;
+        transition: $header_transition;
     }
     .dropdown-violet-border-menu{
         .dropdown-violet-border-item{
 
         }
     }
+}
+.dropdown-violet-border-btn.show, .dropdown-violet-border .dropdown-violet-border-btn:active{
+    background: $violet_base;
+    color: white;
 }
 
 .small-btn{
