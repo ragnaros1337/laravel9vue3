@@ -117,6 +117,8 @@
             border: none;
             transition: $header_transition;
             color: black;
+            font-size: 14px;
+            line-height: 20px;
             &:hover, &:active{
                 color: $violet_hover;
                 background: $grey_base;
@@ -162,5 +164,57 @@
 }
 
 .link-black{
+    color: grey;
+    transition: $header_transition;
+    &:hover{
+        color: black;
+    }
+}
+.link-violet{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    background: $grey_base;
+    padding: 10px 15px;
     color: black;
+    transition: $header_transition;
+    &:hover{
+        color: $violet_hover;
+    }
+}
+
+.socials{
+    display: flex;
+    flex-direction: row;
+    .social-item{
+        margin-right: 9px;
+        .social-item-viber, .social-item-telegram{
+            path{
+                fill: #5D6C7BFF;
+            }
+        }
+        .social-item-whatsup{
+            path:first-child{
+                fill: #5D6C7BFF;
+            }
+            path:last-child{
+                fill: white;
+            }
+        }
+        svg path{
+            transition: $header_transition;
+        }
+        &:hover, &:active{
+            .social-item-viber path{
+                fill: #9c3fb4;
+            }
+            .social-item-whatsup path:first-child{
+                fill: #4caf50;
+            }
+            .social-item-telegram path{
+                fill: #039be5;
+            }
+        }
+    }
 }
