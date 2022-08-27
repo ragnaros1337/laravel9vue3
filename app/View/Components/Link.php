@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class DropdownVioletBorder extends Component
+class Link extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class DropdownVioletBorder extends Component
      */
     public function render()
     {
-        return view('components.dropdown-violet-border');
+        return view('components.link');
     }
 }

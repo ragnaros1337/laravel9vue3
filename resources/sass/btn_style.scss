@@ -1,10 +1,22 @@
+.small-btn{
+    padding: 7px 17px;
+    font-size: 12px;
+    line-height: 17px;
+    max-height: 37px;
+}
+.big-btn{
+    padding: 12px 22px;
+    font-size: 16px;
+    line-height: 23px;
+    max-height: 53px;
+}
 .btn-violet-border{
     @include btn(white, $violet_base);
     border: 3px solid #6F73EE;
     font-weight: 400;
 }
 .btn-violet{
-    @include btn($violet_base, white);
+    @include btn($violet_base, white, $violet_hover);
     border: 3px solid $violet_base;
     font-weight: 400;
 }
@@ -20,15 +32,96 @@
         color: $violet_base;
     }
 }
+.btn-white{
+    @include btn(white, $violet_base);
+    border: 3px solid white;
+    font-weight: 400;
+    &:hover, &:active{
+        border: 3px solid white;
+    }
+}
+.btn-violet.btn-catalog{
+    position: relative;
+    padding: 5px 15px 5px 40px;
+    max-height: 44px;
+    &:active{
+        .btn-catalog-icon{
+            &:after{
+                width: 13px;
+                transform: translate(-1px, 0px);
+            }
+        }
+    }
+    .btn-catalog-content{
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translate(5px, -50%);
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    .btn-catalog-icon{
+        display: block;
+        width: 13px;
+        height: 3px;
+        background: white;
+        border: 1.3px solid #FFFFFF;
+        border-radius: 1px;
+        &:after{
+            content: "";
+            display: block;
+            width: 7px;
+            height: 3px;
+            background: white;
+            border: 1.3px solid #FFFFFF;
+            border-radius: 1px;
+            transition: $header_transition;
+            transform: translate(5px, 0px);
+        }
+        &:before{
+            content: "";
+            display: block;
+            width: 13px;
+            height: 3px;
+            background: white;
+            border: 1.3px solid #FFFFFF;
+            border-radius: 1px;
+            transform: translate(-1px, -5px);
+        }
+    }
+}
 .dropdown{
     .dropdown-btn{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
         font-weight: 400;
         line-height: 20px;
         text-align: left;
         font-size: 14px;
-        min-width: 100px;
+        min-width: 90px;
         border-radius: 15px;
         letter-spacing: 0em;
+    }
+    .dropdown-menu{
+        background: $grey_base;
+        border: none;
+        border-radius: 15px;
+        margin-top: 10px!important;
+        .dropdown-item{
+            border-radius: 15px;
+            border: none;
+            transition: $header_transition;
+            color: black;
+            &:hover, &:active{
+                color: $violet_hover;
+                background: $grey_base;
+            }
+        }
     }
 }
 .dropdown-grey{
@@ -36,26 +129,16 @@
         background: $grey_base;
         color: black;
         border: none;
-        padding: 11px 17px;
-        //&:after{
-        //    transition: $header_transition;
-        //    position: absolute;
-        //    top: 50%;
-        //    right: 17px;
-        //    content: "";
-        //    width: 0;
-        //    height: 0;
-        //    transform: translate(0, -50%);
-        //    border-top: 5px solid black;
-        //    border-left: 5px solid transparent;
-        //    border-right: 5px solid transparent;
-        //}
-        //&:active{
-        //    &:after{
-        //        transform: translate(0, calc(-50%)) rotate(180deg);
-        //    }
-        //}
+        &:after{
+            transition: $header_transition;
+            top: 50%;
+            right: 17px;
+            transform: translate(0, -50%);
+        }
     }
+}
+.dropdown-grey-btn.show:after, .dropdown-grey .dropdown-grey-btn:active:after{
+    transform: translate(0, calc(-50%)) rotate(180deg);
 }
 .dropdown-violet-border{
     .dropdown-violet-border-btn{
@@ -63,6 +146,9 @@
         color: $violet_base;
         border: 3px solid $violet_base;
         transition: $header_transition;
+        &:after{
+            content: none;
+        }
     }
     .dropdown-violet-border-menu{
         .dropdown-violet-border-item{
@@ -70,18 +156,11 @@
         }
     }
 }
-.dropdown-violet-border-btn.show, .dropdown-violet-border .dropdown-violet-border-btn:active{
+.dropdown-violet-border-btn.show:after, .dropdown-violet-border .dropdown-violet-border-btn:active{
     background: $violet_base;
     color: white;
 }
 
-.small-btn{
-    padding: 7px 17px;
-    font-size: 12px;
-    line-height: 17px;
-}
-.big-btn{
-    padding: 12px 22px;
-    font-size: 16px;
-    line-height: 23px;
+.link-black{
+    color: black;
 }

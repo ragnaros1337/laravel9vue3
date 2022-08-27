@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class BtnWhite extends Component
+class Btn extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class BtnWhite extends Component
      */
     public function render()
     {
-        return view('components.btn-white');
+        return view('components.btn');
     }
 }

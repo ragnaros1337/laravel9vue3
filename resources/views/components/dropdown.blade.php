@@ -1,6 +1,7 @@
 @props(['list', 'classes'])
 <div class="dropdown dropdown-{{$classes}}">
-    <button class="dropdown-{{$classes}}-btn dropdown-btn small-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <button class="dropdown-{{$classes}}-btn dropdown-btn small-btn dropdown-toggle" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
         {{ $slot }}
 {{--        <mat-icon fontSet="material-symbols-rounded">face</mat-icon>--}}
     </button>
