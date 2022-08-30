@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Number extends Component
+class LinkIcon extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class Number extends Component
      */
     public function render()
     {
-        return view('components.number');
+        return view('components.link-icon');
     }
 }

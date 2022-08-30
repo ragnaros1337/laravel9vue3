@@ -25,7 +25,7 @@
     font-weight: 400;
 }
 .btn-grey{
-    @include btn($grey_base, black, $violet_base);
+    @include btn($grey_base, $black_base, $violet_base);
     font-weight: 400;
     &:hover, &:active{
         background: white;
@@ -95,9 +95,10 @@
     }
 }
 .dropdown{
+    height: fit-content;
     .dropdown-btn{
         display: flex;
-        align-items: baseline;
+        align-items: center;
         justify-content: space-between;
         font-weight: 400;
         line-height: 20px;
@@ -105,7 +106,7 @@
         font-size: 14px;
         min-width: 90px;
         border-radius: 15px;
-        letter-spacing: 0em;
+        letter-spacing: 0;
     }
     .dropdown-menu{
         background: $grey_base;
@@ -116,7 +117,7 @@
             border-radius: 15px;
             border: none;
             transition: $header_transition;
-            color: black;
+            color: $black_base;
             font-size: 14px;
             line-height: 20px;
             &:hover, &:active{
@@ -128,8 +129,9 @@
 }
 .dropdown-grey{
     .dropdown-grey-btn{
+        align-items: baseline;
         background: $grey_base;
-        color: black;
+        color: $black_base;
         border: none;
         &:after{
             transition: $header_transition;
@@ -144,12 +146,16 @@
 }
 .dropdown-violet-border{
     .dropdown-violet-border-btn{
+        padding: 7px 10px 7px 17px;
         background: white;
         color: $violet_base;
         border: 3px solid $violet_base;
         transition: $header_transition;
         &:after{
             content: none;
+        }
+        span {
+            margin-left: 5px;
         }
     }
     .dropdown-violet-border-menu{
@@ -158,29 +164,112 @@
         }
     }
 }
-.dropdown-violet-border-btn.show:after, .dropdown-violet-border .dropdown-violet-border-btn:active{
+.dropdown-violet-border-btn.show, .dropdown-violet-border .dropdown-violet-border-btn:active{
     background: $violet_base;
     color: white;
 }
 
-.link-black{
-    color: grey;
+.link{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 17px;
+    letter-spacing: 0;
+    text-align: left;
+    height: fit-content;
+}
+.link-grey{
+    font-size: 14px;
+    color: $text_color;
     transition: $header_transition;
     &:hover{
-        color: black;
+        color: $black_base;
     }
 }
-.link-violet{
+.link-violet-square{
     display: flex;
     justify-content: center;
     align-items: center;
     height: fit-content;
     background: $grey_base;
-    padding: 10px 15px;
-    color: black;
+    padding: 10px 22px;
+    color: $black_base;
+    font-weight: 700;
     transition: $header_transition;
     &:hover{
         color: $violet_hover;
+    }
+}
+.link-number{
+    font-weight: 700;
+}
+.link-with-icon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    color: $black_base;
+    transition: $header_transition;
+    svg{
+        margin-right: 5px;
+        path{
+            transition: $header_transition;
+        }
+    }
+    &:hover, &:active{
+        color: $violet_base;
+        svg path{
+            fill: $violet_base;
+        }
+    }
+}
+.link-icon-base{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 100px;
+}
+.link-icon{
+    padding: 10px;
+    background: white;
+    transition: $header_transition;
+    &:hover, &:active{
+        background: #F4F7FB;
+    }
+}
+.link-icon-border{
+    background: white;
+    border: 5px solid #F4F7FB;
+    transition: $header_transition;
+    &:hover{
+        background: #F4F7FB;
+    }
+    svg{
+        path{
+            transition: header_transtiton;
+        }
+        &:hover{
+            path{
+                fill: $violet_base;
+            }
+        }
+    }
+}
+.link-icon-blur{
+    svg path{
+        fill: $text_color;
+        transition: $header_transition;
+    }
+    background: white;
+    transition: $header_transition;
+    &:hover, &:active{
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        transform: matrix(-1, 0, 0, 1, 0, 0);
+        svg path{
+            fill: $violet_base;
+        }
     }
 }
 
@@ -216,5 +305,23 @@
                 fill: #039be5;
             }
         }
+    }
+}
+
+.counter{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 38px;
+    width: 106px;
+    border-radius: 15px;
+    background: #F4F7FB;
+    border: none;
+    padding: 8px 18px;
+    .counter-remove, .counter-add{
+        color: $text_color;
+    }
+    .counter-value{
+        color: $black_base;
     }
 }
