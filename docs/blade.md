@@ -618,7 +618,7 @@ The `make:component` command will also create a view template for the component.
 You may also create components within subdirectories:
 
 ```shell
-php artisan make:component Forms/Input
+php artisan make:component Forms/Search
 ```
 
 The command above will create an `Input` component in the `app/View/Components/Forms` directory and the view will be placed in the `resources/views/components/forms` directory.

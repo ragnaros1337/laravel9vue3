@@ -1,4 +1,4 @@
 @props(['classes'])
-<a href="" class="link-icon-base link-{{$classes}}">
+<a href="" class="kugoo-link-icon-base link-{{$classes}}">
     {{$slot}}
 </a>

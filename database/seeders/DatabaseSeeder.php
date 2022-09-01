@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Factories\KugooTownFactory;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +18,9 @@ class DatabaseSeeder extends Seeder
     {
 		$this->call(KugooSamokatSeeder::class);
 		$this->call(KugooSamokatImageSeeder::class);
-        // \App\Models\User::factory(10)->create();
+		//TODO: как запустить Фабрику несколько раз без модели
+        //
+//         \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

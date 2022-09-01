@@ -94,9 +94,9 @@
         }
     }
 }
-.dropdown{
+.kugoo-dropdown{
     height: fit-content;
-    .dropdown-btn{
+    .kugoo-dropdown-btn{
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -108,12 +108,12 @@
         border-radius: 15px;
         letter-spacing: 0;
     }
-    .dropdown-menu{
+    .kugoo-dropdown-menu{
         background: $grey_base;
         border: none;
         border-radius: 15px;
         margin-top: 10px!important;
-        .dropdown-item{
+        .kugoo-dropdown-item{
             border-radius: 15px;
             border: none;
             transition: $header_transition;
@@ -129,6 +129,7 @@
 }
 .dropdown-grey{
     .dropdown-grey-btn{
+        padding: 5px 15px;
         align-items: baseline;
         background: $grey_base;
         color: $black_base;
@@ -169,7 +170,7 @@
     color: white;
 }
 
-.link{
+.kugoo-link{
     font-size: 16px;
     font-weight: 500;
     line-height: 17px;
@@ -230,7 +231,8 @@
     width: 40px;
     border-radius: 100px;
 }
-.link-icon{
+
+.kugoo-link-icon{
     padding: 10px;
     background: white;
     transition: $header_transition;
@@ -308,7 +310,7 @@
     }
 }
 
-.counter{
+.kugoo-counter{
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -318,10 +320,10 @@
     background: #F4F7FB;
     border: none;
     padding: 8px 18px;
-    .counter-remove, .counter-add{
+    .kugoo-counter-remove, .kugoo-counter-add{
         color: $text_color;
     }
-    .counter-value{
+    .kugoo-counter-value{
         color: $black_base;
     }
 }
