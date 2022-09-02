@@ -94,240 +94,6 @@
         }
     }
 }
-.kugoo-dropdown{
-    height: fit-content;
-    .kugoo-dropdown-btn{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-weight: 400;
-        line-height: 20px;
-        text-align: left;
-        font-size: 14px;
-        min-width: 90px;
-        border-radius: 15px;
-        letter-spacing: 0;
-    }
-    .kugoo-dropdown-menu{
-        background: $grey_base;
-        border: none;
-        border-radius: 15px;
-        margin-top: 10px!important;
-        .kugoo-dropdown-item{
-            border-radius: 15px;
-            border: none;
-            transition: $header_transition;
-            color: $black_base;
-            font-size: 14px;
-            line-height: 20px;
-            &:hover, &:active{
-                color: $violet_hover;
-                background: $grey_base;
-            }
-        }
-    }
-}
-.dropdown-grey-border{
-    .dropdown-grey-border-btn{
-        padding: 8px 15px;
-        gap: 5px;
-        color: lighten($black_base, 10);
-        border: 3px solid $grey_base;
-        transition: $header_transition;
-        background: white;
-        .dropdown-choose{
-            color: $black_base;
-        }
-        &:after{
-            content: none;
-        }
-    }
-}
-.dropdown-grey-border-btn.show, .dropdown-grey .dropdown-grey-border-btn:active{
-    background: $grey_base;
-}
-.dropdown-grey{
-    .dropdown-grey-btn{
-        padding: 8px 15px;
-        gap: 5px;
-        align-items: baseline;
-        background: $grey_base;
-        color: $black_base;
-        border: none;
-        &:after{
-            transition: $header_transition;
-            top: 50%;
-            right: 17px;
-            transform: translate(0, -50%);
-        }
-    }
-}
-.dropdown-grey-btn.show:after, .dropdown-grey .dropdown-grey-btn:active:after{
-    transform: translate(0, calc(-50%)) rotate(180deg);
-}
-.dropdown-violet-border{
-    .dropdown-violet-border-btn{
-        padding: 7px 10px 7px 17px;
-        background: white;
-        color: $violet_base;
-        border: 3px solid $violet_base;
-        transition: $header_transition;
-        &:after{
-            content: none;
-        }
-        span {
-            margin-left: 5px;
-        }
-    }
-    .dropdown-violet-border-menu{
-        .dropdown-violet-border-item{
-
-        }
-    }
-}
-.dropdown-violet-border-btn.show, .dropdown-violet-border .dropdown-violet-border-btn:active{
-    background: $violet_base;
-    color: white;
-}
-
-.kugoo-link{
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 17px;
-    letter-spacing: 0;
-    text-align: left;
-    height: fit-content;
-}
-.link-grey{
-    font-size: 14px;
-    color: $text_color;
-    transition: $header_transition;
-    &:hover, &:active{
-        color: $black_base;
-        svg path{
-            fill: $black_base;
-        }
-    }
-    svg path{
-        transition: $header_transition;
-        fill: $text_color;
-    }
-}
-.link-red, .link-icon-red{
-    font-size: 14px;
-    color: $text_color;
-    transition: $header_transition;
-    &:hover, &:active{
-        color: $red_base;
-        svg path{
-            fill: $red_base;
-        }
-    }
-    svg path{
-        transition: $header_transition;
-        fill: $text_color;
-    }
-}
-.link-violet{
-    color: $black_base;
-    transition: $header_transition;
-    svg{
-        path{
-            transition: $header_transition;
-        }
-    }
-    &:hover, &:active{
-        color: $violet_base;
-        svg path{
-            fill: $violet_base;
-        }
-    }
-}
-.link-violet-square{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: fit-content;
-    background: $grey_base;
-    padding: 10px 22px;
-    color: $black_base;
-    font-weight: 700;
-    transition: $header_transition;
-    &:hover{
-        color: $violet_hover;
-    }
-}
-.link-number{
-    font-weight: 700;
-}
-.link-with-icon{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-.link-icon-base{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    width: 40px;
-    border-radius: 100px;
-    padding: 10px;
-    gap: 10px;
-}
-.link-wide{
-    height: initial;
-    width: initial;
-    padding: 10px 20px;
-}
-.link-icon-bg{
-    background: white;
-    transition: $header_transition;
-    &:hover, &:active{
-        background: #F4F7FB;
-    }
-}
-.link-icon-border{
-    background: white;
-    border: 5px solid #EAEBED;
-    padding: 0;
-    transition: $header_transition;
-    &:hover{
-        background: #EAEBED;
-    }
-    svg{
-        path{
-            transition: $header_transition;
-        }
-        &:hover{
-            path{
-                fill: $violet_base;
-            }
-        }
-    }
-}
-.link-icon-blur{
-    width: 35px;
-    height: 35px;
-    svg path{
-        fill: $text_color;
-        transition: $header_transition;
-    }
-    background: white;
-    transform: initial;
-    transition: $header_transition;
-    //TODO:убрать бесконечную прокрутку
-    &:hover, &:active{
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
-        transform: matrix(-1, 0, 0, 1, 0, 0);
-        svg path{
-            fill: $violet_base;
-        }
-    }
-}
 
 .socials{
     display: flex;
@@ -389,5 +155,61 @@
     }
     .kugoo-counter-value{
         color: $black_base;
+    }
+}
+
+.kugoo-slider{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    min-width: 178px;
+    height: 43px;
+    gap: 10px;
+    padding: 8px;
+    background: $violet_base;
+    .kugoo-slider-value{
+        color: white;
+        //TODO:как убрать курсор выделения текста
+        cursor: inherit;
+    }
+    .kugoo-slider-remove, .kugoo-slider-add{
+        cursor: pointer;
+        svg path, svg circle{
+            transition: $header_transition;
+        }
+        &:hover, &:active{
+            svg circle{
+                fill: white;
+            }
+            svg path{
+                fill: $violet_base;
+            }
+        }
+    }
+    .kugoo-slider-remove.disabled, .kugoo-slider-add.disabled{
+        svg circle{
+            stroke-width: 2px;
+        }
+    }
+    .kugoo-slider-slide{
+        position: relative;
+        margin: 0 15px;
+        width: 35px;
+        height: 8px;
+        .kugoo-slide-back{
+            position: absolute;
+            width: 15px;
+            height: 0px;
+            border: 4px solid #FFFFFF;
+            border-radius: 5px;
+        }
+        .kugoo-slide-front{
+            position: absolute;
+            width: 35px;
+            height: 0px;
+            border: 4px solid #8E91F2;
+            border-radius: 5px;
+        }
     }
 }

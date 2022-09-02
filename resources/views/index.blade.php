@@ -83,6 +83,7 @@
         <x-link :href="''" :classes="'link-red'">Удалить все</x-link>
         @php $items = [1 => 'Базовая',2 => 'Версия MAX', 3 => 'Версия VIP'] @endphp
         <x-dropdown :list="$items" :classes="'grey-border'">Комплектация: <span class="dropdown-choose">стандартная</span><span class="material-symbols-outlined">expand_more</span></x-dropdown>
+        <x-slider></x-slider>
 
         <x-search :placeholder="'Искать самокат KUGO'"></x-search>
 {{--        TODO:later + в кружочке --}}
@@ -92,21 +93,12 @@
         <x-dropdown :list="$items" :classes="'violet-border'">Выберите свой город<span class="material-symbols-outlined">expand_more</span></x-dropdown>
 
         <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29" fill="none">
-            <rect x="21.5859" y="7.44336" width="20" height="1.05263" transform="rotate(135 21.5859 7.44336)" fill="#6F73EE"/>
-            <rect x="20.5078" y="21.9204" width="20" height="0.999999" transform="rotate(-135 20.5078 21.9204)" fill="#6F73EE"/>
+            <rect x="21.5859" y="7.44336" width="20" height="1.05263" transform="rotate(135 21.5859 7.44336)" fill="white"/>
+            <rect x="20.5078" y="21.9204" width="20" height="0.999999" transform="rotate(-135 20.5078 21.9204)" fill="white"/>
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
-            <path d="M9.46967 13.5303C9.17678 13.2374 9.17678 12.7626 9.46967 12.4697L14.2426 7.6967C14.5355 7.40381 15.0104 7.40381 15.3033 7.6967C15.5962 7.98959 15.5962 8.46447 15.3033 8.75736L11.0607 13L15.3033 17.2426C15.5962 17.5355 15.5962 18.0104 15.3033 18.3033C15.0104 18.5962 14.5355 18.5962 14.2426 18.3033L9.46967 13.5303ZM11 13.75H10V12.25H11V13.75Z" fill="white"/>
-            <circle r="12.5" transform="matrix(-1 0 0 1 13 13)" stroke="white" stroke-opacity="0.2"/>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
-            <path d="M16.5303 13.5303C16.8232 13.2374 16.8232 12.7626 16.5303 12.4697L11.7574 7.6967C11.4645 7.40381 10.9896 7.40381 10.6967 7.6967C10.4038 7.98959 10.4038 8.46447 10.6967 8.75736L14.9393 13L10.6967 17.2426C10.4038 17.5355 10.4038 18.0104 10.6967 18.3033C10.9896 18.5962 11.4645 18.5962 11.7574 18.3033L16.5303 13.5303ZM15 13.75H16V12.25H15V13.75Z" fill="white"/>
-            <circle cx="13" cy="13" r="12.5" stroke="white" stroke-opacity="0.2"/>
-        </svg>
+{{--        TODO:примерить как без href автоустановка--}}
+        <x-link></x-link>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
-            <path d="M11.4596 5.45962C11.7135 5.20578 11.7135 4.79422 11.4596 4.54038L7.32304 0.403806C7.0692 0.149965 6.65765 0.149965 6.40381 0.403806C6.14997 0.657647 6.14997 1.0692 6.40381 1.32304L10.0808 5L6.40381 8.67696C6.14997 8.9308 6.14997 9.34235 6.40381 9.59619C6.65765 9.85003 7.0692 9.85003 7.32304 9.59619L11.4596 5.45962ZM0 5.65H11V4.35H0V5.65Z" fill="#6F73EE"/>
-        </svg>
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="10" viewBox="0 0 12 10" fill="none">
             <path d="M11.4596 5.45962C11.7135 5.20578 11.7135 4.79422 11.4596 4.54038L7.32304 0.403806C7.0692 0.149965 6.65765 0.149965 6.40381 0.403806C6.14997 0.657647 6.14997 1.0692 6.40381 1.32304L10.0808 5L6.40381 8.67696C6.14997 8.9308 6.14997 9.34235 6.40381 9.59619C6.65765 9.85003 7.0692 9.85003 7.32304 9.59619L11.4596 5.45962ZM0 5.65H11V4.35H0V5.65Z" fill="#6F73EE"/>
         </svg>

@@ -1,0 +1,95 @@
+.kugoo-dropdown{
+    height: fit-content;
+    .kugoo-dropdown-btn{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: left;
+        font-size: 14px;
+        min-width: 90px;
+        border-radius: 15px;
+        letter-spacing: 0;
+    }
+    .kugoo-dropdown-menu{
+        background: $grey_base;
+        border: none;
+        border-radius: 15px;
+        margin-top: 10px!important;
+        .kugoo-dropdown-item{
+            border-radius: 15px;
+            border: none;
+            transition: $header_transition;
+            color: $black_base;
+            font-size: 14px;
+            line-height: 20px;
+            &:hover, &:active{
+                color: $violet_hover;
+                background: $grey_base;
+            }
+        }
+    }
+}
+.dropdown-grey-border{
+    .dropdown-grey-border-btn{
+        padding: 8px 15px;
+        gap: 5px;
+        color: lighten($black_base, 50);
+        border: 3px solid $grey_base;
+        transition: $header_transition;
+        background: white;
+        .dropdown-choose{
+            color: $black_base;
+        }
+        &:after{
+            content: none;
+        }
+    }
+}
+.dropdown-grey-border-btn.show, .dropdown-grey .dropdown-grey-border-btn:active{
+    background: $grey_base;
+}
+.dropdown-grey{
+    .dropdown-grey-btn{
+        padding: 8px 15px;
+        gap: 5px;
+        align-items: baseline;
+        background: $grey_base;
+        color: $black_base;
+        border: none;
+        &:after{
+            transition: $header_transition;
+            top: 50%;
+            right: 17px;
+            transform: translate(0, -50%);
+        }
+    }
+}
+.dropdown-grey-btn.show:after, .dropdown-grey .dropdown-grey-btn:active:after{
+    transform: translate(0, calc(-50%)) rotate(180deg);
+}
+.dropdown-violet-border{
+    .dropdown-violet-border-btn{
+        padding: 7px 10px 7px 17px;
+        background: white;
+        color: $violet_base;
+        border: 3px solid $violet_base;
+        transition: $header_transition;
+        &:after{
+            content: none;
+        }
+        span {
+            margin-left: 5px;
+        }
+    }
+    .dropdown-violet-border-menu{
+        .dropdown-violet-border-item{
+
+        }
+    }
+}
+.dropdown-violet-border-btn.show, .dropdown-violet-border .dropdown-violet-border-btn:active{
+    background: $violet_base;
+    color: white;
+}

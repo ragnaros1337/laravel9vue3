@@ -1,0 +1,138 @@
+.kugoo-link{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 17px;
+    letter-spacing: 0;
+    text-align: left;
+    height: fit-content;
+}
+.link-grey{
+    font-size: 14px;
+    color: $text_color;
+    transition: $header_transition;
+    &:hover, &:active{
+        color: $black_base;
+        svg path{
+            fill: $black_base;
+        }
+    }
+    svg path{
+        transition: $header_transition;
+        fill: $text_color;
+    }
+}
+.link-red, .link-icon-red{
+    font-size: 14px;
+    color: $text_color;
+    transition: $header_transition;
+    &:hover, &:active{
+        color: $red_base;
+        svg path{
+            fill: $red_base;
+        }
+    }
+    svg path{
+        transition: $header_transition;
+        fill: $text_color;
+    }
+}
+.link-violet{
+    color: $black_base;
+    transition: $header_transition;
+    svg{
+        path{
+            transition: $header_transition;
+        }
+    }
+    &:hover, &:active{
+        color: $violet_base;
+        svg path{
+            fill: $violet_base;
+        }
+    }
+}
+.link-violet-square{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    background: $grey_base;
+    padding: 10px 22px;
+    color: $black_base;
+    font-weight: 700;
+    transition: $header_transition;
+    &:hover{
+        color: $violet_hover;
+    }
+}
+.link-number{
+    font-weight: 700;
+}
+.link-with-icon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.link-icon-base{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 100px;
+    padding: 10px;
+    gap: 10px;
+}
+.link-wide{
+    height: initial;
+    width: initial;
+    padding: 10px 20px;
+}
+.link-icon-bg{
+    background: white;
+    transition: $header_transition;
+    &:hover, &:active{
+        background: #F4F7FB;
+    }
+}
+.link-icon-border{
+    background: white;
+    border: 5px solid #EAEBED;
+    padding: 0;
+    transition: $header_transition;
+    &:hover{
+        background: #EAEBED;
+    }
+    svg{
+        path{
+            transition: $header_transition;
+        }
+        &:hover{
+            path{
+                fill: $violet_base;
+            }
+        }
+    }
+}
+.link-icon-blur{
+    width: 35px;
+    height: 35px;
+    svg path{
+        fill: $text_color;
+        transition: $header_transition;
+    }
+    background: white;
+    transform: initial;
+    transition: $header_transition;
+    //TODO:убрать бесконечную прокрутку
+    &:hover, &:active{
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        transform: matrix(-1, 0, 0, 1, 0, 0);
+        svg path{
+            fill: $violet_base;
+        }
+    }
+}
