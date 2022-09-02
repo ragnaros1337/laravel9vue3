@@ -127,9 +127,29 @@
         }
     }
 }
+.dropdown-grey-border{
+    .dropdown-grey-border-btn{
+        padding: 8px 15px;
+        gap: 5px;
+        color: lighten($black_base, 10);
+        border: 3px solid $grey_base;
+        transition: $header_transition;
+        background: white;
+        .dropdown-choose{
+            color: $black_base;
+        }
+        &:after{
+            content: none;
+        }
+    }
+}
+.dropdown-grey-border-btn.show, .dropdown-grey .dropdown-grey-border-btn:active{
+    background: $grey_base;
+}
 .dropdown-grey{
     .dropdown-grey-btn{
-        padding: 5px 15px;
+        padding: 8px 15px;
+        gap: 5px;
         align-items: baseline;
         background: $grey_base;
         color: $black_base;
@@ -182,8 +202,45 @@
     font-size: 14px;
     color: $text_color;
     transition: $header_transition;
-    &:hover{
+    &:hover, &:active{
         color: $black_base;
+        svg path{
+            fill: $black_base;
+        }
+    }
+    svg path{
+        transition: $header_transition;
+        fill: $text_color;
+    }
+}
+.link-red, .link-icon-red{
+    font-size: 14px;
+    color: $text_color;
+    transition: $header_transition;
+    &:hover, &:active{
+        color: $red_base;
+        svg path{
+            fill: $red_base;
+        }
+    }
+    svg path{
+        transition: $header_transition;
+        fill: $text_color;
+    }
+}
+.link-violet{
+    color: $black_base;
+    transition: $header_transition;
+    svg{
+        path{
+            transition: $header_transition;
+        }
+    }
+    &:hover, &:active{
+        color: $violet_base;
+        svg path{
+            fill: $violet_base;
+        }
     }
 }
 .link-violet-square{
@@ -208,20 +265,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    color: $black_base;
-    transition: $header_transition;
-    svg{
-        margin-right: 10px;
-        path{
-            transition: $header_transition;
-        }
-    }
-    &:hover, &:active{
-        color: $violet_base;
-        svg path{
-            fill: $violet_base;
-        }
-    }
+    gap: 10px;
 }
 .link-icon-base{
     display: flex;
@@ -230,10 +274,15 @@
     height: 40px;
     width: 40px;
     border-radius: 100px;
-}
-
-.kugoo-link-icon{
     padding: 10px;
+    gap: 10px;
+}
+.link-wide{
+    height: initial;
+    width: initial;
+    padding: 10px 20px;
+}
+.link-icon-bg{
     background: white;
     transition: $header_transition;
     &:hover, &:active{
@@ -242,14 +291,15 @@
 }
 .link-icon-border{
     background: white;
-    border: 5px solid #F4F7FB;
+    border: 5px solid #EAEBED;
+    padding: 0;
     transition: $header_transition;
     &:hover{
-        background: #F4F7FB;
+        background: #EAEBED;
     }
     svg{
         path{
-            transition: header_transtiton;
+            transition: $header_transition;
         }
         &:hover{
             path{
@@ -259,12 +309,16 @@
     }
 }
 .link-icon-blur{
+    width: 35px;
+    height: 35px;
     svg path{
         fill: $text_color;
         transition: $header_transition;
     }
     background: white;
+    transform: initial;
     transition: $header_transition;
+    //TODO:убрать бесконечную прокрутку
     &:hover, &:active{
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(5px);
@@ -320,8 +374,18 @@
     background: #F4F7FB;
     border: none;
     padding: 8px 18px;
+    gap: 22px;
     .kugoo-counter-remove, .kugoo-counter-add{
-        color: $text_color;
+        cursor: pointer;
+        svg rect{
+            transition: $header_transition;
+            fill: $text_color;
+        }
+        &:hover, &:active{
+            svg rect{
+                fill: $violet_base;
+            }
+        }
     }
     .kugoo-counter-value{
         color: $black_base;
