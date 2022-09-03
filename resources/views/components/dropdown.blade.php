@@ -1,12 +1,12 @@
-@props(['list', 'classes'])
-<div class="dropdown kugoo-dropdown dropdown-{{$classes}}">
-    <button class="dropdown-{{$classes}}-btn kugoo-dropdown-btn small-btn dropdown-toggle" type="button"
+@props(['list', 'type'])
+<div class="dropdown kugoo-dropdown dropdown-{{$type}}">
+    <button class="dropdown-{{$type}}-btn kugoo-dropdown-btn small-btn dropdown-toggle" type="button"
             data-bs-toggle="dropdown" aria-expanded="false">
         {{ $slot }}
     </button>
-    <ul class="dropdown-menu kugoo-dropdown-menu dropdown-{{$classes}}-menu">
+    <ul class="dropdown-menu kugoo-dropdown-menu dropdown-{{$type}}-menu">
         @foreach($list as $key => $value)
-            <li><a class="dropdown-item kugoo-dropdown-item dropdown-{{$classes}}-item" href="">{{$value}}</a></li>
+            <li><a class="dropdown-item kugoo-dropdown-item dropdown-{{$type}}-item" href="">{{$value}}</a></li>
         @endforeach
     </ul>
 </div>

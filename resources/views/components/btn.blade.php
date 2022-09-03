@@ -1,4 +1,3 @@
-@props(['classes'])
-<button class="{{$classes}}" type="button">
+<button class="{{$attributes['class']}}" type="button">
     {{ $slot }}
 </button>

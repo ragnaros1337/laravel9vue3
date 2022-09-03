@@ -1,2 +1,1 @@
-@props(['placeholder'])
-<input type="text" class="kugoo-input-number" placeholder="+7 (___) __ - __ - __">
+<input type="text" class="kugoo-input-number" placeholder="{{$attributes['placeholder']}}">

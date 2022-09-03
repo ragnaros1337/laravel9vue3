@@ -5,11 +5,14 @@
     letter-spacing: 0;
     text-align: left;
     height: fit-content;
+    transition: $header_transition;
+    svg, svg path{
+        transition: $header_transition;
+    }
 }
 .link-grey{
     font-size: 14px;
     color: $text_color;
-    transition: $header_transition;
     &:hover, &:active{
         color: $black_base;
         svg path{
@@ -17,14 +20,12 @@
         }
     }
     svg path{
-        transition: $header_transition;
         fill: $text_color;
     }
 }
 .link-red, .link-icon-red{
     font-size: 14px;
     color: $text_color;
-    transition: $header_transition;
     &:hover, &:active{
         color: $red_base;
         svg path{
@@ -32,18 +33,11 @@
         }
     }
     svg path{
-        transition: $header_transition;
         fill: $text_color;
     }
 }
 .link-violet{
     color: $black_base;
-    transition: $header_transition;
-    svg{
-        path{
-            transition: $header_transition;
-        }
-    }
     &:hover, &:active{
         color: $violet_base;
         svg path{
@@ -60,13 +54,20 @@
     padding: 10px 22px;
     color: $black_base;
     font-weight: 700;
-    transition: $header_transition;
     &:hover{
         color: $violet_hover;
     }
 }
 .link-number{
-    font-weight: 700;
+}
+.link-underline{
+    font-size: 14px;
+    color: $violet_base;
+    &:hover, &:active{
+        color: $violet_base;
+        text-decoration: underline $violet_base;
+        text-decoration-skip-ink: none;
+    }
 }
 .link-with-icon{
     display: flex;
@@ -75,6 +76,28 @@
     justify-content: center;
     gap: 10px;
 }
+.link-animation-wide{
+    color: $violet_base;
+    position: relative;
+    margin-right: 20px;
+    svg{
+        position: absolute;
+        right: 0px;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+    &:hover, &:active{
+        color: $violet_base;
+        svg{
+            right: -10px;
+        }
+    }
+}
+.link-bold{
+    font-weight: 700;
+}
+
+
 .link-icon-base{
     display: flex;
     justify-content: center;
@@ -84,6 +107,7 @@
     border-radius: 100px;
     padding: 10px;
     gap: 10px;
+    transition: $header_transition;
 }
 .link-wide{
     height: initial;
@@ -92,7 +116,6 @@
 }
 .link-icon-bg{
     background: white;
-    transition: $header_transition;
     &:hover, &:active{
         background: #F4F7FB;
     }
@@ -101,7 +124,6 @@
     background: white;
     border: 5px solid #EAEBED;
     padding: 0;
-    transition: $header_transition;
     &:hover{
         background: #EAEBED;
     }
@@ -136,3 +158,4 @@
         }
     }
 }
+

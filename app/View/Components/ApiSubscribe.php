@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Link extends Component
+class ApiSubscribe extends Component
 {
     /**
      * Create a new component instance.
@@ -23,7 +23,6 @@ class Link extends Component
      */
     public function render()
     {
-        return view('components.link');
+        return view('components.api-subscribe');
     }
-
 }
