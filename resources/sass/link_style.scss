@@ -108,6 +108,9 @@
     padding: 10px;
     gap: 10px;
     transition: $header_transition;
+    svg path, svg rect{
+        transition: $header_transition;
+    }
 }
 .link-wide{
     height: initial;
@@ -128,9 +131,6 @@
         background: #EAEBED;
     }
     svg{
-        path{
-            transition: $header_transition;
-        }
         &:hover{
             path{
                 fill: $violet_base;
@@ -138,12 +138,44 @@
         }
     }
 }
+.link-shadow{
+    width: 68px;
+    height: 68px;
+    background: $violet_base;
+    border: 1px solid $violet_base;
+    box-shadow: 0px 15px 15px rgba(111, 115, 238, 0.2);
+    svg{
+        width: 40px;
+        height: 40px
+    }
+    &:hover, &:active{
+        background: white;
+        border: 1px solid white;
+        svg{
+            path{
+                fill: $violet_base;
+            }
+        }
+    }
+}
+.link-play{
+    width: 68px;
+    height: 68px;
+    padding-left: 5px;
+    background: white;
+    border: 5px solid $violet_base;
+    &:active, &:hover{
+        background: $violet_base;
+        svg path{
+            fill: white;
+        }
+    }
+}
 .link-icon-blur{
     width: 35px;
     height: 35px;
-    svg path{
+    svg path, svg rect{
         fill: $text_color;
-        transition: $header_transition;
     }
     background: white;
     transform: initial;

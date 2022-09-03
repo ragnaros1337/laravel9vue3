@@ -228,6 +228,18 @@
         background: linear-gradient(57.44deg, #FFCC34 -3.72%, #FF6458 47.77%, #AF3AC2 96.83%), #4B729F;
     }
 }
+.api-subscribe-youtube{
+    background: #E53935;
+    &:hover, &:active {
+        background: #FC4C48;
+    }
+}
+.api-subscribe-telegram{
+    background: #039Be5;
+    &:hover, &:active {
+        background: #28b3f7;
+    }
+}
 .kugoo-api-subscribe{
     cursor: pointer;
     min-width: 288px;
