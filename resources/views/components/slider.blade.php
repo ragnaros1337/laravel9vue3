@@ -6,7 +6,7 @@
         </svg>
     </span>
     <span class="kugoo-slider-value value-min">1</span>
-    <div class="kugoo-slider-slide">
+    <div class="kugoo-slider-slide" data-value="3">
         <div class="kugoo-slide-front"></div>
         <div class="kugoo-slide-back"></div>
     </div>
