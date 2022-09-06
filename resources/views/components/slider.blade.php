@@ -7,8 +7,8 @@
     </span>
     <span class="kugoo-slider-value value-min">1</span>
     <div class="kugoo-slider-slide" data-value="3">
-        <div class="kugoo-slide-front"></div>
         <div class="kugoo-slide-back"></div>
+        <div class="kugoo-slide-front"></div>
     </div>
     <span class="kugoo-slider-value value-max">5</span>
     <span class="kugoo-slider-add">

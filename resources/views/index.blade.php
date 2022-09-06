@@ -89,10 +89,7 @@
         @php $items = [1 => 'Базовая',2 => 'Версия MAX', 3 => 'Версия VIP'] @endphp
         <x-dropdown :list="$items" :type="'grey-border'">Комплектация: <span class="dropdown-choose">стандартная</span><span class="material-symbols-outlined">expand_more</span></x-dropdown>
         <x-slider></x-slider>
-
-        <x-search placeholder="Искать самокат KUGO"></x-search>
 {{--        TODO:later + в кружочке --}}
-        <x-input-number placeholder="+7 (___) __ - __ - __"></x-input-number>
 {{--        TODO:сделать добавление из базы + город региона--}}
         @php $items = [1 => 'Москва',2 => 'Питер', 3 => 'Город региона'] @endphp
         <x-dropdown :list="$items" :type="'violet-border'">Выберите свой город<span class="material-symbols-outlined">expand_more</span></x-dropdown>
@@ -123,7 +120,9 @@
                 <path d="M16.5303 13.5303C16.8232 13.2374 16.8232 12.7626 16.5303 12.4697L11.7574 7.6967C11.4645 7.40381 10.9896 7.40381 10.6967 7.6967C10.4038 7.98959 10.4038 8.46447 10.6967 8.75736L14.9393 13L10.6967 17.2426C10.4038 17.5355 10.4038 18.0104 10.6967 18.3033C10.9896 18.5962 11.4645 18.5962 11.7574 18.3033L16.5303 13.5303ZM15 13.75H16V12.25H15V13.75Z" fill="white"/>
             </svg>
         </x-link-icon>
-        <input data-inputmask="'mask': '+7 (999) 999 - 99 - 99'" />
+
+        <x-search placeholder="Искать самокат KUGO"></x-search>
+        <x-input-number placeholder="+7 (___) __ - __ - __"></x-input-number>
 
 
     </div>
