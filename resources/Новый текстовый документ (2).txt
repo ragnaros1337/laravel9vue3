@@ -1,0 +1,339 @@
+pricrep 
+
+
+
+width: 111px;
+height: 22px;
+
+/* Regular / 14px | 22px */
+
+font-family: 'SF Pro Display';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 22px;
+/* identical to box height, or 157% */
+
+display: flex;
+align-items: center;
+text-align: center;
+
+/* Gray 600 */
+
+color: #5D6C7B;
+
+
+/* Inside auto layout */
+
+flex: none;
+order: 1;
+flex-grow: 0;
+
+padd 10
+
+input mail
+
+
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 15px 25px;
+gap: 10px;
+
+position: absolute;
+left: 47.2%;
+right: 46.23%;
+top: 9.84%;
+bottom: 79.3%;
+
+background: rgba(255, 255, 255, 0.2);
+border-radius: 5px;
+
+
+padd 15/left25
+
+
+text
+
+* Введите Ваш email */
+
+
+width: 131px;
+height: 23px;
+
+/* 16 px (regular) */
+
+font-family: 'Jost';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 23px;
+text-align: center;
+
+/* White */
+
+color: #FFFFFF;
+
+
+/* Inside auto layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+vawe imya
+
+
+width: 52px;
+height: 17px;
+
+/* 12 px (regular) */
+
+font-family: 'Jost';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 17px;
+
+/* Black */
+
+color: #282739;
+
+
+/* Inside auto layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+
+pad7
+
+box-sizing: border-box;
+
+/* Auto layout */
+
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 15px 25px;
+gap: 10px;
+
+width: 270px;
+height: 53px;
+
+/* White */
+
+background: #FFFFFF;
+/* gray 200 */
+
+border: 1px solid #EAEBED;
+border-radius: 5px;
+
+/* Inside auto layout */
+
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+hover
+
+
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+padding: 15px 25px;
+gap: 10px;
+
+width: 270px;
+height: 53px;
+
+/* White */
+
+background: #FFFFFF;
+/* Purple */
+
+border: 1px solid #6F73EE;
+border-radius: 5px;
+
+/* Inside auto layout */
+
+flex: none;
+order: 1;
+align-self: stretch;
+flex-grow: 0;
+
+
+text placeholder
+
+
+width: 87px;
+height: 23px;
+
+font-family: 'Jost';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 23px;
+text-align: center;
+
+/* Gray 600 */
+
+color: #5D6C7B;
+
+
+/* Inside auto layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+
+
+padd 15/25
+
+
+text
+
+width: 68px;
+height: 23px;
+
+font-family: 'Jost';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 23px;
+text-align: center;
+
+/* Black */
+
+color: #282739;
+
+
+/* Inside auto layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+
+cartoi
+
+Width
+
+position: absolute;
+width: 240px;
+height: 158px;
+left: 2603px;
+top: 54px;
+
+/* Bachground */
+
+background: #F4F7FB;
+border-radius: 5px;
+
+radio padd 20/20
+
+
+
+box-sizing: border-box;
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+/* Gray / gray-1 */
+
+background: #FFFFFF;
+/* gray 200 */
+
+border: 1px solid #EAEBED;
+
+
+position: absolute;
+width: 8px;
+height: 8px;
+left: calc(50% - 8px/2);
+top: calc(50% - 8px/2);
+
+/* Purple */
+
+background: #6F73EE;
+
+
+
+text
+
+position: absolute;
+width: 51px;
+height: 23px;
+left: 2644px;
+top: 70px;
+
+/* 16 px (medium) */
+
+font-family: 'Jost';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 23px;
+
+/* Black */
+
+color: #282739;
+
+
+
+l ft 10
+
+bottom 10
+
+
+bank
+
+box-sizing: border-box;
+
+position: absolute;
+left: 0%;
+right: 0%;
+top: 0%;
+bottom: 0%;
+
+/* White */
+
+background: #FFFFFF;
+/* gray 200 */
+
+border: 0.486818px solid #EAEBED;
+border-radius: 2.92091px;
+
+
+
+po 5
+
+
+hover
+
+
+
+
+box-sizing: border-box;
+
+position: absolute;
+width: 240px;
+height: 158px;
+left: 2603px;
+top: 231px;
+
+/* White */
+
+background: #FFFFFF;
+/* Purple */
+
+border: 1px solid #6F73EE;
+border-radius: 5px;
+
+
+
