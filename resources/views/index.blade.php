@@ -90,9 +90,6 @@
         <x-dropdown :list="$items" :type="'grey-border'">Комплектация: <span class="dropdown-choose">стандартная</span><span class="material-symbols-outlined">expand_more</span></x-dropdown>
         <x-slider></x-slider>
 {{--        TODO:later + в кружочке --}}
-{{--        TODO:сделать добавление из базы + город региона--}}
-        @php $items = [1 => 'Москва',2 => 'Питер', 3 => 'Город региона'] @endphp
-        <x-dropdown :list="$items" :type="'violet-border'">Выберите свой город<span class="material-symbols-outlined">expand_more</span></x-dropdown>
         <x-link class="link-underline link-bold">Задать вопрос</x-link>
         <x-link class="link-with-icon link-animation-wide link-bold" style="width: 180px;">
             Подобрать модель
@@ -124,6 +121,23 @@
         <x-search placeholder="Искать самокат KUGO"></x-search>
         <x-input-number placeholder="+7 (___) __ - __ - __"></x-input-number>
 
+        {{--  TODO: Как извлечь только город без ключа [{"town":"Kuhicland"}]      --}}
+        {{--        $items =  DB::table('kugoo_towns')->get('town')->values();--}}
+        @php
+            use Illuminate\Support\Facades\DB;
+
+        @endphp
+        {{--        <x-dropdown :list="$items" :type="'violet-border'">Выберите свой город<span class="material-symbols-outlined">expand_more</span></x-dropdown>--}}
+{{--        TODO:текст в текстареа--}}
+        <x-text-area placeholder="Опишите проблемы"></x-text-area>
+
+        <div class="test-cont">
+            <input id="toggle-mobile-menu" type="checkbox">
+            <label class="kugoo-navbar-toggler" for="toggle-mobile-menu">
+                <span class="kugoo-navbar-toggler-icon"></span>
+            </label>
+            <x-mobile_menu></x-mobile_menu>
+        </div>
 
     </div>
 @endsection

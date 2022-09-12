@@ -42,12 +42,37 @@
     }
 }
 
-.kugoo-input-number{
-    transition: $header_transition;
+.input-violet-border{
     border: 5px solid #EAEBED;
     border-radius: 15px;
-    padding: 10px 20px;
+    text-align: left;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 23px;
+    letter-spacing: 0.1em;
+    color: $black_base;
+    &::placeholder{
+        color: $text_color;
+    }
+    transition: $header_transition;
     &:focus{
         border: 5px solid $violet_base;
     }
+}
+.kugoo-input{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 25px;
+    background: white;
+}
+
+.input-number{
+    min-width: 250px;
+}
+
+.text-area{
+    @include my-scrollbar;
 }

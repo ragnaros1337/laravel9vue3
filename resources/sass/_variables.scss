@@ -28,6 +28,21 @@ $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
         color: white;
     }
 }
+$scrollbar-color: #cfcfcfc7;
+@mixin my-scrollbar{
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        border-radius: 0 4px 4px 0;
+        background-color: darken($scrollbar-color, 50);
+    }
+    &::-webkit-scrollbar-track{
+        background-color: $scrollbar-color;
+        border-radius: 0 4px 4px 0;
+    }
+}
+
 @mixin btn($color, $text-color, $color-click: $text-color){
     border-radius: 15px;
     border: 3px solid $color;

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
 		$this->call(KugooSamokatSeeder::class);
 		$this->call(KugooSamokatImageSeeder::class);
-		//TODO: как запустить Фабрику несколько раз без модели
+		$this->call(KugooTownSeeder::class);
         //
 //         \App\Models\User::factory(10)->create();
 

@@ -16,12 +16,14 @@ class KugooSamokatSeeder extends Seeder
      */
     public function run()
     {
-		KugooSamokat::factory(10)->create();
-		$samokats = KugooSamokat::select('price')->get();
-		for($i=1; $i<=count($samokats); $i++){
-			if($rand_size = random_int(0, 1) === 1){
-				KugooSamokat::where('id', $i)->update(['discount_price' => $samokats[$i-1]->price * 0.1]);
-			}
-		}
+        if(!DB::table('kugoo_samokats')->exists()){
+            KugooSamokat::factory(10)->create();
+            $samokats = KugooSamokat::select('price')->get();
+            for($i=1; $i<=count($samokats); $i++){
+                if($rand_size = random_int(0, 1) === 1){
+                    KugooSamokat::where('id', $i)->update(['discount_price' => $samokats[$i-1]->price * 0.1]);
+                }
+            }
+        }
     }
 }
