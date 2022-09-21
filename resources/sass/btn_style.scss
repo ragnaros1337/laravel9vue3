@@ -98,8 +98,8 @@
 .socials{
     display: flex;
     flex-direction: row;
+    gap: 10px;
     .social-item{
-        margin-right: 9px;
         .social-item-viber, .social-item-telegram{
             path{
                 fill: #5D6C7BFF;
@@ -125,6 +125,119 @@
             }
             .social-item-telegram path{
                 fill: #039be5;
+            }
+        }
+    }
+}
+.socials-violet-bg{
+    .social-item{
+        //TODO:цвет
+        border: 3px solid #8c8ff2;
+        border-radius: 15px;
+        padding: 10px 30px;
+        background: transparent;
+        transition: $header_transition;
+        .social-item-viber{
+            path{
+                fill: white;
+            }
+        }
+        .social-item-telegram{
+            path{
+                fill: white;
+            }
+        }
+        .social-item-whatsup{
+            path:first-child{
+                fill: white;
+            }
+            path:last-child{
+                fill: $violet_base;
+            }
+        }
+        &:hover, &:active{
+            background: #8c8ff2;
+            .social-item-viber{
+                path{
+                    fill: white;
+                }
+            }
+            .social-item-telegram{
+                path{
+                    fill: white;
+                }
+            }
+            .social-item-whatsup{
+                path:first-child{
+                    fill: white;
+                }
+                path:last-child{
+                    fill: #8c8ff2;
+                }
+            }
+        }
+    }
+}
+.socials-white-bg{
+    .social-item{
+        //TODO:цвет
+        border: 3px solid #e5e6e8;
+        border-radius: 15px;
+        padding: 10px 20px;
+        background: transparent;
+        transition: $header_transition;
+        .social-item-viber{
+            path{
+                fill: $violet_base;
+            }
+        }
+        .social-item-whatsup{
+            path:first-child{
+                fill: #75d14a;
+            }
+            path:last-child{
+                fill: white;
+            }
+        }
+        .social-item-telegram{
+            path{
+                fill: #008de0;
+            }
+        }
+    }
+    .social-viber{
+        &:hover, &:active{
+            border: 3px solid $violet_base;
+            background: $violet_base;
+            .social-item-viber{
+                path{
+                    fill: white;
+                }
+            }
+        }
+    }
+    .social-whatsup{
+        &:hover, &:active{
+            border: 3px solid #75d14a;
+            background: #75d14a;
+            .social-item-whatsup{
+                path:first-child{
+                    fill: white;
+                }
+                path:last-child{
+                    fill: #75d14a;
+                }
+            }
+        }
+    }
+    .social-telegram{
+        &:hover, &:active{
+            border: 3px solid #008de0;
+            background: #008de0;
+            .social-item-telegram{
+                path{
+                    fill: white;
+                }
             }
         }
     }
@@ -259,7 +372,7 @@
             fill: white;
         }
     }
-    .kugoo-api-subscribe-resourse{
+    .kugoo-api-subscribe-resource{
         display: flex;
         gap: 10px;
         align-items: center;
@@ -273,5 +386,34 @@
     .kugoo-api-subscribe-value{
         opacity: 0.7;
         text-align: right;
+    }
+}
+
+.kugoo-brand-card{
+    cursor: pointer;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    padding: 5px 10px;
+    min-width: 135px;
+    gap: 10px;
+    background: white;
+    .kugoo-brand-card-info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        .kugoo-brand-card-info-top{
+            color: $black_base;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .kugoo-brand-card-info-bottom{
+            color: $text_color;
+            font-size: 12px;
+        }
     }
 }

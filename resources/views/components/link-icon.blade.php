@@ -1,9 +1,4 @@
-@if ($attributes->has('href'))
-    <a href="{{$attributes['href']}}" class="link-icon-base . {{$attributes['class']}}">
-        {{$slot}}
-    </a>
-@else
-    <a href=" " class="link-icon-base . {{$attributes['class']}}">
-        {{$slot}}
-    </a>
-@endif
+<a @if ($attributes->has('href'))href="{{$attributes['href']}}" @endif class="link-icon-base {{$attributes['class']}}">
+    {{$slot}}
+</a>
+

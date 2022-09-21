@@ -1,10 +1,8 @@
-@if ($attributes->has('href'))
-    <a href="{{$attributes['href']}}" class="kugoo-link . {{$attributes['class']}}" style="{{$attributes['style']}}">
+<a @if($attributes->has('href'))href="{{$attributes['href']}}" @endif class="kugoo-link {{$attributes['class']}}" style="{{$attributes['style']}}">
         {{$slot}}
-    </a>
-@else
-    <a href=" " class="kugoo-link . {{$attributes['class']}}" style="{{$attributes['style']}}">
-        {{$slot}}
-    </a>
-@endif
+        @if($attributes->has('mark'))
+            <span class="kugoo-link-mark">{{$attributes['mark-value']}}</span>
+        @endif
+</a>
+
 

@@ -7,7 +7,6 @@
         <x-btn class="btn-grey small-btn">Для города</x-btn>
         <x-btn class="btn-orange big-btn">Оформить предзаказ</x-btn>
         @php $items = [1 => 'Сначала дорогие',2 => 'Сначала дешевые'] @endphp
-{{--        TODO:найти свг стрелки--}}
         <x-dropdown :list="$items" :type="'violet-border'">По цене <span class="material-symbols-outlined">expand_more</span></x-dropdown>
         <x-btn class="btn-white big-btn">Перейти в каталог</x-btn>
         @php $items = [1 => 'Самокаты',2 => 'Аксессуары'] @endphp
@@ -16,7 +15,7 @@
         <x-link class="link-grey">Сервис</x-link>
         <x-link class="link-violet-square">О магазине</x-link>
         <x-socials :height="16"></x-socials>
-        <x-link class="link-number link-bold">
+        <x-link class="link-number link-with-icon link-bold">
             +7 (800) 505-54-61
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <circle cx="9" cy="9" r="8.5" stroke="#5D6C7B"/>
@@ -57,7 +56,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18" fill="none">
                 <path d="M19.1523 6.25427H15.0031L12.6756 0.924855C12.5462 0.628332 12.2008 0.492824 11.9042 0.622395C11.6076 0.751887 11.4722 1.09732 11.6017 1.39388L13.7244 6.25431H6.27564L8.3983 1.39388C8.52779 1.09732 8.3924 0.751926 8.09584 0.622395C7.79932 0.492824 7.45385 0.628254 7.32439 0.924855L4.99689 6.25427H0.847715C0.304942 6.25427 -0.0978707 6.74564 0.0208793 7.26286L2.20584 16.7797C2.2926 17.1576 2.63611 17.4261 3.03268 17.4261H16.9674C17.3639 17.4261 17.7074 17.1576 17.7942 16.7797L19.9792 7.26286C20.0979 6.74568 19.6951 6.25427 19.1523 6.25427ZM5.10713 8.0513C5.02885 8.0513 4.94928 8.03552 4.87291 8.00216C4.57635 7.87267 4.44092 7.52728 4.57045 7.23068L5.01061 6.22278H6.28936L5.64436 7.69966C5.54822 7.91993 5.33299 8.0513 5.10713 8.0513ZM7.07033 14.3011C7.07033 14.6247 6.80799 14.8871 6.48439 14.8871C6.1608 14.8871 5.89846 14.6247 5.89846 14.3011V10.0043C5.89846 9.68068 6.1608 9.41833 6.48439 9.41833C6.80799 9.41833 7.07033 9.68068 7.07033 10.0043V14.3011ZM10.586 14.3011C10.586 14.6247 10.3236 14.8871 10 14.8871C9.67643 14.8871 9.41408 14.6247 9.41408 14.3011V10.0043C9.41408 9.68068 9.67643 9.41833 10 9.41833C10.3236 9.41833 10.586 9.68068 10.586 10.0043V14.3011ZM14.1016 14.3011C14.1016 14.6247 13.8392 14.8871 13.5156 14.8871C13.1921 14.8871 12.9297 14.6247 12.9297 14.3011V10.0043C12.9297 9.68068 13.1921 9.41833 13.5156 9.41833C13.8392 9.41833 14.1016 9.68068 14.1016 10.0043V14.3011ZM15.1271 8.00216C15.0508 8.03552 14.9712 8.0513 14.8929 8.0513C14.6671 8.0513 14.4518 7.91997 14.3556 7.6997L13.7106 6.22282H14.9894L15.4296 7.23071C15.5591 7.52728 15.4237 7.87267 15.1271 8.00216Z" fill="#6F73EE"/>
             </svg>
-            Cart
+            Корзина
         </x-link-icon>
 {{--        TODO:как закрасить path--}}
         <x-link-icon class="link-icon-border">
@@ -89,7 +88,6 @@
         @php $items = [1 => 'Базовая',2 => 'Версия MAX', 3 => 'Версия VIP'] @endphp
         <x-dropdown :list="$items" :type="'grey-border'">Комплектация: <span class="dropdown-choose">стандартная</span><span class="material-symbols-outlined">expand_more</span></x-dropdown>
         <x-slider></x-slider>
-{{--        TODO:later + в кружочке --}}
         <x-link class="link-underline link-bold">Задать вопрос</x-link>
         <x-link class="link-with-icon link-animation-wide link-bold" style="width: 180px;">
             Подобрать модель
@@ -97,10 +95,10 @@
                 <path d="M11.4596 5.45962C11.7135 5.20578 11.7135 4.79422 11.4596 4.54038L7.32304 0.403806C7.0692 0.149965 6.65765 0.149965 6.40381 0.403806C6.14997 0.657647 6.14997 1.0692 6.40381 1.32304L10.0808 5L6.40381 8.67696C6.14997 8.9308 6.14997 9.34235 6.40381 9.59619C6.65765 9.85003 7.0692 9.85003 7.32304 9.59619L11.4596 5.45962ZM0 5.65H11V4.35H0V5.65Z" fill="#6F73EE"/>
             </svg>
         </x-link>
-        <x-api-subscribe class="api-subscribe-vk">Вконтакте</x-api-subscribe>
-        <x-api-subscribe class="api-subscribe-instagram">Instagram</x-api-subscribe>
-        <x-api-subscribe class="api-subscribe-youtube">YouTube</x-api-subscribe>
-        <x-api-subscribe class="api-subscribe-telegram">Telegram</x-api-subscribe>
+        <x-api-subscribe type="vk">Вконтакте</x-api-subscribe>
+        <x-api-subscribe type="instagram">Instagram</x-api-subscribe>
+        <x-api-subscribe type="youtube">YouTube</x-api-subscribe>
+        <x-api-subscribe type="telegram">Telegram</x-api-subscribe>
 
         <x-link-icon class="link-icon-border link-play">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" viewBox="0 0 25 30" fill="none">
@@ -119,17 +117,20 @@
         </x-link-icon>
 
         <x-search placeholder="Искать самокат KUGO"></x-search>
-        <x-input-number placeholder="+7 (___) __ - __ - __"></x-input-number>
-
-        {{--  TODO: Как извлечь только город без ключа [{"town":"Kuhicland"}]      --}}
-        {{--        $items =  DB::table('kugoo_towns')->get('town')->values();--}}
+        <x-input-number placeholder="+7 (___) __ - __ - __" class="input-violet-border input-wide-text"></x-input-number>
         @php
             use Illuminate\Support\Facades\DB;
-
+            $items =  DB::table('kugoo_towns')->pluck('town');
         @endphp
-        {{--        <x-dropdown :list="$items" :type="'violet-border'">Выберите свой город<span class="material-symbols-outlined">expand_more</span></x-dropdown>--}}
-{{--        TODO:текст в текстареа--}}
-        <x-text-area placeholder="Опишите проблемы"></x-text-area>
+        <x-dropdown :list="$items" :type="'violet-border'">Выберите свой город<span class="material-symbols-outlined">expand_more</span></x-dropdown>
+        <x-text-area placeholder="Опишите проблемы" class="input-violet-border input-wide-text"></x-text-area>
+        <x-add-file></x-add-file>
+        <x-input placeholder="Введите ваш email" class="input-violet"></x-input>
+        <x-input id="input-name" label="Ваше имя" placeholder="Введите имя" class="input-violet-border input-narrow-text"></x-input>
+        <x-card-payment></x-card-payment>
+        <x-socials :height="20" class="socials-violet-bg"></x-socials>
+        <x-socials :height="20" class="socials-white-bg"></x-socials>
+        <x-brand-card></x-brand-card>
 
         <div class="test-cont">
             <input id="toggle-mobile-menu" type="checkbox">
@@ -138,6 +139,10 @@
             </label>
             <x-mobile_menu></x-mobile_menu>
         </div>
-
+{{--TODO: npm i vite-plugin-pwa -D
+imgproxy.net
+github.com/cshum/imagor
+habr.com/ru/company/macloud/blog/557208/
+--}}
     </div>
 @endsection

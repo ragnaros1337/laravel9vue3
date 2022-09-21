@@ -1,3 +1,58 @@
+.kugoo-input-box{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    label{
+        margin-bottom: 7px;
+        font-size: 13px;
+    }
+}
+.kugoo-input{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 15px 25px;
+    background: white;
+    font-style: normal;
+    font-weight: 400;
+    text-align: left;
+}
+.input-violet-border{
+    border: 5px solid #EAEBED;
+    border-radius: 15px;
+    font-size: 16px;
+    color: $black_base;
+    &::placeholder{
+        color: $text_color;
+    }
+    transition: $header_transition;
+    &:focus{
+        border: 5px solid $violet_base;
+    }
+}
+.input-violet{
+    min-width: 300px;
+    width: 410px;
+    background: #8c8ff2;
+    border-radius: 15px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    &::placeholder{
+        color: white;
+    }
+}
+.input-wide-text{
+    letter-spacing: 0.1em;
+    line-height: 23px;
+}
+
+.input-narrow-text{
+    line-height: 17px;
+    letter-spacing: 0;
+}
+
 .kugoo-search{
     display: flex;
     align-items: center;
@@ -42,37 +97,108 @@
     }
 }
 
-.input-violet-border{
-    border: 5px solid #EAEBED;
-    border-radius: 15px;
-    text-align: left;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 23px;
-    letter-spacing: 0.1em;
-    color: $black_base;
-    &::placeholder{
-        color: $text_color;
-    }
-    transition: $header_transition;
-    &:focus{
-        border: 5px solid $violet_base;
-    }
-}
-.kugoo-input{
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 15px 25px;
-    background: white;
-}
-
 .input-number{
     min-width: 250px;
 }
 
 .text-area{
-    @include my-scrollbar;
+    resize: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.add-file{
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+}
+.card-payment-container{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 23px;
+    input{
+        display: none;
+    }
+    input:checked{
+        & ~ .card-payment{
+            border: 5px solid $violet_base;
+        }
+        & ~ .card-payment label{
+            &:before{
+                border: 2px solid $violet_base;
+            }
+            &:after{
+                opacity: 1;
+                background: $violet_base;
+            }
+        }
+    }
+    .card-payment{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 240px;
+        min-height: 158px;
+        background: #F4F7FB;
+        border-radius: 15px;
+        padding: 20px 40px;
+        border: 5px solid white;
+        transition: $header_transition;
+        label{
+            position: relative;
+            transition: $header_transition;
+            $input_size: 14px;
+            margin-bottom: 10px;
+            &:before{
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: $input_size;
+                height: $input_size;
+                border: 2px solid $text_color;
+                border-radius: 50%;
+                background: white;
+                transform: translate(calc(-50% - #{$input_size}), calc(-50% + #{$input_size - 4px}));
+            }
+            &:after{
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                border: 1px solid white;
+                background: $text_color;
+                opacity: 0;
+                transform: translate(calc(-50% - #{$input_size}), calc(-50% + #{$input_size - 4px}));
+            }
+        }
+    }
+}
+
+.kugoo-banks{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+    width: 150px;
+    flex-wrap: wrap;
+    .bank{
+        background: white;
+        border: 0.486818px solid #EAEBED;
+        border-radius: 10px;
+        padding: 5px;
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 5px;
+    }
 }

@@ -9,8 +9,16 @@
     svg, svg path{
         transition: $header_transition;
     }
+    .kugoo-link-mark{
+        background: $violet_base;
+        border: none;
+        border-radius: 20px;
+        padding: 5px 8px;
+        margin-left: 10px;
+        color: white;
+    }
 }
-.link-grey{
+.kugoo-link.link-grey{
     font-size: 14px;
     color: $text_color;
     &:hover, &:active{
@@ -23,7 +31,7 @@
         fill: $text_color;
     }
 }
-.link-red, .link-icon-red{
+.kugoo-link.link-red, .link-icon-red{
     font-size: 14px;
     color: $text_color;
     &:hover, &:active{
@@ -36,7 +44,7 @@
         fill: $text_color;
     }
 }
-.link-violet{
+.kugoo-link.link-violet{
     color: $black_base;
     &:hover, &:active{
         color: $violet_base;
@@ -45,7 +53,7 @@
         }
     }
 }
-.link-violet-square{
+.kugoo-link.link-violet-square{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,25 +66,45 @@
         color: $violet_hover;
     }
 }
-.link-number{
+.kugoo-link.link-number{
+    svg{
+        circle, path{
+            transition: $header_transition;
+        }
+        circle{
+            fill: white;
+        }
+        path{
+            fill: $text_color;
+        }
+    }
+    &:active, &:hover{
+        svg{
+            circle{
+                fill: $text_color;
+            }
+            path{
+                fill: white;
+            }
+        }
+    }
 }
-.link-underline{
+.kugoo-link.link-underline{
     font-size: 14px;
     color: $violet_base;
     &:hover, &:active{
         color: $violet_base;
         text-decoration: underline $violet_base;
-        text-decoration-skip-ink: none;
     }
 }
-.link-with-icon{
+.kugoo-link.link-with-icon{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 10px;
 }
-.link-animation-wide{
+.kugoo-link.link-animation-wide{
     color: $violet_base;
     position: relative;
     margin-right: 20px;
@@ -93,7 +121,7 @@
         }
     }
 }
-.link-bold{
+.kugoo-link.link-bold{
     font-weight: 700;
 }
 

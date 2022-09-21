@@ -1,3 +1,5 @@
+//NullStyle
+@import 'nullstyle';
 // Fonts
 @import "@fontsource/jost";
 
@@ -18,21 +20,6 @@
 
 // Main
 $header_transition: all 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
-*{
-    &:focus-visible{
-        outline: none;
-    }
-}
-a{
-    color: initial;
-    text-decoration: none;
-    &:hover{
-        color: initial;
-    }
-}
-ul{
-    list-style-type: none;
-}
 
 body{
     font-family: "Jost";

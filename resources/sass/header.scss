@@ -2,9 +2,6 @@
     padding: 0;
     .kugoo-navbar{
         position:  relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         .kugoo-navbar-backgrounds{
             position: absolute;
             top: 0;
@@ -44,223 +41,35 @@
             }
             .kugoo-navbar-top{
                 height: 39px;
-                padding-top: 11px;
-                padding-bottom: 11px;
-                font-weight: 400;
-                font-size: 12px;
-                line-height: 17px;
-                color: $text_color;
-                .kugoo-navbar-top-left{
+                .kugoo-navbar-top-left, .kugoo-navbar-top-right{
                     display: flex;
+                    flex-direction: row;
                     align-items: center;
-                    padding: 0;
-                    .kugoo-navbar-top-link{
-                        margin-right: 30px;
-                    }
+                }
+                .kugoo-navbar-top-left{
+                    justify-content: flex-start;
+                    gap: 30px;
                 }
                 .kugoo-navbar-top-right{
-                    padding: 0;
-                    display: flex;
-                    align-items: center;
+                    margin-left: auto;
                     justify-content: flex-end;
-                }
-                .kugoo-navbar-top-right-application-btn{
-                    @extend %violet_white_btn;
-                    border-radius: 20px;
-                    border: none;
-                }
-                .kugoo-navbar-top-socials{
-                    padding-left: 0;
-                    margin-bottom: 0;
-                    list-style-type: none;
-                    svg{
-                        height: 16px;
-                        width: 16px;
-                    }
-                }
-                .kugoo-navbar-top-tel{
-                    font-weight: 500;
-                    color: black;
-                    padding-right: 20px;
                 }
             }
             .kugoo-navbar-middle{
                 padding-top: 30px;
                 padding-bottom: 30px;
-                .kugoo-brand{
-                    margin-right: 35px;
-                }
-                .kugoo-navbar-middle-catalog{
-                    border: 1.5px solid $violet_base;
-                    border-radius: 15px;
-                    font-weight: 500;
-                    font-size: 16px;
-                    line-height: 23px;
-                    margin-right: 20px;
-                    //TODO: Change this
-                    @extend %violet_white_btn;
-                    position: relative;
-                    padding: 5px 15px 5px 40px;
-                    &:active{
-                        .kugoo-navbar-middle-catalog-icon{
-                            &:after{
-                                right: -2px;
-                                width: 13px;
-                            }
-                        }
-                    }
-                    .kugoo-navbar-middle-catalog-icon{
-                        position: absolute;
-                        left: 15px;
-                        top: calc(50% - 1px);
-                        width: 13px;
-                        height: 3px;
-                        background: white;
-                        border: 1.3px solid #FFFFFF;
-                        border-radius: 1px;
-                        &:after{
-                            content: "";
-                            position: absolute;
-                            right: -1px;
-                            bottom: -6px;
-                            width: 7px;
-                            height: 3px;
-                            background: white;
-                            border: 1.3px solid #FFFFFF;
-                            border-radius: 1px;
-                            transition: $header_transition;
-                        }
-                        &:before{
-                            content: "";
-                            position: absolute;
-                            left: -1px;
-                            top: -6px;
-                            width: 13px;
-                            height: 3px;
-                            background: white;
-                            border: 1.3px solid #FFFFFF;
-                            border-radius: 1px;
-                        }
-                    }
-                }
-                .kugoo-navbar-middle-search{
-                    height: 40px;
-                    min-width: 444px;
-                    width: 100%;
-                    border-radius: 15px;
-                    border: 5px solid #6F73EE;
-                    font-size: 14px;
-                    font-weight: 400;
-                    line-height: 20px;
-                    letter-spacing: 0em;
-                    text-align: left;
-                    position: relative;
-                    margin-right: 47px;
-                    .kugoo-navbar-middle-search-dropdown{
-                        background: $blue_base;
-                        border: none;
-                        border-radius: 15px;
-                        height: 100%;
-                        width: 76px;
-                        position: relative;
-                        &:after{
-                            content: "";
-                            position: absolute;
-                            top: calc(50% - 1px);
-                            right: 5px;
-                            height: 6.999999523162868px;
-                            width: 8.000000953674347px;
-                            border-radius: 1px;
-                            margin-left: 0;
-                        }
-                        .kugoo-navbar-middle-search-field{
-
-                        }
-                    }
-                    .kugoo-navbar-middle-search-dropdown-menu{
-                        z-index: 3;
-                        border-radius: 15px;
-                        background: $blue_base;
-                        color: black;
-                        .kugoo-navbar-middle-search-dropdown-item{
-                            .dropdown-item{
-                                transition: $header_transition;
-                                &:focus{
-                                    background: none;
-                                }
-                                &:hover, &:active, &:focus{
-                                    color: $violet_base;
-                                    background: none;
-                                }
-                            }
-                        }
-                        .kugoo-navbar-middle-search-dropdown-item{
-                            &:hover, &:active, &:focus{
-                                .dropdown-item{
-                                    color: $violet_base;
-                                }
-                            }
-                        }
-                    }
-                    .kugoo-navbar-middle-search-field{
-                        width: 328px;
-                        height: 100%;
-                        border: none;
-                        padding-left: 10px;
-                        &:focus-visible{
-                            outline: none;
-                        }
-                    }
-                    .kugoo-navbar-middle-search-btn{
-                        position: absolute;
-                        right: -8px;
-                        top: -8px;
-                        height: 45px;
-                        width: 45px;
-                        border-radius: 5px 10px 10px 5px;
-                        border: 1px solid $violet_base;
-                        //TODO: Change this
-                        @extend %violet_white_btn;
-                    }
-                }
-                .kugoo-navbar-middle-link{
-                    margin-right: 27px;
-                }
-                .kugoo-navbar-middle-link:last-child{
-                    margin-right: 0;
+                gap: 30px;
+                .kugoo-navbar-middle-links{
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    margin-left: auto;
                 }
             }
             .kugoo-navbar-bottom{
                 height: 40px;
-                font-weight: 700;
                 padding-top: 10px;
                 padding-bottom: 10px;
-                .kugoo-navbar-bottom-link{
-                    margin-right: 50px;
-                }
-                .kugoo-navbar-bottom-link.kugoo-navbar-bottom-link-hint{
-                    &:after{
-                        content: "Доступна рассрочка";
-                        background: $violet_base;
-                        border-radius: 300px;
-                        padding: 0 10px;
-                        color: white;
-                        margin-left: 9px;
-                        font-weight: 500;
-                    }
-                }
-                .kugoo-navbar-bottom-search-field{
-                    background: $blue_base;
-                    border-radius: 20px;
-                    border: none;
-                    padding-left: 10px;
-                    &:focus-visible{
-                        outline: none;
-                    }
-                    &::placeholder{
-                       color: black;
-                    }
-                }
             }
         }
     }
