@@ -5,7 +5,7 @@
  */
 
 import './bootstrap';
-import 'material-symbols';
+// import 'material-symbols';
 import './modules';
 import { createApp } from 'vue';
 //import { createApp } from 'vue/dist/bindings/vue.esm-bundler.js';
