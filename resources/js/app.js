@@ -6,7 +6,18 @@
 
 import './bootstrap';
 // import 'material-symbols';
+import.meta.glob([
+    '../formanifest/*.*'
+]);
 import './modules';
+import './registerSW';
+
+import { registerSW } from 'virtual:pwa-register';
+
+// const updateSW = registerSW({
+//     onOfflineReady() {},
+// })
+
 import { createApp } from 'vue';
 //import { createApp } from 'vue/dist/bindings/vue.esm-bundler.js';
 

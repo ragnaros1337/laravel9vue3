@@ -18,3 +18,4 @@
 Route::get('/', function () {
     return view('index');
 });
+Route::get('cache-file', [\App\Http\Controllers\FilesForCachingController::class, 'index']);

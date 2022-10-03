@@ -1,108 +1,68 @@
-/**
- * Copyright 2018 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *     http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+const cacheName = 'v1';
+const cacheAssets = [
+    '/apple-touch-icon.png',
+    '/browserconfig.xml',
+    '/favicon.ico',
+    '/favicon-16x16.png',
+    '/favicon-32x32.png',
+    '/mstile-150x150.png',
+    '/safari-pinned-tab.svg',
+    '/index.php',
+];
 
-// If the loader is already loaded, just stop.
-if (!self.define) {
-  let registry = {};
+//Call Install Event
+self.addEventListener('install', (event) => {
+    console.log('ServiceWorker: Installed');
 
-  // Used for `eval` and `importScripts` where we can't get script URL by other means.
-  // In both cases, it's safe to use a global var because those functions are synchronous.
-  let nextDefineUri;
-
-  const singleRequire = (uri, parentUri) => {
-    uri = new URL(uri + ".js", parentUri).href;
-    return registry[uri] || (
-
-        new Promise(resolve => {
-          if ("document" in self) {
-            const script = document.createElement("script");
-            script.src = uri;
-            script.onload = resolve;
-            document.head.appendChild(script);
-          } else {
-            nextDefineUri = uri;
-            importScripts(uri);
-            resolve();
-          }
-        })
-
-      .then(() => {
-        let promise = registry[uri];
-        if (!promise) {
-          throw new Error(`Module ${uri} didn’t register its module`);
-        }
-        return promise;
-      })
+    event.waitUntil(
+        caches
+            .open(cacheName)
+            .then(cache => {
+                console.log('Service Worker: Caching Files');
+                cache.addAll(cacheAssets);
+                fetch('cache-file').then(function (response) {
+                    console.log(response);
+                })
+                // const request = new XMLHttpRequest();
+                // const url = "/build/manifest.json";
+                // request.open('GET', url);
+                // request.addEventListener("readystatechange", () => {
+                //     if (request.readyState === 4 && request.status === 200) {
+                //         const data = JSON.parse(request.responseText);
+                //         for (const item in data) {
+                //             if(item.endsWith('css') || (item.endsWith('js') && !item.includes('workbox')))
+                //                 console.log(data[item].file);
+                //         }
+                //     }
+                // });
+                // request.send();
+            })
+            .then(() => self.skipWaiting())
     );
-  };
+})
 
-  self.define = (depsNames, factory) => {
-    const uri = nextDefineUri || ("document" in self ? document.currentScript.src : "") || location.href;
-    if (registry[uri]) {
-      // Module is already loading or loaded.
-      return;
-    }
-    let exports = {};
-    const require = depUri => singleRequire(depUri, uri);
-    const specialDeps = {
-      module: { uri },
-      exports,
-      require
-    };
-    registry[uri] = Promise.all(depsNames.map(
-      depName => specialDeps[depName] || require(depName)
-    )).then(deps => {
-      factory(...deps);
-      return exports;
-    });
-  };
-}
-define(['./workbox-3589c0c5'], (function (workbox) { 'use strict';
+//Call Activate Event
+self.addEventListener('activate', (event) => {
+    console.log('ServiceWorker: Activated');
+    // Remove old cache
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if(cache !== cacheName){
+                        console.log('Service Worker: Clearing old cache');
+                        return caches.delete(cache);
+                    }
+                })
+            )
+        })
+    )
+})
 
-  /**
-  * Welcome to your Workbox-powered service worker!
-  *
-  * You'll need to register this file in your web app.
-  * See https://goo.gl/nhQhGp
-  *
-  * The rest of the code is auto-generated. Please don't update this file
-  * directly; instead, make changes to your Workbox build configuration
-  * and re-run your build process.
-  * See https://goo.gl/2aRDsh
-  */
-
-  self.skipWaiting();
-  workbox.clientsClaim();
-  /**
-   * The precacheAndRoute() method efficiently caches and responds to
-   * requests for URLs in the manifest.
-   * See https://goo.gl/S9QRab
-   */
-
-  workbox.precacheAndRoute([{
-    "url": "assets/app.3278cc26.js",
-    "revision": null
-  }, {
-    "url": "assets/app.aff75cc2.css",
-    "revision": null
-  }, {
-    "url": "registerSW.js",
-    "revision": "2d094791c49e920331981a2d203b8cdb"
-  }, {
-    "url": "manifest.webmanifest",
-    "revision": "7489a9a7f1ad5667f5ea0c116d720f36"
-  }], {});
-  workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html")));
-
-}));
+//Call Fetch Event
+// self.addEventListener('fetch', event => {
+//     console.log('Service Worker: Fetching');
+//     event.respondWith(
+//         fetch(event.request).catch(() => caches.match(event.request));
+//     )
+// })

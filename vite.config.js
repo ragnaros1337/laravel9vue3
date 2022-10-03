@@ -22,16 +22,17 @@ export default defineConfig({
         }),
         VitePWA({
             mode: "development",
-            base: "/",
-            srcDir: "src",
-            filename: "sw.js",
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
-            strategies: "injectManifest",
+            // base: "/",
+            // srcDir: "public/src",
+            // filename: "sw.js",
+            strategies: "registerSW",
+            includeAssets: ['favicon.ico', 'favicon-16x16.png',
+                'favicon-32x32.png', 'apple-touch-icon.png', 'mstile-150x150.png', 'safari-pinned-tab.svg'],
             manifest: {
                 name: "Kugoo",
                 short_name: "Kugoo",
                 description: "Kugoo Самокаты",
-                start_url: "./",
+                start_url: ".",
                 icons: [
                     {
                         "src": "/android-chrome-192x192.png",
@@ -48,11 +49,19 @@ export default defineConfig({
                 background_color: "#464eb6",
                 display: "standalone",
             },
-            // injectRegister: 'script',
-            // registerType: 'autoUpdate',
-            // devOptions: {
-            //     enabled: true
-            // }
+            workbox: {
+                  globPatterns: [
+                    // '**/*.{js,css,json,webmanifest,woff,woff2,png,ico,svg}',
+					'*/*.*',
+					'*.*'
+				  ],
+                navigateFallback: null,
+            },
+            injectRegister: 'script',
+            registerType: 'autoUpdate',
+            devOptions: {
+                enabled: true
+            }
         }),
     ],
     resolve: {
