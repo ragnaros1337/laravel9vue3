@@ -13,12 +13,13 @@
     <meta name="apple-mobile-web-app-title" content="Kugoo">
     <meta name="application-name" content="Kugoo">
     <meta name="msapplication-TileColor" content="#464eb6">
-    <meta name="theme-color" content="#464eb6">
-
+    <meta name="theme-color" content="#464eb6">\
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Styles -->
-    @vite(['resources/sass/app.scss'])
+    <link rel="stylesheet" href="build/assets/app.aff75cc2.css">
+{{--    @vite(['resources/sass/app.scss'])--}}
+
     <!-- Service Worker Registration -->
 {{--    <script src="{{ asset('/build/registerSW.js')}}"></script>--}}
 @stack('styles')
@@ -31,6 +32,7 @@
     </div>
     <x-footer></x-footer>
 </div>
-@vite('resources/js/app.js')
+{{--@vite('resources/js/app.js')--}}
+<script src="build/assets/app.693bd123.js"></script>
 </body>
 </html>

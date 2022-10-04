@@ -5,14 +5,13 @@
  */
 
 import './bootstrap';
-// import 'material-symbols';
-import.meta.glob([
-    '../formanifest/*.*'
-]);
-import './modules';
 import './registerSW';
+// import.meta.glob([
+//     '../formanifest/*.*'
+// ]);
+import './modules';
 
-import { registerSW } from 'virtual:pwa-register';
+// import { registerSW } from 'virtual:pwa-register';
 
 // const updateSW = registerSW({
 //     onOfflineReady() {},

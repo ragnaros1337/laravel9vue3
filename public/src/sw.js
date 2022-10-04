@@ -20,22 +20,14 @@ self.addEventListener('install', (event) => {
             .then(cache => {
                 console.log('Service Worker: Caching Files');
                 cache.addAll(cacheAssets);
-                fetch('cache-file').then(function (response) {
-                    console.log(response);
+                fetch('/cache-file').then(function (response) {
+                    response.json().then(function(data){
+                        for (const item in data) {
+                            if (item.endsWith('css') || (item.endsWith('js') && !item.includes('workbox')))
+                                cache.add('/build/' + data[item].file);
+                        }
+                    })
                 })
-                // const request = new XMLHttpRequest();
-                // const url = "/build/manifest.json";
-                // request.open('GET', url);
-                // request.addEventListener("readystatechange", () => {
-                //     if (request.readyState === 4 && request.status === 200) {
-                //         const data = JSON.parse(request.responseText);
-                //         for (const item in data) {
-                //             if(item.endsWith('css') || (item.endsWith('js') && !item.includes('workbox')))
-                //                 console.log(data[item].file);
-                //         }
-                //     }
-                // });
-                // request.send();
             })
             .then(() => self.skipWaiting())
     );
@@ -60,9 +52,9 @@ self.addEventListener('activate', (event) => {
 })
 
 //Call Fetch Event
-// self.addEventListener('fetch', event => {
-//     console.log('Service Worker: Fetching');
-//     event.respondWith(
-//         fetch(event.request).catch(() => caches.match(event.request));
-//     )
-// })
+self.addEventListener('fetch', event => {
+    console.log('Service Worker: Fetching');
+    event.respondWith(
+        fetch(event.request).catch(() => caches.match(event.request))
+    )
+})

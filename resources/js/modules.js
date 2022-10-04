@@ -45,4 +45,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
         value_block.attr("data-value", val);
         value_block.children().last().css("width", 7 * val);
     });
+    //AJAX без AJAXa
+    // const request = new XMLHttpRequest();
+    // const url = "/build/manifest.json";
+    // request.open('GET', url);
+    // request.addEventListener("readystatechange", () => {
+    //     if (request.readyState === 4 && request.status === 200) {
+    //         const data = JSON.parse(request.responseText);
+    //         for (const item in data) {
+    //             if(item.endsWith('css') || (item.endsWith('js') && !item.includes('workbox')))
+    //                 console.log(data[item].file);
+    //         }
+    //     }
+    // });
+    // request.send();
 });

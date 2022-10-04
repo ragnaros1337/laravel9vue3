@@ -3,6 +3,8 @@
     use App\Models\KugooSamokat;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Route;
+    use Illuminate\Support\Facades\File;
+    use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +20,6 @@
 Route::get('/', function () {
     return view('index');
 });
-Route::get('cache-file', [\App\Http\Controllers\FilesForCachingController::class, 'index']);
+Route::get('/cache-file', function (){
+    return File::get('build/manifest.json');
+});
