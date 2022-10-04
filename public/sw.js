@@ -1,6 +1,6 @@
 const cacheName = 'v1';
 const cacheAssets = [
-    '/'
+    '/',
     '/apple-touch-icon.png',
     '/browserconfig.xml',
     '/favicon.ico',
