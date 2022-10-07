@@ -30,8 +30,8 @@
         closedir($handle);
     }
     @endphp
-    <link rel="stylesheet" href="build/assets/{{ $style }}">
-{{--    @vite(['resources/sass/app.scss'])--}}
+{{--    <link rel="stylesheet" href="build/assets/{{ $style }}">--}}
+    @vite(['resources/sass/app.scss'])
 
     <!-- Service Worker Registration -->
 {{--    <script src="{{ asset('/build/registerSW.js')}}"></script>--}}

@@ -144,8 +144,6 @@
     </div>
     <div class="footer-backgrounds">
         <div class="footer-backgrounds-subscribe"></div>
-        <div class="footer-backgrounds-links"></div>
-        <div class="footer-backgrounds-media"></div>
-        <div class="footer-backgrounds-payments"></div>
+        <div class="footer-backgrounds-other"></div>
     </div>
 </footer>

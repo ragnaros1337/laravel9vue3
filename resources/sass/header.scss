@@ -74,3 +74,35 @@
         }
     }
 }
+
+@media(max-width: 1023px){
+    .header.container-fluid .kugoo-navbar{
+         .kugoo-navbar-container{
+             .kugoo-navbar-top{
+                 .kugoo-navbar-top-left{
+                     .kugoo-link, .socials{
+                         display: none;
+                     }
+                 }
+                 .kugoo-navbar-top-right{
+                     .kugoo-link{
+                         display: none;
+                     }
+                 }
+             }
+             .kugoo-navbar-middle{
+                 position: relative;
+                 justify-content: space-between;
+                 .kugoo-search, button, .kugoo-navbar-middle-links{
+                     display: none;
+                 }
+             }
+             .kugoo-navbar-bottom{
+                 display: none;
+             }
+         }
+        .kugoo-navbar-backgrounds .kugoo-navbar-backgrounds-bottom{
+            display: none;
+        }
+    }
+}

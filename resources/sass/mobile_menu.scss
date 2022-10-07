@@ -1,6 +1,6 @@
 $items: 6;
-$transition-duration: 0.5s;
-$transition-delay: 0.05s;
+$transition-duration: 0.4s;
+$transition-delay: 0.04s;
 #toggle-mobile-menu{
     position: absolute;
     left: -100%;
@@ -93,13 +93,6 @@ $transition-delay: 0.05s;
         }
     }
 }
-.test-cont{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-}
 .kugoo-mobile-menu{
     display: flex;
     width: 40px;
@@ -110,8 +103,8 @@ $transition-delay: 0.05s;
     transition: $transition-duration;
     background: white;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 30px;
+    right: 0;
     z-index: 5;
     //overflow-y: scroll;
     overflow: hidden;

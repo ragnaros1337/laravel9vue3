@@ -22,3 +22,6 @@ Route::get('/', function () {
 Route::get('/cache-file', function (){
     return File::get('build/manifest.json');
 });
+Route::get('/test', function () {
+    return view('test');
+});

@@ -5,7 +5,7 @@
  */
 
 import './bootstrap';
-import './registerSW';
+// import './registerSW';
 // import.meta.glob([
 //     '../formanifest/*.*'
 // ]);

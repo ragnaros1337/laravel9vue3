@@ -12,18 +12,9 @@
             background: $violet_base;
             height: 100px;
         }
-        .footer-backgrounds-links, .footer-backgrounds-media, .footer-backgrounds-payments{
+        .footer-backgrounds-other{
             background: $blue_base;
-        }
-        //TODO:Узнать высоту
-        .footer-backgrounds-links{
-            height: 283px;
-        }
-        .footer-backgrounds-media{
-            height: 116px;
-        }
-        .footer-backgrounds-payments{
-            height: 59px;
+            height: calc(100% - 100px);
         }
     }
     .footer-container{
@@ -42,7 +33,6 @@
             width: 100%;
         }
         .footer-subscribe{
-            height: 100px;
             padding-top: 24px;
             padding-bottom: 24px;
             .footer-subscribe-text{
@@ -156,6 +146,75 @@
                     flex-direction: row;
                     align-items: center;
                 }
+            }
+        }
+    }
+}
+
+@media(max-width: 1270px){
+    .footer.container-fluid .footer-container{
+        .footer-media{
+            flex-wrap: wrap;
+            justify-content: center;
+            .kugoo-brand{
+                min-width: 160px;
+            }
+            .footer-media-right{
+                margin-left: 0;
+            }
+        }
+        .footer-subscribe .footer-subscribe-text{
+            font-size: 16px;
+        }
+        .footer-links .footer-links-contacts .footer-links-contacts-body .footer-links-contacts-itemsзрз{
+            gap: 35px;
+        }
+    }
+}
+@media(max-width: 1023px){
+    .footer.container-fluid{
+        .footer-container{
+            .footer-subscribe{
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+                .footer-subscribe-right{
+                    margin-left: 0;
+                    flex-direction: column;
+                    width: 100%;
+                    .kugoo-input-box{
+                        width: 100%;
+                        input{
+                            width: 100%;
+                        }
+                    }
+                    button{
+                        width: 100%;
+                    }
+                }
+            }
+            .footer-links{
+                display: none;
+            }
+            .footer-media .kugoo-brand, .footer-media > .kugoo-brand-card{
+                display: none;
+            }
+            .footer-payments{
+                border-top: 3px solid #5d6c7b25;
+                justify-content: center;
+                flex-direction: column;
+                gap: 15px;
+                .footer-payments-right{
+                    display: none;
+                }
+            }
+        }
+        .footer-backgrounds{
+            .footer-backgrounds-subscribe{
+                height: 267px;
+            }
+            .footer-backgrounds-other{
+                height: calc(100% - 267px);
             }
         }
     }
