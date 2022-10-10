@@ -16,6 +16,7 @@
                             <path d="M5 9.65306H13V8.34694H5V9.65306ZM8.29897 5V13H9.70103V5H8.29897Z" fill="#5D6C7B"/>
                         </svg>
                     </x-link>
+                    <x-btn class="btn-violet small-btn">Открыть</x-btn>
                 </div>
             </section>
             <section class="kugoo-navbar-middle">

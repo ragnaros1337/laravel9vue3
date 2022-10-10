@@ -131,18 +131,6 @@
         <x-socials :height="20" class="socials-violet-bg"></x-socials>
         <x-socials :height="20" class="socials-white-bg"></x-socials>
         <x-brand-card></x-brand-card>
-
-        <div class="test-cont">
-            <input id="toggle-mobile-menu" type="checkbox">
-            <label class="kugoo-navbar-toggler" for="toggle-mobile-menu">
-                <span class="kugoo-navbar-toggler-icon"></span>
-            </label>
-            <x-mobile_menu></x-mobile_menu>
-        </div>
-{{--TODO: npm i vite-plugin-pwa -D
-imgproxy.net
-github.com/cshum/imagor
-habr.com/ru/company/macloud/blog/557208/
---}}
+        <x-rating></x-rating>
     </div>
 @endsection

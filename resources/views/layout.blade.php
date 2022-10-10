@@ -45,7 +45,7 @@
     </div>
     <x-footer></x-footer>
 </div>
-{{--@vite('resources/js/app.js')--}}
-<script src="build/assets/{{ $script }}"></script>
+@vite('resources/js/app.js')
+{{--<script src="build/assets/{{ $script }}"></script>--}}
 </body>
 </html>

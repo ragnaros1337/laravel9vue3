@@ -53,6 +53,9 @@
                 .kugoo-navbar-top-right{
                     margin-left: auto;
                     justify-content: flex-end;
+                    button{
+                        display: none;
+                    }
                 }
             }
             .kugoo-navbar-middle{
@@ -77,8 +80,9 @@
 
 @media(max-width: 1023px){
     .header.container-fluid .kugoo-navbar{
-         .kugoo-navbar-container{
+        .kugoo-navbar-container{
              .kugoo-navbar-top{
+                 height: 49px;
                  .kugoo-navbar-top-left{
                      .kugoo-link, .socials{
                          display: none;
@@ -87,6 +91,10 @@
                  .kugoo-navbar-top-right{
                      .kugoo-link{
                          display: none;
+                     }
+                     button{
+                         display: inline-block;
+                         padding: 5px 17px;
                      }
                  }
              }
@@ -101,8 +109,13 @@
                  display: none;
              }
          }
-        .kugoo-navbar-backgrounds .kugoo-navbar-backgrounds-bottom{
-            display: none;
+        .kugoo-navbar-backgrounds{
+            .kugoo-navbar-backgrounds-top{
+                height: 49px;
+            }
+            .kugoo-navbar-backgrounds-bottom{
+                display: none;
+            }
         }
     }
 }

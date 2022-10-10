@@ -1,6 +1,6 @@
 $items: 6;
-$transition-duration: 0.4s;
-$transition-delay: 0.04s;
+$transition-duration: 0.5s;
+$transition-delay: 0.05s;
 #toggle-mobile-menu{
     position: absolute;
     left: -100%;
@@ -40,7 +40,8 @@ $transition-delay: 0.04s;
                     $delay: ($items - $i) * $transition-delay;
                     transition-delay: $delay;
                     &:before {
-                        transition-delay: $delay;
+                        transition: all 0.1s;
+                        transition-delay: 0s;
                     }
                     &:after{
                         transition-delay: 0s;
@@ -146,13 +147,14 @@ $transition-delay: 0.04s;
             text-transform: uppercase;
             white-space: nowrap;
             transform: scaleY(0.2);
-            transition: $transition-duration, opacity 1s cubic-bezier(0.25, 0.8, 0.5, 1);
+            transition: $transition-duration, opacity 0.1s cubic-bezier(0.25, 0.8, 0.5, 1);
             @for $i from 1 through $items {
                 &:nth-child(#{$i}) {
                     $delay: ($i - 1) * $transition-delay;
                     transition-delay: $delay;
                     &:before {
-                        transition-delay: $delay;
+                        transition: all 0s;
+                        transition-delay: 0.4s;
                     }
                     &:after{
                         transition-delay: $delay + 0.1s;
@@ -191,7 +193,7 @@ $transition-delay: 0.04s;
                 background-color: $violet_base;
                 border: 1.3px solid $violet_base;
                 transform: translateY(-50%) scaleY(5);
-                transition: $transition-duration;
+                //transition: $transition-duration;
             }
             &:after{
                 position: absolute;

@@ -45,6 +45,45 @@ document.addEventListener('DOMContentLoaded', (event) => {
         value_block.attr("data-value", val);
         value_block.children().last().css("width", 7 * val);
     });
+
+    var rating = $('.rating-stars');
+    rating.find('.left-half-label').hover(function (){
+        var star = $(this).next().next();
+        star.toggleClass('active');
+        $(star.children()[0]).attr( "mask", 'url("#half")');
+
+        var cur = $(this).attr("for").charAt(5)
+        if(cur > 1){
+            var arrChild = rating.children();
+            for (let i = 0; i < cur-1; i++) {
+                var iStar = $(arrChild[i]).find('.star');
+                $(iStar).toggleClass('active');
+                $(iStar.children()[0]).attr( "mask", 'url("#full")');
+            }
+        }
+    })
+    rating.find('.right-half-label').hover(function (){
+        var star = $(this).next();
+        star.toggleClass('active');
+        $(star.children()[0]).attr( "mask", 'url("#full")');
+        //TODO:create function - clean code
+        var cur = $(this).attr("for").charAt(5)
+        if(cur > 1){
+            var arrChild = rating.children();
+            for (let i = 0; i < cur-1; i++) {
+                var iStar = $(arrChild[i]).find('.star');
+                $(iStar).toggleClass('active');
+                $(iStar.children()[0]).attr( "mask", 'url("#full")');
+            }
+        }
+    })
+    rating.find('.left-half-label').click(function(){
+        var temp = rating.attr('data-confirm');
+        if(temp === 'true')
+            rating.attr('data-confirm', false);
+        else
+            rating.attr('data-confirm', true);
+    })
     //AJAX без AJAXa
     // const request = new XMLHttpRequest();
     // const url = "/build/manifest.json";
