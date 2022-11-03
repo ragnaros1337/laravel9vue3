@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(KugooSamokatSeeder::class);
 		$this->call(KugooSamokatImageSeeder::class);
 		$this->call(KugooTownSeeder::class);
+		$this->call(KugooAppUserRatingSeeder::class);
         //
 //         \App\Models\User::factory(10)->create();
 

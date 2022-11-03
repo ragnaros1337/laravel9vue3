@@ -428,6 +428,9 @@
         $star-active: #fece3c;
         $star-inactive: white;
         $star-stroke: #6c6962;
+        display: flex;
+        flex-direction: row;
+        gap: 3px;
         .star-container{
             position: relative;
             width: 20px;
@@ -435,9 +438,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            input{
-                display: none;
-            }
             label{
                 position: absolute;
                 height: 20px;
@@ -458,9 +458,24 @@
         .star.active{
             fill: $star-active;
         }
-        .rating-stars-count{
-            color: $text-color;
-            font-size: 14px;
+        .rating-stars-info{
+            display: flex;
+            flex-direction: row-reverse;
+            height: 100%;
+            align-items: baseline;
+            gap: 5px;
+            margin-left: auto;
+            .rating-stars-count{
+                color: $text-color;
+                font-size: 14px;
+            }
+            .rating-stars-average{
+                font-size: 16px;
+                font-weight: 600;
+                height: 20px;
+                text-shadow: 0 0 1px black;
+                color: #ffffff00;
+            }
         }
     }
 }

@@ -62,5 +62,4 @@
             <div class="kugoo-navbar-backgrounds-bottom"></div>
         </div>
     </nav>
-    <!-- Navbar -->
 </header>

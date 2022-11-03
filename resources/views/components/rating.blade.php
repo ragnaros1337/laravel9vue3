@@ -1,23 +1,27 @@
 <div class="kugoo-rating">
     <div class="rating-text">Открыть в приложении</div>
-    <div class="rating-stars" data-confirm="false">
+    <div class="rating-stars">
         @for ($i = 1; $i <= 5; $i++)
-        <div class="star-container" id="mark-{{$i}}">
-            <input type="checkbox" class="left-half" id="star-{{$i}}-left">
-            <input type="checkbox" class="right-half" id="star-{{$i}}-right">
+        <div class="star-container	" id="mark-{{$i}}">
             <label for="star-{{$i}}-left" class="left-half-label"></label>
             <label for="star-{{$i}}-right" class="right-half-label"></label>
-            <svg class="star" width="20" height="20" viewBox="0 0 32 32">
+            <svg class="star" data-check="false" width="20" height="20" viewBox="0 0 32 32">
                 <use xlink:href="#star" mask=url("#half")></use>
                 <use xlink:href="#star" fill="none" stroke="grey"></use>
             </svg>
         </div>
         @endfor
-        <svg class="star active" width="20" height="20" viewBox="0 0 32 32">
-            <use xlink:href="#star" mask=url("#half")></use>
-            <use xlink:href="#star" fill="none" stroke="grey"></use>
-        </svg>
-        <span class="rating-stars-count">2к</span>
+        @php
+            use Illuminate\Support\Facades\DB;
+            $user_count = DB::table('kugoo_app_user_ratings')->count();
+            if($user_count > 1000)
+            	$user_count = floor($user_count / 1000) . 'K';
+            $average_mark = number_format(DB::table('kugoo_app_user_ratings')->average('mark'), 1, '.', '');
+        @endphp
+        <div class="rating-stars-info">
+            <span class="rating-stars-count">{{ $user_count }}</span>
+            <span class="rating-stars-average">{{ $average_mark }}</span>
+        </div>
     </div>
     <svg class="reusable-star" style="width: 0; height: 0;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
         <defs>
@@ -28,7 +32,15 @@
 
             <mask id="full">
                 <rect x="0" y="0" width="32" height="32" fill="grey" />
-{{--                <rect x="50%" y="0" width="32" height="32" fill="black" />--}}
+            </mask>
+
+            <mask id="half_active">
+                <rect x="0" y="0" width="32" height="32" fill="white" />
+                <rect x="50%" y="0" width="32" height="32" fill="black" />
+            </mask>
+
+            <mask id="full_active">
+                <rect x="0" y="0" width="32" height="32" fill="white" />
             </mask>
 
             <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" id="star">
