@@ -131,6 +131,7 @@
         <x-socials :height="20" class="socials-violet-bg"></x-socials>
         <x-socials :height="20" class="socials-white-bg"></x-socials>
         <x-brand-card></x-brand-card>
-        <x-rating></x-rating>
+{{--        <x-rating></x-rating>--}}
+{{--        <x-tested></x-tested>--}}
     </div>
 @endsection

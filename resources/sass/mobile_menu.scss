@@ -18,8 +18,8 @@ $transition-delay: 0.05s;
     }
     & ~ .kugoo-mobile-menu {
         pointer-events: auto;
-        transform: translate(0, 50px);
-        width: 100%;
+        transform: translate(30px, 50px);
+        width: calc(100% + 60px);
         height: calc(100vh - 50px);
         .kugoo-mobile-menu-threads .kugoo-mobile-menu-item{
             display: flex;

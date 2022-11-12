@@ -10,6 +10,7 @@ import './bootstrap';
 //     '../formanifest/*.*'
 // ]);
 import './modules';
+// import './tested';
 
 // import { registerSW } from 'virtual:pwa-register';
 

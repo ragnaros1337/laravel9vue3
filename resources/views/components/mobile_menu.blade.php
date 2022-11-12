@@ -1,6 +1,24 @@
 <div class="navbar-collapse kugoo-mobile-menu">
     <ul class="kugoo-mobile-menu-items kugoo-mobile-menu-threads">
         <li class="kugoo-mobile-menu-item">
+            <x-link class="link-violet-square kugoo-mobile-menu-item-link">О магазине</x-link>
+        </li>
+        <li class="kugoo-mobile-menu-item">
+            <x-link class="link-violet-square kugoo-mobile-menu-item-link" mark="true" mark-value="Доступна рассрочка">Доставка и оплата</x-link>
+        </li>
+        <li class="kugoo-mobile-menu-item">
+            <x-link class="link-violet-square kugoo-mobile-menu-item-link">Тест драйв</x-link>
+        </li>
+        <li class="kugoo-mobile-menu-item">
+            <x-link class="link-violet-square kugoo-mobile-menu-item-link">Блог</x-link>
+        </li>
+        <li class="kugoo-mobile-menu-item">
+            <x-link class="link-violet-square kugoo-mobile-menu-item-link">Контакты</x-link>
+        </li>
+        <li class="kugoo-mobile-menu-item">
+            <x-link class="link-violet-square kugoo-mobile-menu-item-link" mark="true" mark-value="%">Акции</x-link>
+        </li>
+        <li class="kugoo-mobile-menu-item">
             <a class="kugoo-mobile-menu-item-link" href="#">О магазине</a>
         </li>
         <li class="kugoo-mobile-menu-item">

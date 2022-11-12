@@ -1,5 +1,5 @@
 <div class="kugoo-rating">
-    <div class="rating-text">Открыть в приложении</div>
+    <div class="rating-text">{{ $attributes['data-title'] }}</div>
     <div class="rating-stars">
         @for ($i = 1; $i <= 5; $i++)
         <div class="star-container	" id="mark-{{$i}}">
@@ -19,8 +19,12 @@
             $average_mark = number_format(DB::table('kugoo_app_user_ratings')->average('mark'), 1, '.', '');
         @endphp
         <div class="rating-stars-info">
-            <span class="rating-stars-count">{{ $user_count }}</span>
-            <span class="rating-stars-average">{{ $average_mark }}</span>
+            @if($attributes['data-counter'] === 'true')
+                <span class="rating-stars-count">{{ $user_count }}</span>
+            @endif
+            @if($attributes['data-average'] === 'true')
+                <span class="rating-stars-average">{{ $average_mark }}</span>
+            @endif
         </div>
     </div>
     <svg class="reusable-star" style="width: 0; height: 0;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">

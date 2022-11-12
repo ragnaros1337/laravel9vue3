@@ -7,6 +7,7 @@
                     <x-link class="link-grey">Сотрудничество</x-link>
                     <x-link class="link-grey">Заказать звонок</x-link>
                     <x-socials :height="16"></x-socials>
+                    <x-rating data-title="Открыть в приложении" data-counter="true" data-average="false"></x-rating>
                 </div>
                 <div class="kugoo-navbar-top-right">
                     <x-link class="link-number link-with-icon link-bold">
@@ -16,7 +17,7 @@
                             <path d="M5 9.65306H13V8.34694H5V9.65306ZM8.29897 5V13H9.70103V5H8.29897Z" fill="#5D6C7B"/>
                         </svg>
                     </x-link>
-                    <x-btn class="btn-violet small-btn">Открыть</x-btn>
+                    <x-btn class="btn-violet small-btn" data-fz="15">Открыть</x-btn>
                 </div>
             </section>
             <section class="kugoo-navbar-middle">
@@ -41,6 +42,10 @@
                         Корзина
                     </x-link-icon>
                 </div>
+                <svg class="phone_call" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px">
+                    <rect x="0" y="0" width="100%" height="100%" fill="transparent"/>
+                    <circle cx="50%" cy="50%" r="10" fill="#6F73EE"/>
+                </svg>
                 <input id="toggle-mobile-menu" type="checkbox">
                 <label class="kugoo-navbar-toggler" for="toggle-mobile-menu">
                     <span class="kugoo-navbar-toggler-icon"></span>

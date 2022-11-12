@@ -49,6 +49,9 @@
                 .kugoo-navbar-top-left{
                     justify-content: flex-start;
                     gap: 30px;
+                    .kugoo-rating{
+                        display: none;
+                    }
                 }
                 .kugoo-navbar-top-right{
                     margin-left: auto;
@@ -67,6 +70,12 @@
                     flex-direction: row;
                     align-items: center;
                     margin-left: auto;
+                }
+                .phone_call{
+                    display: none;
+                }
+                .kugoo-mobile-menu{
+                    display: none;
                 }
             }
             .kugoo-navbar-bottom{
@@ -87,6 +96,9 @@
                      .kugoo-link, .socials{
                          display: none;
                      }
+                     .kugoo-rating{
+                         display: flex;
+                     }
                  }
                  .kugoo-navbar-top-right{
                      .kugoo-link{
@@ -100,9 +112,16 @@
              }
              .kugoo-navbar-middle{
                  position: relative;
-                 justify-content: space-between;
+                 justify-content: flex-end;
+                 gap: 5px;
+                 .kugoo-brand{
+                     margin-right: auto;
+                 }
                  .kugoo-search, button, .kugoo-navbar-middle-links{
                      display: none;
+                 }
+                 .phone_call, .kugoo-mobile-menu{
+                     display: flex;
                  }
              }
              .kugoo-navbar-bottom{
